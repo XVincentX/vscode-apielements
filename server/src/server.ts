@@ -28,7 +28,7 @@ let documents: TextDocuments = new TextDocuments();
 documents.listen(connection);
 
 // After the server has started the client sends an initilize request. The server receives
-// in the passed params the rootPath of the workspace plus the client capabilites. 
+// in the passed params the rootPath of the workspace plus the client capabilites.
 let workspaceRoot: string;
 connection.onInitialize((params): InitializeResult => {
   workspaceRoot = params.rootPath;
@@ -39,7 +39,7 @@ connection.onInitialize((params): InitializeResult => {
       // Tell the client that the server support code complete
       completionProvider: {
         resolveProvider: true
-      } 
+      }
     }
   }
 });
@@ -75,22 +75,22 @@ connection.onDidChangeConfiguration((change) => {
 function validateTextDocument(textDocument: TextDocument): void {
   let diagnostics: Diagnostic[] = [];
   let text = textDocument.getText();
-    console.log("Extension called");
-    try {
-        let refractOutput = drafter.parse(text);
-        let annotations = lodash.filterContent(refractOutput, {element: 'annotations'});
 
-        lodash.forEach(annotations, (annotation) => {
-            diagnostics.push({
-                severity: DiagnosticSeverity.Warning,
-                range: {
-                    start: { line: 2, character: 0},
-                    end: { line: 2, character: 0 + 10 }
-                },
-                message: annotation.content,
-                source: 'ex'
-            });
-        })
+    try {
+      let refractOutput = drafter.parse(text);
+      let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
+
+      lodash.forEach(annotations, (annotation) => {
+          diagnostics.push({
+              severity: DiagnosticSeverity.Warning,
+              range: {
+                  start: { line: 2, character: 0},
+                  end: { line: 2, character: 0 + 10 }
+              },
+              message: annotation.content,
+              source: 'ex'
+          });
+      });
     } catch(err) {
         diagnostics.push({
             severity: DiagnosticSeverity.Warning,
@@ -116,7 +116,7 @@ connection.onDidChangeWatchedFiles((change) => {
 
 // This handler provides the initial list of the completion items.
 connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-  // The pass parameter contains the position of the text document in 
+  // The pass parameter contains the position of the text document in
   // which code complete got requested. For the example we ignore this
   // info and always provide the same completion items.
   return [
@@ -137,10 +137,10 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
 // the completion list.
 connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
   if (item.data === 1) {
-    item.detail = 'TypeScript details',
+    item.detail = 'Piedini fetosini',
     item.documentation = 'TypeScript documentation'
   } else if (item.data === 2) {
-    item.detail = 'JavaScript details',
+    item.detail = 'Nasino pariosino',
     item.documentation = 'JavaScript documentation'
   }
   return item;

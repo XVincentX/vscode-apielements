@@ -19,7 +19,7 @@
     "typescript": "^1.8.9"
   },
   "scripts": {
-    "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
-    "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch -p ."
+    "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc",
+    "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch"
   }
 }
