@@ -76,36 +76,45 @@ function validateTextDocument(textDocument: TextDocument): void {
   let diagnostics: Diagnostic[] = [];
   let text = textDocument.getText();
 
-    try {
-      let refractOutput = drafter.parse(text);
-      let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
+  try {
 
-      lodash.forEach(annotations, (annotation) => {
-          diagnostics.push({
-              severity: DiagnosticSeverity.Warning,
-              range: {
-                  start: { line: 2, character: 0},
-                  end: { line: 2, character: 0 + 10 }
-              },
-              message: annotation.content,
-              source: 'ex'
-          });
+    let refractOutput = drafter.parse(text);
+    let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
+
+    lodash.forEach(annotations, (annotation) => {
+      let errorLine = text
+                  .substring(annotation.attributes.sourceMap.content[0][0])
+                  .split(/\r?\n/g)[0];
+
+      let lineNumber = lodash.findIndex(text.split(/\r?\n/g), (line) => {line.IndexOf(errorLine) > -1});
+
+
+      diagnostics.push({
+        severity: ((annotation.classes[0] === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
+        code: annotation.attributes.code,
+        range: {
+          start: { line: lineNumber, character: 0},
+          end: { line: lineNumber, character: 0 + annotation.attributes.sourceMap.content[0][0] }
+        },
+        message: annotation.content,
+        source: 'drafter.js'
       });
-    } catch(err) {
-        diagnostics.push({
-            severity: DiagnosticSeverity.Warning,
-            range: {
-                start: { line: 1, character: 0},
-                end: { line: 1, character: 0 + 10 }
-            },
-            message: JSON.stringify(err),
-            source: 'ex'
-        });
-    }
-    finally {
-        // Send the computed diagnostics to VSCode.
-        connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-    }
+    });
+  } catch(err) {
+    diagnostics.push({
+      severity: DiagnosticSeverity.Error,
+      range: {
+        start: { line: 1, character: 0},
+        end: { line: 1, character: 0 }
+      },
+      message: err.message,
+      source: 'drafter.js'
+    });
+  }
+  finally {
+    // Send the computed diagnostics to VSCode.
+    connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+  }
 }
 
 connection.onDidChangeWatchedFiles((change) => {
