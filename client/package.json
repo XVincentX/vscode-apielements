@@ -30,6 +30,9 @@
     "languages": [
       {
         "id": "APIBlueprint"
+      },
+      {
+        "id": "MSON"
       }
     ],
     "grammars": [
@@ -37,7 +40,13 @@
         "language": "APIBlueprint",
         "scopeName": "source.apib",
         "path": "./syntaxes/APIBlueprint.tmLanguage"
+      },
+      {
+        "language": "MSON",
+        "scopeName": "source.mson",
+        "path": "./syntaxes/MSON.tmLanguage"
       }
+
     ]
   },
   "scripts": {
