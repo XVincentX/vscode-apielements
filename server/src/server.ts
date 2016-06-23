@@ -83,18 +83,18 @@ function validateTextDocument(textDocument: TextDocument): void {
 
     lodash.forEach(annotations, (annotation) => {
       let errorLine = text
-                  .substring(annotation.attributes.sourceMap.content[0][0])
+                  .substring(annotation.attributes.sourceMap[0].content[0][0])
                   .split(/\r?\n/g)[0];
 
-      let lineNumber = lodash.findIndex(text.split(/\r?\n/g), (line) => {line.IndexOf(errorLine) > -1});
-
+      //let lineNumber = lodash.findIndex(text.split(/\r?\n/g), (line) => {line.indexOf(errorLine) > -1});
+      const lineNumber = 0;
 
       diagnostics.push({
-        severity: ((annotation.classes[0] === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
+        severity: ((annotation.meta.classes[0] === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
         code: annotation.attributes.code,
         range: {
           start: { line: lineNumber, character: 0},
-          end: { line: lineNumber, character: 0 + annotation.attributes.sourceMap.content[0][0] }
+          end: { line: lineNumber, character: 1 }
         },
         message: annotation.content,
         source: 'drafter.js'
