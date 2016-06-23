@@ -81,20 +81,30 @@ function validateTextDocument(textDocument: TextDocument): void {
     let refractOutput = drafter.parse(text);
     let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
 
-    lodash.forEach(annotations, (annotation) => {
-      let errorLine = text
-                  .substring(annotation.attributes.sourceMap[0].content[0][0])
-                  .split(/\r?\n/g)[0];
+    let documentLines = text.split(/\r?\n/g);
 
-      //let lineNumber = lodash.findIndex(text.split(/\r?\n/g), (line) => {line.indexOf(errorLine) > -1});
-      const lineNumber = 0;
+    lodash.forEach(annotations, (annotation) => {
+
+      const sourceMap = lodash.map(lodash.first(annotation.attributes.sourceMap), (sm) => {
+        return {
+          charIndex: lodash.head(sm.content),
+          charCount: lodash.last(sm.content)
+        }
+      });
+
+      const sm = lodash.head(sourceMap);
+
+      const errorLine = lodash.head(text.substring(sm.charIndex).split('/\r?\n/g'));
+      const errorRow = lodash.findIndex(documentLines, (line) =>
+          line.indexOf(errorLine) > -1
+      );
 
       diagnostics.push({
-        severity: ((annotation.meta.classes[0] === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
+        severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
         code: annotation.attributes.code,
         range: {
-          start: { line: lineNumber, character: 0},
-          end: { line: lineNumber, character: 1 }
+          start: { line: errorRow, character: 0},
+          end: { line: errorRow, character: 1 }
         },
         message: annotation.content,
         source: 'drafter.js'
