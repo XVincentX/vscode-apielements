@@ -87,8 +87,8 @@ function validateTextDocument(textDocument: TextDocument): void {
 
       const sourceMap = lodash.map(lodash.first(annotation.attributes.sourceMap), (sm) => {
         return {
-          charIndex: lodash.head(sm.content),
-          charCount: lodash.last(sm.content)
+          charIndex: lodash.head(lodash.head(sm.content)),
+          charCount: lodash.last(lodash.head(sm.content))
         }
       });
 
