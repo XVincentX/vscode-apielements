@@ -38,12 +38,12 @@
     "grammars": [
       {
         "language": "APIBlueprint",
-        "scopeName": "source.apib",
+        "scopeName": "text.html.markdown.source.gfm.apib",
         "path": "./syntaxes/APIBlueprint.tmLanguage"
       },
       {
         "language": "MSON",
-        "scopeName": "source.mson",
+        "scopeName": "text.html.markdown.source.gfm.mson",
         "path": "./syntaxes/MSON.tmLanguage"
       }
 
