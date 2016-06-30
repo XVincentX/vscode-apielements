@@ -99,12 +99,14 @@ function validateTextDocument(textDocument: TextDocument): void {
           line.indexOf(errorLine) > -1
       );
 
+      const startIndex = documentLines[errorRow].indexOf(errorLine);
+
       diagnostics.push({
         severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
         code: annotation.attributes.code,
         range: {
-          start: { line: errorRow, character: 0},
-          end: { line: errorRow, character: 1 }
+          start: { line: errorRow, character: startIndex},
+          end: { line: errorRow, character: startIndex + sm.charCount }
         },
         message: annotation.content,
         source: 'drafter.js'
