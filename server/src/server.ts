@@ -85,16 +85,16 @@ function validateTextDocument(textDocument: TextDocument): void {
 
     lodash.forEach(annotations, (annotation) => {
 
-      const sourceMap = lodash.map(lodash.first(annotation.attributes.sourceMap), (sm) => {
+      const sourceMap = lodash.map(lodash.first(annotation.attributes.sourceMap).content, (sm) => {
         return {
-          charIndex: lodash.head(lodash.head(sm.content)),
-          charCount: lodash.last(lodash.head(sm.content))
+          charIndex: lodash.head(sm),
+          charCount: lodash.last(sm)
         }
       });
 
       const sm = lodash.head(sourceMap);
 
-      const errorLine = lodash.head(text.substring(sm.charIndex).split('/\r?\n/g'));
+      const errorLine = lodash.head(text.substring(sm.charIndex).split(/\r?\n/g));
       const errorRow = lodash.findIndex(documentLines, (line) =>
           line.indexOf(errorLine) > -1
       );
@@ -145,7 +145,7 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
       data: 1
     },
     {
-      label: 'JavaScript',
+      label: 'JavaNasino',
       kind: CompletionItemKind.Text,
       data: 2
     }
@@ -157,7 +157,7 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
 connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
   if (item.data === 1) {
     item.detail = 'Piedini fetosini',
-    item.documentation = 'TypeScript documentation'
+    item.documentation = 'TypeNasino documentation'
   } else if (item.data === 2) {
     item.detail = 'Nasino pariosino',
     item.documentation = 'JavaScript documentation'
