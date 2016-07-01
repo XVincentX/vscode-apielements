@@ -12,7 +12,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:plaintext"
+    "onLanguage:APIBlueprint"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -29,10 +29,17 @@
     },
     "languages": [
       {
-        "id": "APIBlueprint"
+        "id": "APIBlueprint",
+        "extensions": [
+          ".apib",
+          ".apiblueprint"
+        ]
       },
       {
-        "id": "MSON"
+        "id": "MSON",
+        "extensions": [
+          ".mson"
+        ]
       }
     ],
     "grammars": [

@@ -15,6 +15,7 @@ import {
 let lodash = require('lodash');
 let apiDescriptionMixins = require('lodash-api-description');
 let drafter = require('drafter.js');
+let refractOutput = undefined;
 apiDescriptionMixins(lodash);
 
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
@@ -61,7 +62,7 @@ function validateTextDocument(textDocument: TextDocument): void {
 
   try {
 
-    let refractOutput = drafter.parse(text);
+    refractOutput = drafter.parse(text);
     let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
 
     let documentLines = text.split(/\r?\n/g);
@@ -116,9 +117,16 @@ connection.onDidChangeWatchedFiles((change) => {
 });
 
 connection.onDocumentSymbol((symbolParam) => {
-  let a = SymbolInformation.create("Nasino", SymbolKind.Property, Range.create(1,1,1,1), "", "");
+  let cat = lodash.head(lodash.filterContent(refractOutput, {element: 'category'}));
+  let cat2 = lodash.filterContent(cat, {element: 'category'});
 
-  return Promise.resolve<SymbolInformation[]>([a]);
+  let resources = lodash.map(cat2, (ct2) => {return lodash.resources(ct2)});
+
+  const symbolArray = lodash.map(lodash.flatten(resources), (resource) => {
+    return SymbolInformation.create(resource.meta.title, SymbolKind.Property, Range.create(1,1,1,1), "", "");
+  });
+
+  return Promise.resolve<SymbolInformation[]>(symbolArray);
 });
 
 connection.listen();
