@@ -41,17 +41,17 @@ documents.onDidChangeContent((change) => {
 });
 
 interface Settings {
-  languageServerExample: ExampleSettings;
+  apielements: ApiElementsSettings;
 }
 
-interface ExampleSettings {
-  maxNumberOfProblems: number;
+interface ApiElementsSettings {
+  requireBlueprintName: boolean;
 }
 
-let maxNumberOfProblems: number;
+let requireBlueprintName: boolean;
 connection.onDidChangeConfiguration((change) => {
   let settings = <Settings>change.settings;
-  maxNumberOfProblems = settings.languageServerExample.maxNumberOfProblems || 100;
+  requireBlueprintName = settings.apielements.requireBlueprintName || true;
   // Revalidate any open text documents
   documents.all().forEach(validateTextDocument);
 });
@@ -62,7 +62,7 @@ function validateTextDocument(textDocument: TextDocument): void {
 
   try {
 
-    refractOutput = drafter.parse(text);
+    refractOutput = drafter.parse(text, {exportSourcemap: true, requireBlueprintName: requireBlueprintName});
     let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
 
     let documentLines = text.split(/\r?\n/g);
