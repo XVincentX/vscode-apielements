@@ -1,9 +1,9 @@
 {
-  "name": "language-client-example",
-  "description": "VSCode part of a language server",
-  "author": "Microsoft Corporation",
+  "name": "vscode-apielements",
+  "description": "VSCode client for APIElements",
+  "author": "Vincenzo Chianese",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "publisher": "vscode",
   "engines": {
     "vscode": "^0.10.10"

@@ -14,7 +14,7 @@ import {
 
 let lodash = require('lodash');
 let apiDescriptionMixins = require('lodash-api-description');
-let drafter = require('drafter.js');
+let parser = require('drafter.js');
 let refractOutput = undefined;
 apiDescriptionMixins(lodash);
 
@@ -62,7 +62,7 @@ function validateTextDocument(textDocument: TextDocument): void {
 
   try {
 
-    refractOutput = drafter.parse(text, {exportSourcemap: true, requireBlueprintName: requireBlueprintName});
+    refractOutput = parser.parse(text, {exportSourcemap: true, requireBlueprintName: requireBlueprintName});
     let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
 
     let documentLines = text.split(/\r?\n/g);
@@ -93,7 +93,7 @@ function validateTextDocument(textDocument: TextDocument): void {
           end: { line: errorRow, character: startIndex + sm.charCount }
         },
         message: annotation.content,
-        source: 'drafter.js'
+        source: "drafter.js"
       });
     });
   } catch(err) {
@@ -104,7 +104,7 @@ function validateTextDocument(textDocument: TextDocument): void {
         end: { line: 1, character: 0 }
       },
       message: err.message,
-      source: 'drafter.js'
+      source: "drafter.js"
     });
   }
   finally {

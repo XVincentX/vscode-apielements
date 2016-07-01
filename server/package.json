@@ -1,8 +1,8 @@
 {
-  "name": "langauge-server-example",
-  "description": "Example implementation of a language server in node.",
-  "version": "0.0.1",
-  "author": "Microsoft Corporation",
+  "name": "vscode-apielements",
+  "description": "VSCode language server for ApiElements",
+  "version": "1.0.0",
+  "author": "Vincenzo Chianese",
   "license": "MIT",
   "engines": {
     "node": "*"
