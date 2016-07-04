@@ -3,7 +3,7 @@
   "description": "VSCode client for APIElements",
   "author": "Vincenzo Chianese",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "publisher": "vscode",
   "engines": {
     "vscode": "^0.10.10"

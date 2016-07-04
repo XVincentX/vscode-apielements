@@ -2,6 +2,8 @@
 
 VSCode extensions for API Elements.
 
+![nasino](ezgif.com-optimize.gif)
+
 ### This is a work in progress.
 
 #### Ideas
