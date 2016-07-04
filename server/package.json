@@ -1,7 +1,7 @@
 {
   "name": "vscode-apielements",
   "description": "VSCode language server for ApiElements",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Vincenzo Chianese",
   "license": "MIT",
   "engines": {
@@ -9,8 +9,6 @@
   },
   "dependencies": {
     "drafter.js": "^2.3.1",
-    "fury": "^2.1.0",
-    "fury-adapter-swagger": "^0.8.0-pre.16",
     "lodash": "^4.13.1",
     "lodash-api-description": "0.0.2",
     "vscode-languageserver": "^2.2.0"
