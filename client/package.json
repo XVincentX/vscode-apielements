@@ -1,84 +1,88 @@
 {
-    "name": "vscode-apielements",
-    "displayName": "API Elements extension",
-    "description": "VSCode client for APIElements",
-    "author": "Vincenzo Chianese",
-    "license": "MIT",
-    "version": "0.0.2",
-    "preview": true,
-    "icon": "logo.png",
-    "bugs": {
-        "url": "https://github.com/XVincentX/vscode-apielements/issues"
+  "name": "vscode-apielements",
+  "displayName": "API Elements extension",
+  "description": "VSCode client for APIElements",
+  "author": "Vincenzo Chianese",
+  "license": "MIT",
+  "version": "0.0.3",
+  "preview": true,
+  "icon": "logo.png",
+  "bugs": {
+    "url": "https://github.com/XVincentX/vscode-apielements/issues"
+  },
+  "homepage": "https://github.com/XVincentX/vscode-apielements/blob/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/XVincentX/vscode-apielements.git"
+  },
+  "publisher": "vncz",
+  "engines": {
+    "vscode": "^0.10.10"
+  },
+  "categories": [
+    "Languages",
+    "Linters"
+  ],
+  "keywords": [
+    "apiblueprint",
+    "swagger",
+    "mson",
+    "apielements"
+  ],
+  "activationEvents": [
+    "onLanguage:APIBlueprint"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "API Elements parser configuration",
+      "properties": {
+        "apielements.requireBlueprintName": {
+          "type": "boolean",
+          "default": true,
+          "description": "Set to generate an error if the blueprint is missing a title."
+        }
+      }
     },
-    "homepage": "https://github.com/XVincentX/vscode-apielements/blob/master/README.md",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/XVincentX/vscode-apielements.git"
-    },
-    "publisher": "vncz",
-    "engines": {
-        "vscode": "^0.10.10"
-    },
-    "categories": [
-        "Languages", "Linters"
-    ],
-    "keywords": [
-      "apiblueprint", "swagger", "mson", "apielements"
-    ],
-    "activationEvents": [
-        "onLanguage:APIBlueprint"
-    ],
-    "main": "./out/src/extension",
-    "contributes": {
-        "configuration": {
-            "type": "object",
-            "title": "API Elements parser configuration",
-            "properties": {
-                "apielements.requireBlueprintName": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Set to generate an error if the blueprint is missing a title."
-                }
-            }
-        },
-        "languages": [
-            {
-                "id": "APIBlueprint",
-                "extensions": [
-                    ".apib",
-                    ".apiblueprint"
-                ]
-            },
-            {
-                "id": "MSON",
-                "extensions": [
-                    ".mson"
-                ]
-            }
-        ],
-        "grammars": [
-            {
-                "language": "APIBlueprint",
-                "scopeName": "text.html.markdown.source.gfm.apib",
-                "path": "./syntaxes/APIBlueprint.tmLanguage"
-            },
-            {
-                "language": "MSON",
-                "scopeName": "text.html.markdown.source.gfm.mson",
-                "path": "./syntaxes/MSON.tmLanguage"
-            }
+    "languages": [
+      {
+        "id": "APIBlueprint",
+        "extensions": [
+          ".apib",
+          ".apiblueprint"
         ]
-    },
-    "scripts": {
-        "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
-        "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install"
-    },
-    "devDependencies": {
-        "typescript": "^1.8.9",
-        "vscode": "^0.11.0"
-    },
-    "dependencies": {
-        "vscode-languageclient": "^2.2.1"
-    }
+      },
+      {
+        "id": "MSON",
+        "extensions": [
+          ".mson"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "APIBlueprint",
+        "scopeName": "text.html.markdown.source.gfm.apib",
+        "path": "./syntaxes/APIBlueprint.tmLanguage"
+      },
+      {
+        "language": "MSON",
+        "scopeName": "text.html.markdown.source.gfm.mson",
+        "path": "./syntaxes/MSON.tmLanguage"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "devDependencies": {
+    "typescript": "^1.8.9",
+    "vscode": "^0.11.0"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^2.2.1"
+  }
 }
