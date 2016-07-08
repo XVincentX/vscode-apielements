@@ -1,7 +1,3 @@
-/* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- * ------------------------------------------------------------------------------------------ */
 'use strict';
 
 import {
@@ -45,13 +41,21 @@ interface Settings {
 }
 
 interface ApiElementsSettings {
+  exportSourcemap: boolean;
+  json: boolean;
   requireBlueprintName: boolean;
-}
+  type: string;
+};
 
-let requireBlueprintName: boolean;
+let currentSettings : ApiElementsSettings;
+
 connection.onDidChangeConfiguration((change) => {
-  let settings = <Settings>change.settings;
-  requireBlueprintName = settings.apielements.requireBlueprintName || true;
+  currentSettings = lodash.defaults({
+    exportSourcemap: true,
+    json: false,
+    requireBlueprintName: false,
+    type: 'refract'
+  }, change.settings);
   // Revalidate any open text documents
   documents.all().forEach(validateTextDocument);
 });
@@ -62,7 +66,7 @@ function validateTextDocument(textDocument: TextDocument): void {
 
   try {
 
-    refractOutput = parser.parse(text, {exportSourcemap: true, requireBlueprintName: requireBlueprintName});
+    refractOutput = parser.parse(text, currentSettings);
     let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
 
     let documentLines = text.split(/\r?\n/g);
