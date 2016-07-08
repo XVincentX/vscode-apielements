@@ -4,8 +4,7 @@ import {
   IPCMessageReader, IPCMessageWriter, ServerCapabilities, SymbolKind, Range,
   createConnection, IConnection, TextDocumentSyncKind,
   TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
-  InitializeParams, InitializeResult, TextDocumentPositionParams,
-  CompletionItem, CompletionItemKind, SymbolInformation
+  InitializeResult, SymbolInformation
 } from 'vscode-languageserver';
 
 let lodash = require('lodash');
