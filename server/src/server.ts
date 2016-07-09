@@ -7,6 +7,8 @@ import {
   InitializeResult, SymbolInformation
 } from 'vscode-languageserver';
 
+import * as refractUtils from './refractUtils';
+
 let lodash = require('lodash');
 let apiDescriptionMixins = require('lodash-api-description');
 let parser = require('drafter.js');
@@ -71,30 +73,12 @@ function validateTextDocument(textDocument: TextDocument): void {
     let documentLines = text.split(/\r?\n/g);
 
     lodash.forEach(annotations, (annotation) => {
-
-      const sourceMap = lodash.map(lodash.first(annotation.attributes.sourceMap).content, (sm) => {
-        return {
-          charIndex: lodash.head(sm),
-          charCount: lodash.last(sm)
-        }
-      });
-
-      const sm = lodash.head(sourceMap);
-
-      const errorLine = lodash.head(text.substring(sm.charIndex).split(/\r?\n/g));
-      const errorRow = lodash.findIndex(documentLines, (line) =>
-          line.indexOf(errorLine) > -1
-      );
-
-      const startIndex = documentLines[errorRow].indexOf(errorLine);
+      const lineReference = refractUtils.createLineReferenceFromSourceMap(annotation.attributes.sourceMap, text, documentLines);
 
       diagnostics.push({
         severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
         code: annotation.attributes.code,
-        range: {
-          start: { line: errorRow, character: startIndex},
-          end: { line: errorRow, character: startIndex + sm.charCount }
-        },
+        range: Range.create(lineReference.errorRow, lineReference.startIndex, lineReference.errorRow, lineReference.startIndex + lineReference.charCount),
         message: annotation.content,
         source: "drafter.js"
       });
@@ -115,21 +99,35 @@ function validateTextDocument(textDocument: TextDocument): void {
   }
 }
 
-connection.onDidChangeWatchedFiles((change) => {
-  connection.console.log('We recevied an file change event');
-});
-
 connection.onDocumentSymbol((symbolParam) => {
-  let cat = lodash.head(lodash.filterContent(refractOutput, {element: 'category'}));
-  let cat2 = lodash.filterContent(cat, {element: 'category'});
+  if (currentSettings.exportSourcemap === false) {
+    return Promise.resolve([]); // I cannot let you navigate if I have no source map.
+  }
+
+  let symbolArray : SymbolInformation[];
+
+  let mainCategory = lodash.head(lodash.filterContent(refractOutput, {element: 'category'}));
+
+  // The first category should always have at least a title.
+  const title = lodash.get(mainCategory, 'meta.title');
+  if (typeof(title) !== 'undefined') {
+    symbolArray.push(SymbolInformation.create(
+      title.content,
+      SymbolKind.Package,
+      Range.create(1,1,1,1)
+      )
+    );
+  }
+
+  let cat2 = lodash.filterContent(mainCategory, {element: 'category'});
 
   let resources = lodash.map(cat2, (ct2) => {return lodash.resources(ct2)});
 
-  const symbolArray = lodash.map(lodash.flatten(resources), (resource) => {
+  symbolArray = lodash.map(lodash.flatten(resources), (resource) => {
     return SymbolInformation.create(resource.meta.title, SymbolKind.Property, Range.create(1,1,1,1), "", "");
   });
 
-  return Promise.resolve<SymbolInformation[]>(symbolArray);
+  return Promise.resolve(symbolArray);
 });
 
 connection.listen();
