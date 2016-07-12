@@ -106,15 +106,19 @@ connection.onDocumentSymbol((symbolParam) => {
 
   let symbolArray : SymbolInformation[];
 
+  const textDocument = documents.get(symbolParam.textDocument.uri);
+  const documentLines = textDocument.getText().split(/\r?\n/g);
+
   let mainCategory = lodash.head(lodash.filterContent(refractOutput, {element: 'category'}));
 
   // The first category should always have at least a title.
   const title = lodash.get(mainCategory, 'meta.title');
   if (typeof(title) !== 'undefined') {
+    const lineReference = refractUtils.createLineReferenceFromSourceMap(title.attributes.sourceMap, symbolParam.textDocument, documentLines);
     symbolArray.push(SymbolInformation.create(
       title.content,
       SymbolKind.Package,
-      Range.create(1,1,1,1)
+      Range.create(lineReference.errorRow, lineReference.startIndex, lineReference.errorRow, lineReference.startIndex + lineReference.charCount)
       )
     );
   }

@@ -21,6 +21,6 @@ export function createLineReferenceFromSourceMap(sourceMap, document, documentLi
   return {
     errorRow: errorRow,
     startIndex: startIndex,
-    charCount: x.charCount
+    charCount: sm.charCount
   };
 }
