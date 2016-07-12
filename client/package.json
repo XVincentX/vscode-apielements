@@ -40,8 +40,18 @@
       "properties": {
         "apielements.requireBlueprintName": {
           "type": "boolean",
+          "default": false,
+          "description": "Set to true generate an error if the blueprint is missing a title."
+        },
+        "apielements.json": {
+          "type": "boolean",
           "default": true,
-          "description": "Set to generate an error if the blueprint is missing a title."
+          "description": "Set to true to return raw json as parse result"
+        },
+        "apielements.exportSourcemap": {
+          "type": "boolean",
+          "default": true,
+          "description": "Set to true to generate sourcemap for current document."
         }
       }
     },
