@@ -55,7 +55,7 @@ interface ParserSettings {
 let currentSettings : ApiElementsSettings;
 
 connection.onDidChangeConfiguration((change) => {
-  currentSettings = lodash.cloneDeep(change.settings);
+  currentSettings = lodash.cloneDeep(change.settings.apiElements);
   // Revalidate any open text documents
   documents.all().forEach(validateTextDocument);
 });
@@ -103,7 +103,7 @@ connection.onDocumentSymbol((symbolParam) => {
     return Promise.resolve([]); // I cannot let you navigate if I have no source map.
   }
 
-  let symbolArray : SymbolInformation[];
+  let symbolArray : SymbolInformation[] = [] ;
 
   const textDocument = documents.get(symbolParam.textDocument.uri);
   const documentLines = textDocument.getText().split(/\r?\n/g);
@@ -113,7 +113,7 @@ connection.onDocumentSymbol((symbolParam) => {
   // The first category should always have at least a title.
   const title = lodash.get(mainCategory, 'meta.title');
   if (typeof(title) !== 'undefined') {
-    const lineReference = refractUtils.createLineReferenceFromSourceMap(title.attributes.sourceMap, symbolParam.textDocument, documentLines);
+    const lineReference = refractUtils.createLineReferenceFromSourceMap(title.attributes.sourceMap, textDocument.getText(), documentLines);
     symbolArray.push(SymbolInformation.create(
       title.content,
       SymbolKind.Package,
@@ -121,14 +121,6 @@ connection.onDocumentSymbol((symbolParam) => {
       )
     );
   }
-
-  let cat2 = lodash.filterContent(mainCategory, {element: 'category'});
-
-  let resources = lodash.map(cat2, (ct2) => {return lodash.resources(ct2)});
-
-  symbolArray = lodash.map(lodash.flatten(resources), (resource) => {
-    return SymbolInformation.create(resource.meta.title, SymbolKind.Property, Range.create(1,1,1,1), "", "");
-  });
 
   return Promise.resolve(symbolArray);
 });

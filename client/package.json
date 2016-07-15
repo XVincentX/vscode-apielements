@@ -38,17 +38,17 @@
       "type": "object",
       "title": "API Elements parser configuration",
       "properties": {
-        "apielements.parser.requireBlueprintName": {
+        "apiElements.parser.requireBlueprintName": {
           "type": "boolean",
           "default": false,
           "description": "Set to true generate an error if the blueprint is missing a title."
         },
-        "apielements.parser.json": {
+        "apiElements.parser.json": {
           "type": "boolean",
           "default": true,
           "description": "Set to true to return raw json as parse result"
         },
-        "apielements.parser.exportSourcemap": {
+        "apiElements.parser.exportSourcemap": {
           "type": "boolean",
           "default": true,
           "description": "Set to true to generate sourcemap for current document."
