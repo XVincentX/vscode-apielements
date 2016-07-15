@@ -38,10 +38,14 @@ documents.onDidChangeContent((change) => {
 });
 
 interface Settings {
-  apielements: ApiElementsSettings;
-}
+  apiElements: ApiElementsSettings;
+};
 
 interface ApiElementsSettings {
+  parser: ParserSettings;
+};
+
+interface ParserSettings {
   exportSourcemap: boolean;
   json: boolean;
   requireBlueprintName: boolean;
@@ -51,12 +55,7 @@ interface ApiElementsSettings {
 let currentSettings : ApiElementsSettings;
 
 connection.onDidChangeConfiguration((change) => {
-  currentSettings = lodash.defaults({
-    exportSourcemap: true,
-    json: false,
-    requireBlueprintName: false,
-    type: 'refract'
-  }, change.settings);
+  currentSettings = lodash.cloneDeep(change.settings);
   // Revalidate any open text documents
   documents.all().forEach(validateTextDocument);
 });
@@ -67,7 +66,7 @@ function validateTextDocument(textDocument: TextDocument): void {
 
   try {
 
-    refractOutput = parser.parse(text, currentSettings);
+    refractOutput = parser.parse(text, currentSettings.parser);
     let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
 
     let documentLines = text.split(/\r?\n/g);
@@ -100,7 +99,7 @@ function validateTextDocument(textDocument: TextDocument): void {
 }
 
 connection.onDocumentSymbol((symbolParam) => {
-  if (currentSettings.exportSourcemap === false) {
+  if (currentSettings.parser.exportSourcemap === false) {
     return Promise.resolve([]); // I cannot let you navigate if I have no source map.
   }
 
