@@ -11,16 +11,23 @@ export function createLineReferenceFromSourceMap(sourceMap, document, documentLi
 
   const sm = lodash.head(x);
 
-  const errorLine = lodash.head(document.substring(sourceMap.charIndex).split(/\r?\n/g));
-  const errorRow = lodash.findIndex(documentLines, (line) =>
-      line.indexOf(errorLine) > -1
-  );
+  const startRowBreak = lodash.head(document.substring(sm.charIndex).split(/\r?\n/g));
+  const endRowBreak = lodash.head(document.substring(sm.charIndex + sm.charCount).split(/\r?\n/g));
 
-  const startIndex = documentLines[errorRow].indexOf(errorLine);
+  const startRow = lodash.findIndex(documentLines, (line) => line.indexOf(startRowBreak) > -1);
+  const endRow = lodash.findIndex(documentLines, (line) => line.indexOf(endRowBreak) > -1);
+
+  const startIndex = documentLines[startRow].indexOf(startRowBreak);
+
+  let endIndex = documentLines[endRow].indexOf(endRowBreak);
+
+  if (startRow === endRow)
+    endIndex = sm.charCount;
 
   return {
-    errorRow: errorRow,
+    startRow: startRow,
+    endRow: endRow,
     startIndex: startIndex,
-    charCount: sm.charCount
+    endIndex: endIndex
   };
 }

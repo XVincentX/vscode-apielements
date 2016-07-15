@@ -77,7 +77,12 @@ function validateTextDocument(textDocument: TextDocument): void {
       diagnostics.push({
         severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
         code: annotation.attributes.code,
-        range: Range.create(lineReference.errorRow, lineReference.startIndex, lineReference.errorRow, lineReference.startIndex + lineReference.charCount),
+        range: Range.create(
+          lineReference.startIndex,
+          lineReference.startIndex,
+          lineReference.endIndex,
+          lineReference.endIndex
+        ),
         message: annotation.content,
         source: "drafter.js"
       });
@@ -117,9 +122,13 @@ connection.onDocumentSymbol((symbolParam) => {
     symbolArray.push(SymbolInformation.create(
       title.content,
       SymbolKind.Package,
-      Range.create(lineReference.errorRow, lineReference.startIndex, lineReference.errorRow, lineReference.startIndex + lineReference.charCount)
+      Range.create(
+        lineReference.startRow,
+        lineReference.startIndex,
+        lineReference.endRow,
+        lineReference.endIndex
       )
-    );
+    ));
   }
 
   return Promise.resolve(symbolArray);
