@@ -133,28 +133,30 @@ connection.onDocumentSymbol((symbolParam) => {
 
 
   [{
+    query: {
     "element": "category",
       "meta": {
         "classes": [
           "resourceGroup",
         ],
       },
-    }, {
-      "element": "resource"
-    }
-  ].forEach((query) => {
+    },
+    symbolType: SymbolKind.Namespace
+  }, {
+      query: {"element": "resource"},
+      symbolType: SymbolKind.Method
+  }
+  ].forEach(({query, symbolType}) => {
     const queryResults = refractUtils.query(refractOutput, query);
 
     symbolArray.push(...lodash.map(queryResults, (queryResult) => {
       let sourceMap = lodash.get(queryResult, 'attributes.sourceMap',
         lodash.get(queryResult, 'meta.title.attributes.sourceMap',
-          lodash.get(queryResult, 'attributes.href.attributes.sourceMap'
+          lodash.get(queryResult, 'attributes.href.attributes.sourceMap',
+            lodash.get(queryResult, 'content[0].attributes.method.attributes.sourceMap')
           )
         )
       );
-
-      if (typeof sourceMap === 'undefined')
-        return null;
 
       const lineReference = refractUtils.createLineReferenceFromSourceMap(
       sourceMap,
@@ -163,8 +165,8 @@ connection.onDocumentSymbol((symbolParam) => {
     );
 
       return SymbolInformation.create(
-            lodash.get(queryResult, 'meta.title.content', lodash.get(queryResult, 'meta.title', 'I have no idea')),
-            SymbolKind.Package,
+            lodash.get(queryResult, 'meta.title.content', lodash.get(queryResult, 'meta.title', lodash.get(queryResult, 'content[0].attributes.content'))),
+            symbolType,
             Range.create(
               lineReference.startRow,
               lineReference.startIndex,
