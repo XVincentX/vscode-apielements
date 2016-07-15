@@ -131,6 +131,50 @@ connection.onDocumentSymbol((symbolParam) => {
     ));
   }
 
+
+  [{
+    "element": "category",
+      "meta": {
+        "classes": [
+          "resourceGroup",
+        ],
+      },
+    }, {
+      "element": "resource"
+    }
+  ].forEach((query) => {
+    const queryResults = refractUtils.query(refractOutput, query);
+
+    symbolArray.push(...lodash.map(queryResults, (queryResult) => {
+      let sourceMap = lodash.get(queryResult, 'attributes.sourceMap',
+        lodash.get(queryResult, 'meta.title.attributes.sourceMap',
+          lodash.get(queryResult, 'attributes.href.attributes.sourceMap'
+          )
+        )
+      );
+
+      if (typeof sourceMap === 'undefined')
+        return null;
+
+      const lineReference = refractUtils.createLineReferenceFromSourceMap(
+      sourceMap,
+      textDocument.getText(),
+      documentLines
+    );
+
+      return SymbolInformation.create(
+            lodash.get(queryResult, 'meta.title.content', lodash.get(queryResult, 'meta.title', 'I have no idea')),
+            SymbolKind.Package,
+            Range.create(
+              lineReference.startRow,
+              lineReference.startIndex,
+              lineReference.endRow,
+              lineReference.endIndex
+            )
+          )
+    }));
+  })
+
   return Promise.resolve(symbolArray);
 });
 

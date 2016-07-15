@@ -31,3 +31,25 @@ export function createLineReferenceFromSourceMap(sourceMap, document, documentLi
     endIndex: endIndex
   };
 }
+
+export function query(element, elementQuery) {
+  if (!element.content) {
+    return [];
+  }
+
+  if (!lodash.isArray(element.content)) {
+    return [];
+  }
+
+  const results = lodash.filter(element.content, elementQuery);
+
+  return lodash
+    .chain(element.content)
+    .map((nestedElement) => {
+      return query(nestedElement, elementQuery);
+    })
+    .flatten()
+    .concat(results)
+    .value();
+}
+
