@@ -21,7 +21,8 @@
   },
   "categories": [
     "Languages",
-    "Linters"
+    "Linters",
+    "Snippets"
   ],
   "keywords": [
     "apiblueprint",
@@ -80,6 +81,12 @@
         "language": "MSON",
         "scopeName": "text.html.markdown.source.gfm.mson",
         "path": "./syntaxes/MSON.tmLanguage"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "APIBlueprint",
+        "path": "./snippets/APIBlueprint.json"
       }
     ]
   },

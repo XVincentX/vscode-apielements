@@ -6,11 +6,10 @@
 
 import * as path from 'path';
 
-import { workspace, Disposable, ExtensionContext } from 'vscode';
+import { window, workspace, Disposable, ExtensionContext, commands } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
 
 export function activate(context: ExtensionContext) {
-
   // The server is implemented in node
   let serverModule = context.asAbsolutePath(path.join('server', 'server.js'));
   // The debug options for the server
@@ -36,9 +35,8 @@ export function activate(context: ExtensionContext) {
   }
 
   // Create the language client and start the client.
-  let disposable = new LanguageClient('Api Elements', serverOptions, clientOptions).start();
-
+  const client = new LanguageClient('Api Elements', serverOptions, clientOptions);
   // Push the disposable to the context's subscriptions so that the
   // client can be deactivated on extension deactivation
-  context.subscriptions.push(disposable);
+  context.subscriptions.push(client.start());
 }
