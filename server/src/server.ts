@@ -4,33 +4,50 @@ import {
   IPCMessageReader, IPCMessageWriter, ServerCapabilities, SymbolKind, Range,
   createConnection, IConnection, TextDocumentSyncKind,
   TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
-  InitializeResult, SymbolInformation
+  InitializeResult, SymbolInformation, Files, ResponseError, InitializeError
 } from 'vscode-languageserver';
 
 import * as refractUtils from './refractUtils';
 
 let lodash = require('lodash');
 let apiDescriptionMixins = require('lodash-api-description');
-let parser = require('drafter.js');
+
+let parser = undefined;
+let parserName = undefined;
+
 let refractOutput = undefined;
 apiDescriptionMixins(lodash);
+
+const setParser = (value, type : string) => {
+  parser = value;
+  parserName = type;
+}
 
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 let documents: TextDocuments = new TextDocuments();
 documents.listen(connection);
 
 let workspaceRoot: string;
-connection.onInitialize((params): InitializeResult => {
+connection.onInitialize((params): Thenable<InitializeResult | ResponseError<InitializeError>> => {
   workspaceRoot = params.rootPath;
 
-  let capabilities : ServerCapabilities = {
+  const capabilities : ServerCapabilities = {
       textDocumentSync: documents.syncKind,
       documentSymbolProvider: true
     }
 
-  return {
-    capabilities: capabilities
-  }
+  return Files.resolveModule(workspaceRoot, 'drafter.js').then((value) => {
+    setParser(value, 'Drafter.js');
+    return { capabilities: capabilities };
+  }, (error) => {
+    return Files.resolveModule(workspaceRoot, 'protagonist').then((value) => {
+      setParser(value, 'Protagonist');
+      return { capabilities: capabilities };
+  }, (error) => {
+      setParser(require('drafter.js'), 'Ext Drafter.js');
+      return { capabilities: capabilities };
+    });
+  });
 });
 
 documents.onDidChangeContent((change) => {
@@ -84,7 +101,7 @@ function validateTextDocument(textDocument: TextDocument): void {
           lineReference.endIndex
         ),
         message: annotation.content,
-        source: "drafter.js"
+        source: parserName
       });
     });
   } catch(err) {
@@ -95,7 +112,7 @@ function validateTextDocument(textDocument: TextDocument): void {
         end: { line: 1, character: 0 }
       },
       message: err.message,
-      source: "drafter.js"
+      source: parserName
     });
   }
   finally {
