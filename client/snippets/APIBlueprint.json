@@ -1,0 +1,13 @@
+{
+  "Basic APIBlueprint": {
+    "prefix": "basic",
+    "body": [
+      "# GET /message",
+      "",
+      "  + Response 200 (text/plain)",
+      "",
+      "        Hello World!"
+    ],
+    "description": "A minimal APIBlueprint"
+  }
+}
