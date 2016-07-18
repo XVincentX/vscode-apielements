@@ -95,9 +95,9 @@ function validateTextDocument(textDocument: TextDocument): void {
         severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
         code: annotation.attributes.code,
         range: Range.create(
+          lineReference.startRow,
           lineReference.startIndex,
-          lineReference.startIndex,
-          lineReference.endIndex,
+          lineReference.endRow,
           lineReference.endIndex
         ),
         message: annotation.content,
