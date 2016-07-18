@@ -89,7 +89,12 @@ function validateTextDocument(textDocument: TextDocument): void {
     let documentLines = text.split(/\r?\n/g);
 
     lodash.forEach(annotations, (annotation) => {
-      const lineReference = refractUtils.createLineReferenceFromSourceMap(annotation.attributes.sourceMap, text, documentLines);
+
+      const lineReference = refractUtils.createLineReferenceFromSourceMap(
+        annotation.attributes.sourceMap,
+        text,
+        documentLines
+      );
 
       diagnostics.push({
         severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
