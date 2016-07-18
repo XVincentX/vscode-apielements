@@ -167,6 +167,10 @@ connection.onDocumentSymbol((symbolParam) => {
     const queryResults = refractUtils.query(refractOutput, query);
 
     symbolArray.push(...lodash.map(queryResults, (queryResult) => {
+      /*
+        Unfortunately drafter is missing some required sourcemaps, so as a
+        temporaney solution, I have to try to lookup into multiple paths.
+      */
       let sourceMap = lodash.get(queryResult, 'attributes.sourceMap',
         lodash.get(queryResult, 'meta.title.attributes.sourceMap',
           lodash.get(queryResult, 'attributes.href.attributes.sourceMap',
