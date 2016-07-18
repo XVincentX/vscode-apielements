@@ -1,18 +1,19 @@
 const lodash = require("lodash");
 
-export function createLineReferenceFromSourceMap(sourceMap, document, documentLines) {
+export function createLineReferenceFromSourceMap(refractSourceMap, document, documentLines) {
 
-  const x = lodash.map(lodash.first(sourceMap).content, (sm) => {
+  const sourceMapArray = lodash.map(lodash.first(refractSourceMap).content, (sm) => {
     return {
       charIndex: lodash.head(sm),
       charCount: lodash.last(sm)
     }
   });
 
-  const sm = lodash.head(x);
+  // All examples I checked have always a single element so far.
+  const sourceMap = lodash.head(sourceMapArray);
 
-  const startRowBreak = lodash.head(document.substring(sm.charIndex).split(/\r?\n/g));
-  const endRowBreak = lodash.head(document.substring(sm.charIndex + sm.charCount).split(/\r?\n/g));
+  const startRowBreak = lodash.head(document.substring(sourceMap.charIndex).split(/\r?\n/g));
+  const endRowBreak = lodash.head(document.substring(sourceMap.charIndex + sourceMap.charCount).split(/\r?\n/g));
 
   const startRow = lodash.findIndex(documentLines, (line) => line.indexOf(startRowBreak) > -1);
   const endRow = lodash.findIndex(documentLines, (line) => line.indexOf(endRowBreak) > -1);
@@ -22,7 +23,7 @@ export function createLineReferenceFromSourceMap(sourceMap, document, documentLi
   let endIndex = documentLines[endRow].indexOf(endRowBreak);
 
   if (startRow === endRow)
-    endIndex = sm.charCount;
+    endIndex = sourceMap.charCount;
 
   return {
     startRow: startRow,
