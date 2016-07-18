@@ -33,6 +33,12 @@ export function createLineReferenceFromSourceMap(sourceMap, document, documentLi
 }
 
 export function query(element, elementQuery) {
+  /*
+    NOTE: THis function is a copy paste of https://github.com/apiaryio/refract-query
+    The reason for that was to change some of its behavior and update it to use
+    lodash 4. When the PR I opened in the original repo will be merged, this can
+    be safely removed.
+  */
   if (!element.content) {
     return [];
   }
