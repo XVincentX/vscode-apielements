@@ -1,11 +1,11 @@
-## [ApiElements](http://api-elements.readthedocs.io/en/latest/) for [Visual Studio Code](https://code.visualstudio.com)
+## [API Elements](http://api-elements.readthedocs.io/en/latest/) for [Visual Studio Code](https://code.visualstudio.com)
 
 Welcome to the API Elements for Visual Studio Code! This extension provides some
 nice and interesting features for people working with API Elements
 
 ### What's API Elements about?
 
-Api Elements is the [refract](https://github.com/refractproject/refract-spec#refract) namespace behind
+API Elements is the [refract](https://github.com/refractproject/refract-spec#refract) namespace behind
 [API Blueprint](https://apiblueprint.org) and [Swagger](https://swagger.io).
 
 It means this extension will improve your experience while working with those API Description formats.
