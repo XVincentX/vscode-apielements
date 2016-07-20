@@ -130,79 +130,10 @@ connection.onDocumentSymbol((symbolParam) => {
     return Promise.resolve([]); // I cannot let you navigate if I have no source map.
   }
 
-  let symbolArray : SymbolInformation[] = [] ;
-
   const textDocument = documents.get(symbolParam.textDocument.uri);
   const documentLines = textDocument.getText().split(/\r?\n/g);
 
-  let mainCategory = lodash.head(lodash.filterContent(refractOutput, {element: 'category'}));
-
-  // The first category should always have at least a title.
-  const title = lodash.get(mainCategory, 'meta.title');
-  if (typeof(title) !== 'undefined') {
-    const lineReference = refractUtils.createLineReferenceFromSourceMap(title.attributes.sourceMap, textDocument.getText(), documentLines);
-    symbolArray.push(SymbolInformation.create(
-      title.content,
-      SymbolKind.Package,
-      Range.create(
-        lineReference.startRow,
-        lineReference.startIndex,
-        lineReference.endRow,
-        lineReference.endIndex
-      )
-    ));
-  }
-
-
-  [{
-    query: {
-    "element": "category",
-      "meta": {
-        "classes": [
-          "resourceGroup",
-        ],
-      },
-    },
-    symbolType: SymbolKind.Namespace
-  }, {
-      query: {"element": "resource"},
-      symbolType: SymbolKind.Method
-  }
-  ].forEach(({query, symbolType}) => {
-    const queryResults = refractUtils.query(refractOutput, query);
-
-    symbolArray.push(...lodash.map(queryResults, (queryResult) => {
-      /*
-        Unfortunately drafter is missing some required sourcemaps, so as a
-        temporaney solution, I have to try to lookup into multiple paths.
-      */
-      let sourceMap = lodash.get(queryResult, 'attributes.sourceMap',
-        lodash.get(queryResult, 'meta.title.attributes.sourceMap',
-          lodash.get(queryResult, 'attributes.href.attributes.sourceMap',
-            lodash.get(queryResult, 'content[0].attributes.method.attributes.sourceMap')
-          )
-        )
-      );
-
-      const lineReference = refractUtils.createLineReferenceFromSourceMap(
-      sourceMap,
-      textDocument.getText(),
-      documentLines
-    );
-
-      return SymbolInformation.create(
-            lodash.get(queryResult, 'meta.title.content', lodash.get(queryResult, 'meta.title', lodash.get(queryResult, 'content[0].attributes.content'))),
-            symbolType,
-            Range.create(
-              lineReference.startRow,
-              lineReference.startIndex,
-              lineReference.endRow,
-              lineReference.endIndex
-            )
-          )
-    }));
-  })
-
+  const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument.getText(), documentLines);
   return Promise.resolve(symbolArray);
 });
 

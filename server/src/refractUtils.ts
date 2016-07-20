@@ -1,6 +1,8 @@
 const lodash = require("lodash");
 
-export function createLineReferenceFromSourceMap(refractSourceMap, document, documentLines) {
+import {SymbolInformation, Range, SymbolKind} from 'vscode-languageserver';
+
+export function createLineReferenceFromSourceMap(refractSourceMap, document : string, documentLines : string[]) {
 
   const sourceMapArray = lodash.map(lodash.first(refractSourceMap).content, (sm) => {
     return {
@@ -35,7 +37,7 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document, doc
 
 export function query(element, elementQuery) {
   /*
-    NOTE: THis function is a copy paste of https://github.com/apiaryio/refract-query
+    NOTE: This function is a copy paste of https://github.com/apiaryio/refract-query
     The reason for that was to change some of its behavior and update it to use
     lodash 4. When the PR I opened in the original repo will be merged, this can
     be safely removed.
@@ -60,3 +62,102 @@ export function query(element, elementQuery) {
     .value();
 }
 
+export function extractSymbols(element : any,
+                                document : string,
+                                documentLines: string[],
+                                refractSymbol = refractSymbolsTree,
+                                containerName: string = ""
+                              ) : SymbolInformation[] {
+
+  if (!element.content) {
+    return [];
+  }
+
+  if (!lodash.isArray(element.content)) {
+    return [];
+  }
+
+  const queryResults = query(element, refractSymbol.query);
+
+  return lodash.flatten(queryResults.map((queryResult) => {
+    const lineReference = createLineReferenceFromSourceMap(
+      lodash.get(queryResult, refractSymbol.sourceMapPath),
+      document,
+      documentLines
+    );
+
+    const description = lodash.get(queryResult, refractSymbol.descriptionPath);
+    const results = SymbolInformation.create(
+      `${refractSymbol.name} - ${description}`,
+      refractSymbol.symbol,
+      Range.create(lineReference.startRow, lineReference.startIndex, lineReference.endRow, lineReference.endIndex),
+      null,
+      containerName);
+
+      return lodash
+        .chain(refractSymbol.childs)
+        .map((child) => {
+          return extractSymbols(queryResult, document, documentLines, child, description);
+        })
+        .flatten()
+        .concat(results)
+        .value();
+
+  }));
+
+}
+
+interface RefractSymbolMap {
+  name: string,
+  symbol : SymbolKind,
+  query: any,
+  sourceMapPath: string,
+  descriptionPath: string,
+  childs: RefractSymbolMap[]
+};
+
+
+/*
+  The following structure is based on
+  http://api-elements.readthedocs.io/en/latest/overview/#relationship-of-elements.
+  This might not be the complete three, but just the elements we care about.
+*/
+
+const refractSymbolsTree : RefractSymbolMap = {
+    name: "API",
+    symbol: SymbolKind.Namespace,
+    query: {
+      "element": "category",
+        "meta": {
+          "classes": [
+            "api"
+          ]
+      }
+    },
+    sourceMapPath: "meta.title.attributes.sourceMap",
+    descriptionPath: "meta.title.content",
+    childs: [{
+      name: "Resource Group",
+      symbol: SymbolKind.Class,
+      query: {
+        "element": "category",
+        "meta": {
+          "classes": [
+            "resourceGroup"
+          ]
+        }
+      },
+      sourceMapPath: "meta.title.attributes.sourceMap",
+      descriptionPath: "meta.title.content",
+      childs: [{
+        name: "Resource",
+        symbol: SymbolKind.Method,
+        query: {
+          "element": "resource"
+        },
+        sourceMapPath: "meta.title.attributes.sourceMap",
+        descriptionPath: "meta.title.content",
+        childs: []
+      }]
+    }]
+  };
