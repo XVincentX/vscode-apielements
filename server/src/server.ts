@@ -98,18 +98,20 @@ function validateTextDocument(textDocument: TextDocument): void {
         documentLines
       );
 
-      diagnostics.push({
-        severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
-        code: annotation.attributes.code,
-        range: Range.create(
-          lineReference.startRow,
-          lineReference.startIndex,
-          lineReference.endRow,
-          lineReference.endIndex
-        ),
-        message: annotation.content,
-        source: parserName
-      });
+      if (!lodash.isEmpty(lineReference)) {
+        diagnostics.push({
+          severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
+          code: annotation.attributes.code,
+          range: Range.create(
+            lineReference.startRow,
+            lineReference.startIndex,
+            lineReference.endRow,
+            lineReference.endIndex
+          ),
+          message: annotation.content,
+          source: parserName
+        });
+      }
     });
   } catch(err) {
     connection.window.showErrorMessage(err.message);

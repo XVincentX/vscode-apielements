@@ -2,9 +2,15 @@ const lodash = require("lodash");
 
 import {SymbolInformation, Range, SymbolKind} from 'vscode-languageserver';
 
-export function createLineReferenceFromSourceMap(refractSourceMap, document : string, documentLines : string[]) {
+export function createLineReferenceFromSourceMap(refractSourceMap, document : string, documentLines : string[]) : any {
 
-  const sourceMapArray = lodash.map(lodash.first(refractSourceMap).content, (sm) => {
+  const firstSourceMap = lodash.first(refractSourceMap);
+
+  if (typeof(firstSourceMap) === 'undefined') {
+    return {};
+  }
+
+  const sourceMapArray = lodash.map(firstSourceMap.content, (sm) => {
     return {
       charIndex: lodash.head(sm),
       charCount: lodash.last(sm)
@@ -77,27 +83,34 @@ export function extractSymbols(element : any,
 
   return lodash.flatten(queryResults.map((queryResult) => {
     const lineReference = createLineReferenceFromSourceMap(
-      lodash.get(queryResult, refractSymbol.sourceMapPath),
+      lodash.get(queryResult, refractSymbol.sourceMapPath, []),
       document,
       documentLines
     );
 
-    const description = lodash.get(queryResult, refractSymbol.descriptionPath);
-    const results = SymbolInformation.create(
-      description,
-      refractSymbol.symbol,
-      Range.create(lineReference.startRow, lineReference.startIndex, lineReference.endRow, lineReference.endIndex),
-      null,
-      containerName);
+    let results = {};
+    const description = lodash.get(queryResult, refractSymbol.descriptionPath, '');
 
-      return lodash
+    const lodashChain =
+      lodash
         .chain(refractSymbol.childs)
         .map((child) => {
           return extractSymbols(queryResult, document, documentLines, child, description);
         })
         .flatten()
-        .concat(results)
-        .value();
+
+    if (!lodash.isEmpty(lineReference)) {
+      results = SymbolInformation.create(
+        description,
+        refractSymbol.symbol,
+        Range.create(lineReference.startRow, lineReference.startIndex, lineReference.endRow, lineReference.endIndex),
+        null,
+        containerName);
+
+      return lodashChain.concat(results).value();
+    }
+
+    return lodashChain.value();
 
   }));
 
