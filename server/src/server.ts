@@ -8,6 +8,7 @@ import {
 } from 'vscode-languageserver';
 
 import * as refractUtils from './refractUtils';
+import {utf16to8} from './utfUtils';
 
 let lodash = require('lodash');
 let apiDescriptionMixins = require('lodash-api-description');
@@ -86,34 +87,34 @@ function validateTextDocument(textDocument: TextDocument): void {
     refractOutput = parser.parse(text, currentSettings.parser);
     let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
 
-    let documentLines = text.split(/\r?\n/g);
+    const utf8Text = utf16to8(text);
+    const documentLines = utf8Text.split(/\r?\n/g);
 
     lodash.forEach(annotations, (annotation) => {
-      const lineReference = refractUtils.createLineReferenceFromSourceMap(annotation.attributes.sourceMap, text, documentLines);
 
-      diagnostics.push({
-        severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
-        code: annotation.attributes.code,
-        range: Range.create(
-          lineReference.startRow,
-          lineReference.startIndex,
-          lineReference.endRow,
-          lineReference.endIndex
-        ),
-        message: annotation.content,
-        source: parserName
-      });
+      const lineReference = refractUtils.createLineReferenceFromSourceMap(
+        annotation.attributes.sourceMap,
+        text,
+        documentLines
+      );
+
+      if (!lodash.isEmpty(lineReference)) {
+        diagnostics.push({
+          severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
+          code: annotation.attributes.code,
+          range: Range.create(
+            lineReference.startRow,
+            lineReference.startIndex,
+            lineReference.endRow,
+            lineReference.endIndex
+          ),
+          message: annotation.content,
+          source: parserName
+        });
+      }
     });
   } catch(err) {
-    diagnostics.push({
-      severity: DiagnosticSeverity.Error,
-      range: {
-        start: { line: 1, character: 0},
-        end: { line: 1, character: 0 }
-      },
-      message: err.message,
-      source: parserName
-    });
+    connection.window.showErrorMessage(err.message);
   }
   finally {
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
@@ -121,84 +122,26 @@ function validateTextDocument(textDocument: TextDocument): void {
 }
 
 connection.onDocumentSymbol((symbolParam) => {
-  if (currentSettings.parser.exportSourcemap === false) {
-    return Promise.resolve([]); // I cannot let you navigate if I have no source map.
-  }
+  try {
+    if (currentSettings.parser.exportSourcemap === false) {
+      connection.window.showWarningMessage("\
+        The current parser options have source maps disabled.\
+        Without those, it's not possible to generate document symbol.\
+        ");
 
-  let symbolArray : SymbolInformation[] = [] ;
+      return Promise.resolve([]); // I cannot let you navigate if I have no source map.
+    }
 
-  const textDocument = documents.get(symbolParam.textDocument.uri);
-  const documentLines = textDocument.getText().split(/\r?\n/g);
+    const textDocument = utf16to8(documents.get(symbolParam.textDocument.uri).getText());
+    const documentLines = textDocument.split(/\r?\n/g);
 
-  let mainCategory = lodash.head(lodash.filterContent(refractOutput, {element: 'category'}));
-
-  // The first category should always have at least a title.
-  const title = lodash.get(mainCategory, 'meta.title');
-  if (typeof(title) !== 'undefined') {
-    const lineReference = refractUtils.createLineReferenceFromSourceMap(title.attributes.sourceMap, textDocument.getText(), documentLines);
-    symbolArray.push(SymbolInformation.create(
-      title.content,
-      SymbolKind.Package,
-      Range.create(
-        lineReference.startRow,
-        lineReference.startIndex,
-        lineReference.endRow,
-        lineReference.endIndex
-      )
-    ));
+    const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument, documentLines);
+    return Promise.resolve(symbolArray);
+  } catch(err) {
+    connection.window.showErrorMessage(err.message);
   }
 
 
-  [{
-    query: {
-    "element": "category",
-      "meta": {
-        "classes": [
-          "resourceGroup",
-        ],
-      },
-    },
-    symbolType: SymbolKind.Namespace
-  }, {
-      query: {"element": "resource"},
-      symbolType: SymbolKind.Method
-  }
-  ].forEach(({query, symbolType}) => {
-    const queryResults = refractUtils.query(refractOutput, query);
-
-    symbolArray.push(...lodash.map(queryResults, (queryResult) => {
-      /*
-        Unfortunately drafter is missing some required sourcemaps, so as a
-        temporaney solution, I have to try to lookup into multiple paths.
-      */
-      let sourceMap = lodash.get(queryResult, 'attributes.sourceMap',
-        lodash.get(queryResult, 'meta.title.attributes.sourceMap',
-          lodash.get(queryResult, 'attributes.href.attributes.sourceMap',
-            lodash.get(queryResult, 'content[0].attributes.method.attributes.sourceMap')
-          )
-        )
-      );
-
-      const lineReference = refractUtils.createLineReferenceFromSourceMap(
-      sourceMap,
-      textDocument.getText(),
-      documentLines
-    );
-
-      return SymbolInformation.create(
-            lodash.get(queryResult, 'meta.title.content', lodash.get(queryResult, 'meta.title', lodash.get(queryResult, 'content[0].attributes.content'))),
-            symbolType,
-            Range.create(
-              lineReference.startRow,
-              lineReference.startIndex,
-              lineReference.endRow,
-              lineReference.endIndex
-            )
-          )
-    }));
-  })
-
-  return Promise.resolve(symbolArray);
 });
 
 connection.listen();

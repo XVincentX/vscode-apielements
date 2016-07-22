@@ -4,7 +4,7 @@
   "description": "VSCode client for APIElements",
   "author": "Vincenzo Chianese",
   "license": "MIT",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "preview": true,
   "icon": "logo.png",
   "bugs": {
