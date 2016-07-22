@@ -112,15 +112,7 @@ function validateTextDocument(textDocument: TextDocument): void {
       });
     });
   } catch(err) {
-    diagnostics.push({
-      severity: DiagnosticSeverity.Error,
-      range: {
-        start: { line: 1, character: 0},
-        end: { line: 1, character: 0 }
-      },
-      message: err.message,
-      source: parserName
-    });
+    connection.window.showErrorMessage(err.message);
   }
   finally {
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
@@ -128,15 +120,26 @@ function validateTextDocument(textDocument: TextDocument): void {
 }
 
 connection.onDocumentSymbol((symbolParam) => {
-  if (currentSettings.parser.exportSourcemap === false) {
-    return Promise.resolve([]); // I cannot let you navigate if I have no source map.
+  try {
+    if (currentSettings.parser.exportSourcemap === false) {
+      connection.window.showWarningMessage("\
+        The current parser options have source maps disabled.\
+        Without those, it's not possible to generate document symbol.\
+        ");
+
+      return Promise.resolve([]); // I cannot let you navigate if I have no source map.
+    }
+
+    const textDocument = utf16to8(documents.get(symbolParam.textDocument.uri).getText());
+    const documentLines = textDocument.split(/\r?\n/g);
+
+    const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument, documentLines);
+    return Promise.resolve(symbolArray);
+  } catch(err) {
+    connection.window.showErrorMessage(err.message);
   }
 
-  const textDocument = utf16to8(documents.get(symbolParam.textDocument.uri).getText());
-  const documentLines = textDocument.split(/\r?\n/g);
 
-  const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument, documentLines);
-  return Promise.resolve(symbolArray);
 });
 
 connection.listen();

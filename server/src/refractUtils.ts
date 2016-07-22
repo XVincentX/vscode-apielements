@@ -20,7 +20,7 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document : st
   const startRow = lodash.findIndex(documentLines, (line) => line.indexOf(lodash.head(sourceLines)) > -1);
   const endRow = startRow + (sourceLines.length > 1 ? sourceLines.length - 1 : sourceLines.length) - 1; // - 1 for the current line, - 1 for the last nextline
 
-  const startIndex = documentLines[startRow].indexOf(sourceSubstring);
+  const startIndex = documentLines[startRow].indexOf(lodash.head(sourceLines));
   const endIndex = documentLines[endRow].length;
 
   return {
