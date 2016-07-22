@@ -8,6 +8,7 @@ import {
 } from 'vscode-languageserver';
 
 import * as refractUtils from './refractUtils';
+import {utf16to8} from './utfUtils';
 
 let lodash = require('lodash');
 let apiDescriptionMixins = require('lodash-api-description');
@@ -86,7 +87,8 @@ function validateTextDocument(textDocument: TextDocument): void {
     refractOutput = parser.parse(text, currentSettings.parser);
     let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
 
-    let documentLines = text.split(/\r?\n/g);
+    const utf8Text = utf16to8(text);
+    const documentLines = utf8Text.split(/\r?\n/g);
 
     lodash.forEach(annotations, (annotation) => {
 
@@ -130,10 +132,10 @@ connection.onDocumentSymbol((symbolParam) => {
     return Promise.resolve([]); // I cannot let you navigate if I have no source map.
   }
 
-  const textDocument = documents.get(symbolParam.textDocument.uri);
-  const documentLines = textDocument.getText().split(/\r?\n/g);
+  const textDocument = utf16to8(documents.get(symbolParam.textDocument.uri).getText());
+  const documentLines = textDocument.split(/\r?\n/g);
 
-  const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument.getText(), documentLines);
+  const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument, documentLines);
   return Promise.resolve(symbolArray);
 });
 

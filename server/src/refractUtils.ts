@@ -11,21 +11,17 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document : st
     }
   });
 
-  // All examples I checked have always a single element so far.
+  // I didn't find any useful example of multiple sourcemap elements.
   const sourceMap = lodash.head(sourceMapArray);
 
-  const startRowBreak = lodash.head(document.substring(sourceMap.charIndex).split(/\r?\n/g));
-  const endRowBreak = lodash.head(document.substring(sourceMap.charIndex + sourceMap.charCount).split(/\r?\n/g));
+  const sourceSubstring = document.substring(sourceMap.charIndex, sourceMap.charIndex + sourceMap.charCount);
+  const sourceLines = sourceSubstring.split(/\r?\n/g);
 
-  const startRow = lodash.findIndex(documentLines, (line) => line.indexOf(startRowBreak) > -1);
-  const endRow = lodash.findIndex(documentLines, (line) => line.indexOf(endRowBreak) > -1);
+  const startRow = lodash.findIndex(documentLines, (line) => line.indexOf(lodash.head(sourceLines)) > -1);
+  const endRow = startRow + (sourceLines.length > 1 ? sourceLines.length - 1 : sourceLines.length) - 1; // - 1 for the current line, - 1 for the last nextline
 
-  const startIndex = documentLines[startRow].indexOf(startRowBreak);
-
-  let endIndex = documentLines[endRow].indexOf(endRowBreak);
-
-  if (startRow === endRow)
-    endIndex = sourceMap.charCount;
+  const startIndex = 0;
+  const endIndex = documentLines[endRow].length;
 
   return {
     startRow: startRow,
@@ -88,7 +84,7 @@ export function extractSymbols(element : any,
 
     const description = lodash.get(queryResult, refractSymbol.descriptionPath);
     const results = SymbolInformation.create(
-      `${refractSymbol.name} - ${description}`,
+      description,
       refractSymbol.symbol,
       Range.create(lineReference.startRow, lineReference.startIndex, lineReference.endRow, lineReference.endIndex),
       null,
