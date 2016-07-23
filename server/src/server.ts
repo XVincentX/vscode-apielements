@@ -55,6 +55,10 @@ documents.onDidChangeContent((change) => {
   validateTextDocument(change.document);
 });
 
+documents.onDidClose((event) => {
+  connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
+});
+
 interface Settings {
   apiElements: ApiElementsSettings;
 };
