@@ -62,7 +62,8 @@
         "extensions": [
           ".apib",
           ".apiblueprint"
-        ]
+        ],
+        "firstLine": "^[\uFEFF]?(((VERSION:( |\t)2)|(FORMAT:( |\t)(X-)?1A))([\n\r]{1,2}|$))"
       },
       {
         "id": "MSON",
