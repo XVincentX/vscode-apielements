@@ -1,7 +1,7 @@
 {
   "name": "vscode-apielements",
   "displayName": "API Elements extension",
-  "description": "VSCode client for APIElements",
+  "description": "VSCode client for API Elements",
   "author": "Vincenzo Chianese",
   "license": "MIT",
   "version": "0.1.0",
@@ -25,13 +25,13 @@
     "Snippets"
   ],
   "keywords": [
-    "apiblueprint",
+    "api blueprint",
     "swagger",
     "mson",
     "apielements"
   ],
   "activationEvents": [
-    "onLanguage:APIBlueprint"
+    "onLanguage:API Blueprint"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -58,7 +58,7 @@
     },
     "languages": [
       {
-        "id": "APIBlueprint",
+        "id": "API Blueprint",
         "extensions": [
           ".apib",
           ".apiblueprint"
@@ -74,7 +74,7 @@
     ],
     "grammars": [
       {
-        "language": "APIBlueprint",
+        "language": "API Blueprint",
         "scopeName": "text.html.markdown.source.gfm.apib",
         "path": "./syntaxes/APIBlueprint.tmLanguage"
       },
@@ -86,7 +86,7 @@
     ],
     "snippets": [
       {
-        "language": "APIBlueprint",
+        "language": "API Blueprint",
         "path": "./snippets/APIBlueprint.json"
       }
     ]
