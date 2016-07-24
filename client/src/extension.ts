@@ -32,25 +32,28 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(commands.registerTextEditorCommand('apiElements.parserOutput', (editor) => {
     const statusBarDisposable = window.setStatusBarMessage("Parsing current document...");
-
-    client.sendRequest({method: "parserOutput"}, editor.document.getText()).then((result) => {
-      const stringifiedResult = JSON.stringify(result, null, 2);
-      const uri = Uri.parse(`untitled:${workspace.rootPath ||context.extensionPath}/parseResult.json`);
-      workspace.openTextDocument(uri).then((textDocument) => {
+    client.sendRequest({method: "parserOutput"}, editor.document.getText())
+      .then((result) => {
+        const stringifiedResult = JSON.stringify(result, null, 2);
+        const uri = Uri.parse(`untitled:${workspace.rootPath ||context.extensionPath}/parseResult.json`);
+        return Promise.all([stringifiedResult, uri, workspace.openTextDocument(uri)]);
+      })
+      .then(([stringifiedResult, uri, textDocument]) => {
         const edit = new vscode.WorkspaceEdit();
-        edit.insert(uri, new vscode.Position(0,0), stringifiedResult);
-        workspace.applyEdit(edit).then(() => {
-          window.showTextDocument(textDocument, vscode.ViewColumn.One ,false).then(() => {
-            statusBarDisposable.dispose();
-          }, showError);
-        }, showError);
-      }, showError);
-    }, showError)
+        edit.insert(<Uri>uri, new vscode.Position(0,0), <string>stringifiedResult);
+        return Promise.all([<any>textDocument, workspace.applyEdit(edit)]);
+      })
+      .then(([textDocument, editApplied]) => {
+        return window.showTextDocument(<any>textDocument, vscode.ViewColumn.One ,false);
+      })
+      .then(() => { statusBarDisposable.dispose();
+      })
+      .then(null, showError);
   }));
 
   context.subscriptions.push(client.start());
 
   function showError(err) {
-    window.showErrorMessage(err || err.message);
+    window.showErrorMessage(err.message || err);
   }
 }
