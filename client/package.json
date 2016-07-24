@@ -28,10 +28,11 @@
     "api blueprint",
     "swagger",
     "mson",
-    "apielements"
+    "apiElements"
   ],
   "activationEvents": [
-    "onLanguage:API Blueprint"
+    "onLanguage:API Blueprint",
+    "onCommand:apiElements.parserOutput"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -89,7 +90,12 @@
         "language": "API Blueprint",
         "path": "./snippets/APIBlueprint.json"
       }
-    ]
+    ],
+    "commands": [{
+      "command": "apiElements.parserOutput",
+      "title": "Show parser output",
+      "category": "API Elements"
+    }]
   },
   "scripts": {
     "vscode:prepublish": "node ./node_modules/vscode/bin/compile",

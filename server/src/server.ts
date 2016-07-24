@@ -148,4 +148,12 @@ connection.onDocumentSymbol((symbolParam) => {
 
 });
 
+connection.onRequest({method: "parserOutput"}, (code) => {
+  try {
+    return parser.parse(code);
+  } catch(e) {
+    return e.result;
+  }
+})
+
 connection.listen();
