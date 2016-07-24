@@ -23,6 +23,16 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document : st
   const sourceSubstring = document.substring(sourceMap.charIndex, sourceMap.charIndex + sourceMap.charCount);
   const sourceLines = sourceSubstring.split(/\r?\n/g);
 
+  if (sourceSubstring === '\n' || sourceSubstring === '\r') {
+    // It's on a newline which I cannot show in the document.
+    return {
+      startRow: 0,
+      endRow: documentLines.length,
+      startIndex: 0,
+      endIndex: lodash.last(documentLines).length
+    };
+  }
+
   const startRow = lodash.findIndex(documentLines, (line) => line.indexOf(lodash.head(sourceLines)) > -1);
   const endRow = startRow + (sourceLines.length > 1 ? sourceLines.length - 1 : sourceLines.length) - 1; // - 1 for the current line, - 1 for the last nextline
 

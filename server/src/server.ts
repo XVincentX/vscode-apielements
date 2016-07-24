@@ -91,6 +91,7 @@ function validateTextDocument(textDocument: TextDocument): void {
   } catch(err) {
     refractOutput = err.result;
   } finally {
+
     let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
 
     const utf8Text = utf16to8(text);
@@ -119,7 +120,7 @@ function validateTextDocument(textDocument: TextDocument): void {
         });
       }
     });
-    
+
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
   }
 }
