@@ -16,7 +16,7 @@ let apiDescriptionMixins = require('lodash-api-description');
 let parser = undefined;
 let parserName = undefined;
 
-let refractOutput = undefined;
+let refractDocuments = new Map();
 apiDescriptionMixins(lodash);
 
 const setParser = (value, type : string) => {
@@ -86,12 +86,15 @@ function validateTextDocument(textDocument: TextDocument): void {
   let diagnostics: Diagnostic[] = [];
   let text = textDocument.getText();
 
+  let refractOutput = undefined;
+
   try {
     refractOutput = parser.parse(text, currentSettings.parser);
   } catch(err) {
     refractOutput = err.result;
   } finally {
 
+    refractDocuments.set(textDocument.uri.toString(), refractOutput);
     let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
 
     const utf8Text = utf16to8(text);
@@ -138,6 +141,7 @@ connection.onDocumentSymbol((symbolParam) => {
 
     const textDocument = utf16to8(documents.get(symbolParam.textDocument.uri).getText());
     const documentLines = textDocument.split(/\r?\n/g);
+    const refractOutput = refractDocuments.get(symbolParam.textDocument.uri.toString());
 
     const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument, documentLines);
     return Promise.resolve(symbolArray);
