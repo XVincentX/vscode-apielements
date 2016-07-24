@@ -4,6 +4,8 @@ This changelog tracks changes starting from first public release.
 
 ## `master` branch - Not released yet
 
+- Provide parser output command
+
 ## v0.1.1
 
 - Added `firstLine` element in extension definition so VSCode can recognise API Blueprint documents.
