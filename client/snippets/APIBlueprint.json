@@ -1,5 +1,5 @@
 {
-  "Basic APIBlueprint": {
+  "Basic API Blueprint": {
     "prefix": "basic",
     "body": [
       "# GET /message",
@@ -8,6 +8,6 @@
       "",
       "        Hello World!"
     ],
-    "description": "A minimal APIBlueprint"
+    "description": "A minimal API Blueprint"
   }
 }
