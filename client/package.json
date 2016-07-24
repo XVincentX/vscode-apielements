@@ -4,7 +4,7 @@
   "description": "VSCode client for API Elements",
   "author": "Vincenzo Chianese",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "preview": true,
   "icon": "logo.png",
   "bugs": {
@@ -63,7 +63,7 @@
           ".apib",
           ".apiblueprint"
         ],
-        "firstLine": "^[\uFEFF]?(((VERSION:( |\t)2)|(FORMAT:( |\t)(X-)?1A))([\n\r]{1,2}|$))"
+        "firstLine": "^[﻿]?(((VERSION:( |\t)2)|(FORMAT:( |\t)(X-)?1A))([\n\r]{1,2}|$))"
       },
       {
         "id": "MSON",
