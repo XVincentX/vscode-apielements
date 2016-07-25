@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "drafter.js": "^2.4.3",
-    "lodash": "^4.13.1",
+    "lodash": "^4.14.0",
     "lodash-api-description": "0.0.2",
     "vscode-languageserver": "^2.2.0"
   },
