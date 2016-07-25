@@ -1,24 +1,6 @@
 ## [API Elements](http://api-elements.readthedocs.io/en/latest/) for [Visual Studio Code](https://code.visualstudio.com)
 
-Welcome to the API Elements for Visual Studio Code! This extension provides some
-nice and interesting features for people working with API Elements
-
-### What's API Elements about?
-
-API Elements is the [refract](https://github.com/refractproject/refract-spec#refract) namespace behind
-[API Blueprint](https://apiblueprint.org) and [Swagger](https://swagger.io).
-
-It means this extension will improve your experience while working with those API Description formats.
-
-![Basic Screenshot](./screenshot.png)
-
-----
-
-**Warning: This package is alpha and probably might be buggy,** but I decided to share the progress for those who are interested. Proceed at your own risk!
-
------
-
-### Supported features
+Welcome to the API Elements extension for Visual Studio Code! This extension will improve your experience working with API description formats like [API Blueprint](https://apiblueprint.org) and [Swagger](https://swagger.io). It provides some great features, such as:
 
 * Syntax highlight
 * Parser error and warnings
@@ -26,6 +8,18 @@ It means this extension will improve your experience while working with those AP
 * Parser output
 * [Basic symbol navigation (CMD + @)](#symbol-navigation)
 * [Best parser selection](#best-parser-selection)
+
+![Basic Screenshot](./screenshot.png)
+
+### What's API Elements about?
+
+API Elements is the structure for parse results of both API Blueprint and Swagger, and it is built on the [Refract](https://github.com/refractproject/refract-spec#refract) format. It provides a single format for interacting with parse results from various API description formats. So far, only API Blueprint and Swagger are supported.
+
+----
+
+**Warning: This package is alpha and probably might be buggy,** but I decided to share the progress for those who are interested. Proceed at your own risk!
+
+-----
 
 ### Future development / ideas
 * Swagger support (move from drafter to [fury](https://github.com/apiaryio/fury))
