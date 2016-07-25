@@ -6,6 +6,8 @@ This changelog tracks changes starting from first public release.
 
 - Provide parser output command
 
+- Support for symbols and parser error on multiple documents
+
 ## v0.1.1
 
 - Added `firstLine` element in extension definition so VSCode can recognise API Blueprint documents.
