@@ -4,6 +4,8 @@ This changelog tracks changes starting from first public release.
 
 ## `master` branch - Not released yet
 
+## v0.1.2
+
 - Provide parser output command
 
 - Support for symbols and parser error on multiple documents

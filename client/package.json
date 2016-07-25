@@ -4,7 +4,7 @@
   "description": "VSCode client for API Elements",
   "author": "Vincenzo Chianese",
   "license": "MIT",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "preview": true,
   "icon": "logo.png",
   "bugs": {
@@ -91,11 +91,13 @@
         "path": "./snippets/APIBlueprint.json"
       }
     ],
-    "commands": [{
-      "command": "apiElements.parserOutput",
-      "title": "Show parser output",
-      "category": "API Elements"
-    }]
+    "commands": [
+      {
+        "command": "apiElements.parserOutput",
+        "title": "Show parser output",
+        "category": "API Elements"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
