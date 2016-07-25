@@ -23,6 +23,7 @@ It means this extension will improve your experience while working with those AP
 * Syntax highlight
 * Parser error and warnings
 * Useful snippets
+* Parser output
 * [Basic symbol navigation (CMD + @)](#symbol-navigation)
 * [Best parser selection](#best-parser-selection)
 
