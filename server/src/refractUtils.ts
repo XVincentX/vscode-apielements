@@ -2,11 +2,11 @@ const lodash = require("lodash");
 
 import {SymbolInformation, Range, SymbolKind} from 'vscode-languageserver';
 
-export function createLineReferenceFromSourceMap(refractSourceMap, document : string, documentLines : string[]) : any {
+export function createLineReferenceFromSourceMap(refractSourceMap, document: string, documentLines: string[]): any {
 
   const firstSourceMap = lodash.first(refractSourceMap);
 
-  if (typeof(firstSourceMap) === 'undefined') {
+  if (typeof (firstSourceMap) === 'undefined') {
     return {};
   }
 
@@ -74,12 +74,12 @@ export function query(element, elementQuery) {
     .value();
 }
 
-export function extractSymbols(element : any,
-                                document : string,
-                                documentLines: string[],
-                                refractSymbol = refractSymbolsTree,
-                                containerName: string = ""
-                              ) : SymbolInformation[] {
+export function extractSymbols(element: any,
+  document: string,
+  documentLines: string[],
+  refractSymbol = refractSymbolsTree,
+  containerName: string = ""
+): SymbolInformation[] {
 
   if (!element.content) {
     return [];
@@ -128,7 +128,7 @@ export function extractSymbols(element : any,
 
 interface RefractSymbolMap {
   name: string,
-  symbol : SymbolKind,
+  symbol: SymbolKind,
   query: any,
   sourceMapPath: string,
   descriptionPath: string,
@@ -142,41 +142,41 @@ interface RefractSymbolMap {
   This might not be the complete three, but just the elements we care about.
 */
 
-const refractSymbolsTree : RefractSymbolMap = {
-    name: "API",
-    symbol: SymbolKind.Namespace,
+const refractSymbolsTree: RefractSymbolMap = {
+  name: "API",
+  symbol: SymbolKind.Namespace,
+  query: {
+    "element": "category",
+    "meta": {
+      "classes": [
+        "api"
+      ]
+    }
+  },
+  sourceMapPath: "meta.title.attributes.sourceMap",
+  descriptionPath: "meta.title.content",
+  childs: [{
+    name: "Resource Group",
+    symbol: SymbolKind.Class,
     query: {
       "element": "category",
-        "meta": {
-          "classes": [
-            "api"
-          ]
+      "meta": {
+        "classes": [
+          "resourceGroup"
+        ]
       }
     },
     sourceMapPath: "meta.title.attributes.sourceMap",
     descriptionPath: "meta.title.content",
     childs: [{
-      name: "Resource Group",
-      symbol: SymbolKind.Class,
+      name: "Resource",
+      symbol: SymbolKind.Method,
       query: {
-        "element": "category",
-        "meta": {
-          "classes": [
-            "resourceGroup"
-          ]
-        }
+        "element": "resource"
       },
       sourceMapPath: "meta.title.attributes.sourceMap",
       descriptionPath: "meta.title.content",
-      childs: [{
-        name: "Resource",
-        symbol: SymbolKind.Method,
-        query: {
-          "element": "resource"
-        },
-        sourceMapPath: "meta.title.attributes.sourceMap",
-        descriptionPath: "meta.title.content",
-        childs: []
-      }]
+      childs: []
     }]
-  };
+  }]
+};

@@ -16,7 +16,7 @@ export function activate(context: ExtensionContext) {
   const serverModule = context.asAbsolutePath(path.join('server', 'server.js'));
   const debugOptions = { execArgv: ["--nolazy", "--debug=6004"] };
   const serverOptions: ServerOptions = {
-    run : { module: serverModule, transport: TransportKind.ipc },
+    run: { module: serverModule, transport: TransportKind.ipc },
     debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
   }
 
@@ -32,24 +32,29 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(commands.registerTextEditorCommand('apiElements.parserOutput', (editor) => {
     const statusBarDisposable = window.setStatusBarMessage("Parsing current document...");
-    client.sendRequest({method: "parserOutput"}, editor.document.getText())
+    client.sendRequest({ method: "parserOutput" }, editor.document.getText())
       .then((result) => {
         const stringifiedResult = JSON.stringify(result, null, 2);
-        const uri = Uri.parse(`untitled:${workspace.rootPath ||context.extensionPath}/parseResult.json`);
+        const uri = Uri.parse(`untitled:${workspace.rootPath || context.extensionPath}/parseResult.json`);
         return Promise.all([stringifiedResult, uri, workspace.openTextDocument(uri)]);
       })
       .then(([stringifiedResult, uri, textDocument]) => {
         const edit = new vscode.WorkspaceEdit();
-        edit.insert(<Uri>uri, new vscode.Position(0,0), <string>stringifiedResult);
+        edit.insert(<Uri>uri, new vscode.Position(0, 0), <string>stringifiedResult);
         return Promise.all([<any>textDocument, workspace.applyEdit(edit)]);
       })
       .then(([textDocument, editApplied]) => {
-        return window.showTextDocument(<any>textDocument, vscode.ViewColumn.One ,false);
+        return window.showTextDocument(<any>textDocument, vscode.ViewColumn.One, false);
       })
-      .then(() => { statusBarDisposable.dispose();
+      .then(() => {
+        statusBarDisposable.dispose();
       })
       .then(null, showError);
   }));
+
+  client.onNotification({ method: "openUrl" }, (url) => {
+    commands.executeCommand("vscode.open", vscode.Uri.parse(<string>url));
+  });
 
   context.subscriptions.push(client.start());
 
