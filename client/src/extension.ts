@@ -35,7 +35,7 @@ export function activate(context: ExtensionContext) {
     client.sendRequest({ method: "parserOutput" }, editor.document.getText())
       .then((result) => {
         const stringifiedResult = JSON.stringify(result, null, 2);
-        const uri = Uri.parse(`untitled:${workspace.rootPath || context.extensionPath}/parseResult.json`);
+        const uri = Uri.parse(`untitled:${path.join(workspace.rootPath || context.extensionPath , "parseResult.json")}`);
         return Promise.all([stringifiedResult, uri, workspace.openTextDocument(uri)]);
       })
       .then(([stringifiedResult, uri, textDocument]) => {
