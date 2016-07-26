@@ -19,7 +19,11 @@ let parserName = undefined;
 let refractDocuments = new Map();
 apiDescriptionMixins(lodash);
 
-const setParser = (value, type : string) => {
+const getHelpUrl = (section: string): string => {
+  return `https://github.com/XVincentX/vscode-apielements/blob/master/TROUBLESHOT.md${section}`
+}
+
+const setParser = (value, type: string) => {
   parser = value;
   parserName = type;
 }
@@ -32,10 +36,10 @@ let workspaceRoot: string;
 connection.onInitialize((params): Thenable<InitializeResult | ResponseError<InitializeError>> => {
   workspaceRoot = params.rootPath;
 
-  const capabilities : ServerCapabilities = {
-      textDocumentSync: documents.syncKind,
-      documentSymbolProvider: true
-    }
+  const capabilities: ServerCapabilities = {
+    textDocumentSync: documents.syncKind,
+    documentSymbolProvider: true
+  }
 
   return Files.resolveModule(workspaceRoot, 'drafter.js').then((value) => {
     setParser(value, 'Drafter.js');
@@ -44,7 +48,7 @@ connection.onInitialize((params): Thenable<InitializeResult | ResponseError<Init
     return Files.resolveModule(workspaceRoot, 'protagonist').then((value) => {
       setParser(value, 'Protagonist');
       return { capabilities: capabilities };
-  }, (error) => {
+    }, (error) => {
       setParser(require('drafter.js'), 'Ext Drafter.js');
       return { capabilities: capabilities };
     });
@@ -54,6 +58,7 @@ connection.onInitialize((params): Thenable<InitializeResult | ResponseError<Init
 documents.onDidChangeContent((change) => {
   validateTextDocument(change.document);
 });
+
 
 documents.onDidClose((event) => {
   connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
@@ -74,7 +79,7 @@ interface ParserSettings {
   type: string;
 };
 
-let currentSettings : ApiElementsSettings;
+let currentSettings: ApiElementsSettings;
 
 connection.onDidChangeConfiguration((change) => {
   currentSettings = lodash.cloneDeep(change.settings.apiElements);
@@ -90,12 +95,12 @@ function validateTextDocument(textDocument: TextDocument): void {
 
   try {
     refractOutput = parser.parse(text, currentSettings.parser);
-  } catch(err) {
+  } catch (err) {
     refractOutput = err.result;
   } finally {
 
     refractDocuments.set(textDocument.uri.toString(), refractOutput);
-    let annotations = lodash.filterContent(refractOutput, {element: 'annotation'});
+    let annotations = lodash.filterContent(refractOutput, { element: 'annotation' });
 
     const utf8Text = utf16to8(text);
     const documentLines = utf8Text.split(/\r?\n/g);
@@ -134,7 +139,9 @@ connection.onDocumentSymbol((symbolParam) => {
       connection.window.showWarningMessage("\
         The current parser options have source maps disabled.\
         Without those, it's not possible to generate document symbol.\
-        ");
+        ", { title: "More Info" }).then(() => {
+          connection.sendNotification({ method: "openUrl" }, getHelpUrl('#no-sourcemaps-enabled'));
+        });
 
       return Promise.resolve([]); // I cannot let you navigate if I have no source map.
     }
@@ -145,17 +152,17 @@ connection.onDocumentSymbol((symbolParam) => {
 
     const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument, documentLines);
     return Promise.resolve(symbolArray);
-  } catch(err) {
+  } catch (err) {
     connection.window.showErrorMessage(err.message);
   }
 
 
 });
 
-connection.onRequest({method: "parserOutput"}, (code) => {
+connection.onRequest({ method: "parserOutput" }, (code) => {
   try {
     return parser.parse(code);
-  } catch(e) {
+  } catch (e) {
     return e.result;
   }
 })

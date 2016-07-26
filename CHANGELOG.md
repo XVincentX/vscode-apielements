@@ -4,6 +4,12 @@ This changelog tracks changes starting from first public release.
 
 ## `master` branch - Not released yet
 
+## v0.1.3
+
+- Fixed a bug in path concatenation in Parse Result command which prevend it to work on Windows
+
+- Added help link when sourcemaps are disabled and you request symbols
+
 ## v0.1.2
 
 - Provide parser output command
