@@ -19,6 +19,10 @@ let parserName = undefined;
 let refractDocuments = new Map();
 apiDescriptionMixins(lodash);
 
+const getHelpUrl = (section: string): string => {
+  return `https://github.com/XVincentX/vscode-apielements/blob/master/TROUBLESHOT.md${section}`
+}
+
 const setParser = (value, type: string) => {
   parser = value;
   parserName = type;
@@ -54,6 +58,7 @@ connection.onInitialize((params): Thenable<InitializeResult | ResponseError<Init
 documents.onDidChangeContent((change) => {
   validateTextDocument(change.document);
 });
+
 
 documents.onDidClose((event) => {
   connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
@@ -135,7 +140,7 @@ connection.onDocumentSymbol((symbolParam) => {
         The current parser options have source maps disabled.\
         Without those, it's not possible to generate document symbol.\
         ", { title: "More Info" }).then(() => {
-          connection.sendNotification({ method: "openUrl" }, "https://www.google.it");
+          connection.sendNotification({ method: "openUrl" }, getHelpUrl('#no-sourcemaps-enabled'));
         });
 
       return Promise.resolve([]); // I cannot let you navigate if I have no source map.
