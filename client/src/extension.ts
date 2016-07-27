@@ -56,6 +56,20 @@ export function activate(context: ExtensionContext) {
     commands.executeCommand("vscode.open", vscode.Uri.parse(<string>url));
   });
 
+  window.onDidChangeActiveTextEditor((textEditor) => {
+    if (textEditor.document.languageId === 'API Blueprint') {
+      textEditor.options = {
+        insertSpaces: false,
+        tabSize: 4,
+      };
+    }
+
+    textEditor.edit((editBuilder) => {
+      editBuilder.setEndOfLine(vscode.EndOfLine.LF);
+    });
+
+  })
+
   context.subscriptions.push(client.start());
 
   function showError(err) {
