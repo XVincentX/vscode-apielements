@@ -4,6 +4,8 @@ This changelog tracks changes starting from first public release.
 
 ## `master` branch - Not released yet
 
+- The editor now adjustes new line, tab size and indend type when switching to an API Blueprint document.
+
 ## v0.1.3
 
 - Fixed a bug in path concatenation in Parse Result command which prevend it to work on Windows
