@@ -57,17 +57,23 @@ export function activate(context: ExtensionContext) {
   });
 
   window.onDidChangeActiveTextEditor((textEditor) => {
+
     if (textEditor.document.languageId === 'API Blueprint') {
-      textEditor.options = {
-        insertSpaces: false,
-        tabSize: 4,
-      };
+
+      const adjustEditor = workspace.getConfiguration('apiElements').get('editor.adjustOptions');
+
+      if (adjustEditor === true) {
+        textEditor.options = {
+          insertSpaces: false,
+          tabSize: 4,
+        };
+
+        textEditor.edit((editBuilder) => {
+          editBuilder.setEndOfLine(vscode.EndOfLine.LF);
+        });
+
+      }
     }
-
-    textEditor.edit((editBuilder) => {
-      editBuilder.setEndOfLine(vscode.EndOfLine.LF);
-    });
-
   })
 
   context.subscriptions.push(client.start());
