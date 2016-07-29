@@ -6,8 +6,9 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
+import {ApiaryClient} from './apiaryClient';
 
-import { window, workspace, Disposable, ExtensionContext, commands, Uri, WorkspaceEdit, Position, ViewColumn, EndOfLine } from 'vscode';
+import { window, workspace, Disposable, ExtensionContext, commands, Uri, WorkspaceEdit, Position, ViewColumn, EndOfLine, QuickPickItem } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
 
 function showError(err) {
@@ -20,16 +21,7 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
     client.sendRequest({ method: "parserOutput" }, editor.document.getText())
       .then((result) => {
         const stringifiedResult = JSON.stringify(result, null, 2);
-        const uri = Uri.parse(`untitled:${path.join(workspace.rootPath || context.extensionPath, "parseResult.json")}`);
-        return Promise.all([stringifiedResult, uri, workspace.openTextDocument(uri)]);
-      })
-      .then(([stringifiedResult, uri, textDocument]) => {
-        const edit = new WorkspaceEdit();
-        edit.insert(<Uri>uri, new Position(0, 0), <string>stringifiedResult);
-        return Promise.all([<any>textDocument, workspace.applyEdit(edit)]);
-      })
-      .then(([textDocument, editApplied]) => {
-        return window.showTextDocument(<any>textDocument, ViewColumn.One, false);
+        return showUntitledWindow("parseResult.json", stringifiedResult, context.extensionPath);
       })
       .then(() => {
         statusBarDisposable.dispose();
@@ -38,7 +30,27 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
   }));
 
   context.subscriptions.push(commands.registerCommand('apiElements.apiary.fetchApi', () => {
-    commands.executeCommand('vscode.open', Uri.parse('https://login.apiary.io/tokens'));
+    let tmpClient = new ApiaryClient("PLACE SOME TOKEN HERE");
+    let d = window.setStatusBarMessage('Querying Apiary registry on your behalf...');
+    return tmpClient.getApiList()
+      .then(res => {
+        const elements = res.map((element => {
+          return <QuickPickItem>{
+            label: element.apiSubdomain,
+            description: element.apiName,
+            detail: element.apiDocumentationUrl
+          };
+        }))
+        d.dispose();
+        return window.showQuickPick(elements, { matchOnDescription: true, matchOnDetail: false, placeHolder: "Select your API" });
+      })
+      .then((selectedApi: QuickPickItem) => {
+        return Promise.all([tmpClient.getApiCode(selectedApi.label), selectedApi.label]);
+      })
+      .then(([res, apiName]) => {
+        return showUntitledWindow(`${apiName}.apib`, (<any>res).code, context.extensionPath);
+      })
+      .then(undefined, showError);
   }));
 
   context.subscriptions.push(commands.registerCommand('apiElements.apiary.publishApi', () => {
@@ -76,6 +88,19 @@ function registerWindowEvents() {
     }
   })
 
+}
+
+function showUntitledWindow(fileName: string, content: string, fallbackPath : string) {
+  const uri = Uri.parse(`untitled:${path.join(workspace.rootPath || fallbackPath, fileName)}`);
+  return workspace.openTextDocument(uri)
+    .then((textDocument) => {
+      const edit = new WorkspaceEdit();
+      edit.insert(<Uri>uri, new Position(0, 0), content);
+      return Promise.all([<any>textDocument, workspace.applyEdit(edit)]);
+    })
+    .then(([textDocument, editApplied]) => {
+      return window.showTextDocument(<any>textDocument, ViewColumn.One, false);
+    })
 }
 
 export function activate(context: ExtensionContext) {
