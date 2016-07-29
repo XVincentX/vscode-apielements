@@ -32,7 +32,10 @@
   ],
   "activationEvents": [
     "onLanguage:API Blueprint",
-    "onCommand:apiElements.parserOutput"
+    "onCommand:apiElements.parserOutput",
+    "onCommand:apiElements.apiary.fetchApi",
+    "onCommand:apiElements.apiary.publishApi",
+    "onCommand:apiElements.apiary.logout"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -101,6 +104,24 @@
         "command": "apiElements.parserOutput",
         "title": "Show parser output",
         "category": "API Elements"
+      },
+      {
+        "command": "apiElements.apiary.fetchApi",
+        "title": "Fetch API from Apiary",
+        "category": "API Elements - Apiary",
+        "icon": "./resources/apiary.ico"
+      },
+      {
+        "command": "apiElements.apiary.publishApi",
+        "title": "Publish the current API to Apiary",
+        "category": "API Elements - Apiary",
+        "icon": "./resources/apiary.ico"
+      },
+      {
+        "command": "apiElements.apiary.logout",
+        "title": "Removes the current Apiary token from VSCode",
+        "category": "API Elements - Apiary",
+        "icon": "./resources/apiary.ico"
       }
     ]
   },
