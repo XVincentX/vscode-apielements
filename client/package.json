@@ -32,6 +32,7 @@
   ],
   "activationEvents": [
     "onLanguage:API Blueprint",
+    "onLanguage:Swagger",
     "onCommand:apiElements.parserOutput",
     "onCommand:apiElements.apiary.fetchApi",
     "onCommand:apiElements.apiary.publishApi",
@@ -72,13 +73,27 @@
           ".apib",
           ".apiblueprint"
         ],
-        "firstLine": "^[﻿]?(((VERSION:( |\t)2)|(FORMAT:( |\t)(X-)?1A))([\n\r]{1,2}|$))"
+        "firstLine": "^[﻿]?(((VERSION:( |\t)2)|(FORMAT:( |\t)(X-)?1A))([\n\r]{1,2}|$))",
+        "mimetypes": [
+          "text/vnd.apiblueprint"
+        ]
       },
       {
         "id": "MSON",
         "extensions": [
           ".mson"
         ]
+      },
+      {
+        "id": "Swagger",
+        "extensions": [
+          ".swagger"
+        ],
+        "mimetypes": [
+          "application/swagger+json",
+          "application/swagger+yaml"
+        ],
+        "firstLine": ""
       }
     ],
     "grammars": [
