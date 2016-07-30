@@ -11,8 +11,16 @@ import {ApiaryClient} from './apiaryClient';
 import { window, workspace, Disposable, ExtensionContext, commands, Uri, WorkspaceEdit, Position, ViewColumn, EndOfLine, QuickPickItem } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
 
+let apiaryClient = new ApiaryClient("c7b170b7cd42c7425bc4d428af335fbb");
+
 function showError(err) {
-  window.showErrorMessage(err.message || err);
+  const message = err.message || err;
+
+  if (err.type === 'info')
+    return window.showInformationMessage(message);
+  if (err.type === 'warn')
+    return window.showWarningMessage(message);
+  return window.showErrorMessage(message);
 }
 
 function registerCommands(client: LanguageClient, context: ExtensionContext) {
@@ -30,32 +38,49 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
   }));
 
   context.subscriptions.push(commands.registerCommand('apiElements.apiary.fetchApi', () => {
-    let tmpClient = new ApiaryClient("c7b170b7cd42c7425bc4d428af335fbb");
     let d = window.setStatusBarMessage('Querying Apiary registry on your behalf...');
-    return tmpClient.getApiList()
-
+    return apiaryClient.getApiList()
       .then(res => {
         const elements = res.apis.map(element =>
           <QuickPickItem>{
             label: element.apiSubdomain,
             description: element.apiName,
             detail: element.apiDocumentationUrl
-        });
+          });
         d.dispose();
         return window.showQuickPick(elements, { matchOnDescription: true, matchOnDetail: false, placeHolder: "Select your API" });
       })
 
-      .then((selectedApi: QuickPickItem) =>
-        Promise.all([tmpClient.getApiCode(selectedApi.label), selectedApi.label]))
+      .then((selectedApi: QuickPickItem) => {
+        if (selectedApi === undefined) {
+          let e = new Error("No API selected");
+          e["type"] = 'info'; // Because the Typescript intellisense doesn't allow me to put custom stuff inside.
+          throw e;
+        }
 
+        return Promise.all([apiaryClient.getApiCode(selectedApi.label), selectedApi.label]);
+      })
       .then(([res, apiName]) =>
         showUntitledWindow(`${apiName}.apib`, (<any>res).code, context.extensionPath)
       )
       .then(undefined, showError);
   }));
 
-  context.subscriptions.push(commands.registerCommand('apiElements.apiary.publishApi', () => {
-    commands.executeCommand('vscode.open', Uri.parse('https://login.apiary.io/tokens'));
+  context.subscriptions.push(commands.registerTextEditorCommand('apiElements.apiary.publishApi', textEditor => {
+
+    window.showInputBox({
+      value: "Saving API Description Document from VSCode",
+      placeHolder: "Commit message for this change"
+    })
+      .then(message => {
+        // Try to infer the API Name from the file
+        const filePath = (textEditor.document.fileName);
+        const apiName = path.basename(filePath, path.extname(filePath));
+
+        return apiaryClient.publishApi(apiName, textEditor.document.getText(), message)
+      })
+      .then(() => window.showInformationMessage('API successuflly published on Apiary!'))
+      .then(undefined, showError);
   }));
 
   context.subscriptions.push(commands.registerCommand('apiElements.apiary.logout', () => {
@@ -91,7 +116,7 @@ function registerWindowEvents() {
 
 }
 
-function showUntitledWindow(fileName: string, content: string, fallbackPath : string) {
+function showUntitledWindow(fileName: string, content: string, fallbackPath: string) {
   const uri = Uri.parse(`untitled:${path.join(workspace.rootPath || fallbackPath, fileName)}`);
   return workspace.openTextDocument(uri)
     .then((textDocument) => {

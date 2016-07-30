@@ -46,7 +46,7 @@ export class ApiaryClient {
   publishApi(apiName: string,
     code: string,
     commitMessage: string = "Saving API Description Document from VSCode"): Thenable<any> {
-    return axios.post(`blueprint/publish/#{apiName}`, { code, messageToSave: commitMessage })
+    return axios.post(`blueprint/publish/${apiName}`, { code, messageToSave: commitMessage })
       .then(undefined, this.formatError);
   }
 }
