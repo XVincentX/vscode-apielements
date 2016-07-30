@@ -27,13 +27,26 @@ function showError(err) {
   return window.showErrorMessage(message);
 }
 
-function requestApiaryClient(): Thenable<ApiaryClient> {
+function requestApiaryClient(context: ExtensionContext): Thenable<ApiaryClient> {
+
+  const tokenFilePath = path.join(context.extensionPath, ".apiaryToken");
 
   if (apiaryClient === undefined) {
 
-    if (process.env.APIARY_API_KEY !== undefined)
+    if (process.env.APIARY_API_KEY !== undefined){
       // According to apiary-client, this might be defined.
-      return Promise.resolve(new ApiaryClient(process.env.APIARY_API_KEY));
+      apiaryClient = new ApiaryClient(process.env.APIARY_API_KEY);
+      return Promise.resolve(apiaryClient);
+    }
+    // Probably it's saved into our super fancy file?
+    try {
+      const token = fs.readFileSync(tokenFilePath, 'utf8');
+      apiaryClient = new ApiaryClient(token);
+      return Promise.resolve(apiaryClient);
+    } catch (e) {
+
+    }
+
 
     return window.showWarningMessage("Unable to find an Apiary Token. It's required to operate with Apiary", "Grab one!")
       .then(result => {
@@ -49,9 +62,14 @@ function requestApiaryClient(): Thenable<ApiaryClient> {
           e["type"] = "info";
           throw e;
         }
-        // Store the token somehow.
 
-        return new ApiaryClient(token);
+        try {
+          fs.writeFileSync(tokenFilePath, token, { encoding: 'utf8' });
+        } catch (e) {
+          showError(e);
+        }
+        apiaryClient = new ApiaryClient(token);
+        return apiaryClient;
 
       });
   }
@@ -75,7 +93,7 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
 
   context.subscriptions.push(commands.registerCommand('apiElements.apiary.fetchApi', () => {
     let d = window.setStatusBarMessage('Querying Apiary registry on your behalf...');
-    return requestApiaryClient()
+    return requestApiaryClient(context)
       .then(client => client.getApiList())
       .then(res => {
         const elements = res.apis.map(element =>
@@ -99,6 +117,15 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
       .then(undefined, showError);
   }));
 
+  context.subscriptions.push(commands.registerCommand('apiElements.apiary.logout', () => {
+    const tokenFilePath = path.join(context.extensionPath, ".apiaryToken");
+    if (fs.existsSync(path.join(context.extensionPath, ".apiaryToken")))
+      fs.unlinkSync(tokenFilePath);
+
+    apiaryClient = undefined;
+
+  }));
+
   context.subscriptions.push(commands.registerTextEditorCommand('apiElements.apiary.publishApi', textEditor => {
 
     window.showInputBox({
@@ -110,16 +137,13 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
         const filePath = (textEditor.document.fileName);
         const apiName = path.basename(filePath, path.extname(filePath));
 
-        return Promise.all([requestApiaryClient(), filePath, apiName, message]);
+        return Promise.all([requestApiaryClient(context), filePath, apiName, message]);
       })
       .then(([client, filePath, apiName, message]) => (<any>client).publishApi(apiName, textEditor.document.getText(), message))
       .then(() => window.showInformationMessage('API successuflly published on Apiary!'))
       .then(undefined, showError);
   }));
 
-  context.subscriptions.push(commands.registerCommand('apiElements.apiary.logout', () => {
-    commands.executeCommand('vscode.open', Uri.parse('https://login.apiary.io/tokens'));
-  }));
 }
 
 function registerNotifications(client: LanguageClient) {
