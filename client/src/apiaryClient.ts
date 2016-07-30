@@ -24,16 +24,29 @@ export class ApiaryClient {
   }
 
   private getDataObject = res => res.data;
+  private formatError = err => {
+    if (err.response.data.parserError !== undefined)
+      throw new Error(err.response.data.parserError);
+    if (err.response.data.message)
+      throw new Error(err.response.data.message);
+
+    throw err
+  };
 
   getApiList(): Thenable<ApiResult> {
-    return axios.get('me/apis').then(this.getDataObject);
+    return axios.get('me/apis')
+      .then(this.getDataObject, this.formatError);
   }
 
   getApiCode(apiName: string): Thenable<any> {
-    return axios.get(`blueprint/get/${apiName}`).then(this.getDataObject);
+    return axios.get(`blueprint/get/${apiName}`)
+      .then(this.getDataObject, this.formatError);
   }
 
-  publishApi(apiName: string, code: string): Thenable<string> {
-    return Promise.resolve("");
+  publishApi(apiName: string,
+    code: string,
+    commitMessage: string = "Saving API Description Document from VSCode"): Thenable<any> {
+    return axios.post(`blueprint/publish/#{apiName}`, { code, messageToSave: commitMessage })
+      .then(undefined, this.formatError);
   }
 }
