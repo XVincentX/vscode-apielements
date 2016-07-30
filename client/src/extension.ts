@@ -8,25 +8,12 @@ import * as path from 'path';
 import * as fs from 'fs';
 import {ApiaryClient} from './apiaryClient';
 import {showUntitledWindow} from './showUntitledWindow';
+import {showMessage} from './showMessage';
 
 import { window, workspace, Disposable, ExtensionContext, commands, Uri, WorkspaceEdit, Position, ViewColumn, EndOfLine, QuickPickItem } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
 
 let apiaryClient = undefined;
-
-function showError(err) {
-
-  if (typeof err === "number")
-    return;
-
-  const message = err.message || err;
-
-  if (err.type === 'info')
-    return window.showInformationMessage(message);
-  if (err.type === 'warn')
-    return window.showWarningMessage(message);
-  return window.showErrorMessage(message);
-}
 
 function requestApiaryClient(context: ExtensionContext): Thenable<ApiaryClient> {
 
@@ -67,7 +54,7 @@ function requestApiaryClient(context: ExtensionContext): Thenable<ApiaryClient> 
         try {
           fs.writeFileSync(tokenFilePath, token, { encoding: 'utf8' });
         } catch (e) {
-          showError(e);
+          showMessage(e);
         }
         apiaryClient = new ApiaryClient(token);
         return apiaryClient;
@@ -89,7 +76,7 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
       .then(() => {
         statusBarDisposable.dispose();
       })
-      .then(null, showError);
+      .then(null, showMessage);
   }));
 
   context.subscriptions.push(commands.registerCommand('apiElements.apiary.fetchApi', () => {
@@ -115,7 +102,7 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
         return Promise.all([apiaryClient.getApiCode(selectedApi.label), selectedApi.label]);
       })
       .then(([res, apiName]) => showUntitledWindow(`${apiName}.apib`, (<any>res).code, context.extensionPath))
-      .then(undefined, showError);
+      .then(undefined, showMessage);
   }));
 
   context.subscriptions.push(commands.registerCommand('apiElements.apiary.logout', () => {
@@ -142,7 +129,7 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
       })
       .then(([client, filePath, apiName, message]) => (<any>client).publishApi(apiName, textEditor.document.getText(), message))
       .then(() => window.showInformationMessage('API successuflly published on Apiary!'))
-      .then(undefined, showError);
+      .then(undefined, showMessage);
   }));
 
 }
