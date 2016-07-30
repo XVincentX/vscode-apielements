@@ -50,16 +50,19 @@ export function fetchApi(context: ExtensionContext) {
 }
 
 export function publishApi(context: ExtensionContext, textEditor: TextEditor) {
-  window.showInputBox({
-    value: 'Saving API Description Document from VSCode',
-    placeHolder: 'Commit message for this change'
-  })
-    .then(message => {
+  requestApiaryClient(context)
+    .then(client =>
+      Promise.all([client, window.showInputBox({
+        value: 'Saving API Description Document from VSCode',
+        placeHolder: 'Commit message for this change'
+      })])
+    )
+    .then(([client, message]) => {
       // Try to infer the API Name from the file
       const filePath = (textEditor.document.fileName);
       const apiName = path.basename(filePath, path.extname(filePath));
 
-      return Promise.all([requestApiaryClient(context), filePath, apiName, message]);
+      return Promise.all([client, filePath, apiName, message]);
     })
     .then(([client, filePath, apiName, message]) => (<any>client).publishApi(apiName, textEditor.document.getText(), message))
     .then(() => window.showInformationMessage('API successuflly published on Apiary!'))
@@ -68,7 +71,8 @@ export function publishApi(context: ExtensionContext, textEditor: TextEditor) {
 
 export function logout(context: ExtensionContext) {
   const tokenFilePath = path.join(context.extensionPath, ".apiaryToken");
-  if (fs.existsSync(path.join(context.extensionPath, ".apiaryToken")))
+  if (fs.existsSync(path.join(context.extensionPath, ".apiaryToken"))) {
     fs.unlinkSync(tokenFilePath);
     killCurrentApiaryClient();
+  }
 }
