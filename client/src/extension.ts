@@ -7,6 +7,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import {ApiaryClient} from './apiaryClient';
+import {showUntitledWindow} from './showUntitledWindow';
 
 import { window, workspace, Disposable, ExtensionContext, commands, Uri, WorkspaceEdit, Position, ViewColumn, EndOfLine, QuickPickItem } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
@@ -172,19 +173,6 @@ function registerWindowEvents() {
     }
   })
 
-}
-
-function showUntitledWindow(fileName: string, content: string, fallbackPath: string) {
-  const uri = Uri.parse(`untitled:${path.join(workspace.rootPath || fallbackPath, fileName)}`);
-  return workspace.openTextDocument(uri)
-    .then((textDocument) => {
-      const edit = new WorkspaceEdit();
-      edit.insert(<Uri>uri, new Position(0, 0), content);
-      return Promise.all([<any>textDocument, workspace.applyEdit(edit)]);
-    })
-    .then(([textDocument, editApplied]) => {
-      return window.showTextDocument(<any>textDocument, ViewColumn.One, false);
-    })
 }
 
 export function activate(context: ExtensionContext) {
