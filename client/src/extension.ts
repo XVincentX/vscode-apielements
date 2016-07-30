@@ -16,10 +16,10 @@ function showError(err) {
 }
 
 function registerCommands(client: LanguageClient, context: ExtensionContext) {
-  context.subscriptions.push(commands.registerTextEditorCommand('apiElements.parserOutput', (editor) => {
+  context.subscriptions.push(commands.registerTextEditorCommand('apiElements.parserOutput', editor => {
     const statusBarDisposable = window.setStatusBarMessage("Parsing current document...");
     client.sendRequest({ method: "parserOutput" }, editor.document.getText())
-      .then((result) => {
+      .then(result => {
         const stringifiedResult = JSON.stringify(result, null, 2);
         return showUntitledWindow("parseResult.json", stringifiedResult, context.extensionPath);
       })
@@ -30,26 +30,27 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
   }));
 
   context.subscriptions.push(commands.registerCommand('apiElements.apiary.fetchApi', () => {
-    let tmpClient = new ApiaryClient("PLACE SOME TOKEN HERE");
+    let tmpClient = new ApiaryClient("c7b170b7cd42c7425bc4d428af335fbb");
     let d = window.setStatusBarMessage('Querying Apiary registry on your behalf...');
     return tmpClient.getApiList()
+
       .then(res => {
-        const elements = res.map((element => {
-          return <QuickPickItem>{
+        const elements = res.apis.map(element =>
+          <QuickPickItem>{
             label: element.apiSubdomain,
             description: element.apiName,
             detail: element.apiDocumentationUrl
-          };
-        }))
+        });
         d.dispose();
         return window.showQuickPick(elements, { matchOnDescription: true, matchOnDetail: false, placeHolder: "Select your API" });
       })
-      .then((selectedApi: QuickPickItem) => {
-        return Promise.all([tmpClient.getApiCode(selectedApi.label), selectedApi.label]);
-      })
-      .then(([res, apiName]) => {
-        return showUntitledWindow(`${apiName}.apib`, (<any>res).code, context.extensionPath);
-      })
+
+      .then((selectedApi: QuickPickItem) =>
+        Promise.all([tmpClient.getApiCode(selectedApi.label), selectedApi.label]))
+
+      .then(([res, apiName]) =>
+        showUntitledWindow(`${apiName}.apib`, (<any>res).code, context.extensionPath)
+      )
       .then(undefined, showError);
   }));
 
@@ -63,13 +64,13 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
 }
 
 function registerNotifications(client: LanguageClient) {
-  client.onNotification({ method: "openUrl" }, (url) => {
-    commands.executeCommand("vscode.open", Uri.parse(<string>url));
-  });
+  client.onNotification({ method: "openUrl" }, url =>
+    commands.executeCommand("vscode.open", Uri.parse(<string>url))
+  );
 }
 
 function registerWindowEvents() {
-  window.onDidChangeActiveTextEditor((textEditor) => {
+  window.onDidChangeActiveTextEditor(textEditor => {
 
     if (textEditor.document.languageId === 'API Blueprint') {
 
@@ -81,9 +82,9 @@ function registerWindowEvents() {
           tabSize: 4,
         };
 
-        textEditor.edit((editBuilder) => {
-          editBuilder.setEndOfLine(EndOfLine.LF);
-        });
+        textEditor.edit(editBuilder =>
+          editBuilder.setEndOfLine(EndOfLine.LF)
+        );
       }
     }
   })

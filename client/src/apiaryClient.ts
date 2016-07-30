@@ -11,6 +11,10 @@ interface Api {
   apiIsPersonal: boolean
 }
 
+interface ApiResult {
+  apis: Array<Api>
+}
+
 export class ApiaryClient {
 
   constructor(token: string) {
@@ -19,16 +23,14 @@ export class ApiaryClient {
     axios.defaults.baseURL = "https://api.apiary.io/";
   }
 
-  getApiList(): Thenable<Array<Api>> {
-    return axios.get('me/apis').then(result => {
-      return result.data.apis;
-    });
+  private getDataObject = res => res.data;
+
+  getApiList(): Thenable<ApiResult> {
+    return axios.get('me/apis').then(this.getDataObject);
   }
 
   getApiCode(apiName: string): Thenable<any> {
-    return axios.get(`blueprint/get/${apiName}`).then(result => {
-      return result.data;
-    });
+    return axios.get(`blueprint/get/${apiName}`).then(this.getDataObject);
   }
 
   publishApi(apiName: string, code: string): Thenable<string> {
