@@ -11,9 +11,13 @@ import {ApiaryClient} from './apiaryClient';
 import { window, workspace, Disposable, ExtensionContext, commands, Uri, WorkspaceEdit, Position, ViewColumn, EndOfLine, QuickPickItem } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
 
-let apiaryClient = new ApiaryClient("c7b170b7cd42c7425bc4d428af335fbb");
+let apiaryClient = undefined;
 
 function showError(err) {
+
+  if (typeof err === "number")
+    return;
+
   const message = err.message || err;
 
   if (err.type === 'info')
@@ -21,6 +25,38 @@ function showError(err) {
   if (err.type === 'warn')
     return window.showWarningMessage(message);
   return window.showErrorMessage(message);
+}
+
+function requestApiaryClient(): Thenable<ApiaryClient> {
+
+  if (apiaryClient === undefined) {
+
+    if (process.env.APIARY_API_KEY !== undefined)
+      // According to apiary-client, this might be defined.
+      return Promise.resolve(new ApiaryClient(process.env.APIARY_API_KEY));
+
+    return window.showWarningMessage("Unable to find an Apiary Token. It's required to operate with Apiary", "Grab one!")
+      .then(result => {
+        if (result === "Grab one!")
+          return commands.executeCommand('vscode.open', Uri.parse("https://login.apiary.io/tokens"));
+
+        throw 0;
+      })
+      .then(() => window.showInputBox({ placeHolder: "Paste Apiary token here", password: true }))
+      .then(token => {
+        if (token === undefined) {
+          const e = new Error('No Apiary token provided');
+          e["type"] = "info";
+          throw e;
+        }
+        // Store the token somehow.
+
+        return new ApiaryClient(token);
+
+      });
+  }
+
+  return Promise.resolve(apiaryClient);
 }
 
 function registerCommands(client: LanguageClient, context: ExtensionContext) {
@@ -39,7 +75,8 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
 
   context.subscriptions.push(commands.registerCommand('apiElements.apiary.fetchApi', () => {
     let d = window.setStatusBarMessage('Querying Apiary registry on your behalf...');
-    return apiaryClient.getApiList()
+    return requestApiaryClient()
+      .then(client => client.getApiList())
       .then(res => {
         const elements = res.apis.map(element =>
           <QuickPickItem>{
@@ -53,16 +90,12 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
 
       .then((selectedApi: QuickPickItem) => {
         if (selectedApi === undefined) {
-          let e = new Error("No API selected");
-          e["type"] = 'info'; // Because the Typescript intellisense doesn't allow me to put custom stuff inside.
-          throw e;
+          throw 0;
         }
 
         return Promise.all([apiaryClient.getApiCode(selectedApi.label), selectedApi.label]);
       })
-      .then(([res, apiName]) =>
-        showUntitledWindow(`${apiName}.apib`, (<any>res).code, context.extensionPath)
-      )
+      .then(([res, apiName]) => showUntitledWindow(`${apiName}.apib`, (<any>res).code, context.extensionPath))
       .then(undefined, showError);
   }));
 
@@ -77,8 +110,9 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
         const filePath = (textEditor.document.fileName);
         const apiName = path.basename(filePath, path.extname(filePath));
 
-        return apiaryClient.publishApi(apiName, textEditor.document.getText(), message)
+        return Promise.all([requestApiaryClient(), filePath, apiName, message]);
       })
+      .then(([client, filePath, apiName, message]) => (<any>client).publishApi(apiName, textEditor.document.getText(), message))
       .then(() => window.showInformationMessage('API successuflly published on Apiary!'))
       .then(undefined, showError);
   }));
