@@ -10,13 +10,8 @@ import {requestApiaryClient, killCurrentApiaryClient} from './requestApiaryClien
 export function parseOutput(context: ExtensionContext, client: LanguageClient, editor: TextEditor) {
   const statusBarDisposable = window.setStatusBarMessage('Parsing current document...');
   client.sendRequest({ method: 'parserOutput' }, editor.document.getText())
-    .then(result => {
-      const stringifiedResult = JSON.stringify(result, null, 2);
-      return showUntitledWindow('parseResult.json', stringifiedResult, context.extensionPath);
-    })
-    .then(() => {
-      statusBarDisposable.dispose();
-    })
+    .then(result => showUntitledWindow('parseResult.json', <string>result, context.extensionPath))
+    .then(() => statusBarDisposable.dispose())
     .then(null, showMessage);
 }
 
@@ -70,8 +65,8 @@ export function publishApi(context: ExtensionContext, textEditor: TextEditor) {
 }
 
 export function logout(context: ExtensionContext) {
-  const tokenFilePath = path.join(context.extensionPath, ".apiaryToken");
-  if (fs.existsSync(path.join(context.extensionPath, ".apiaryToken"))) {
+  const tokenFilePath = path.join(context.extensionPath, '.apiaryToken');
+  if (fs.existsSync(path.join(context.extensionPath, '.apiaryToken'))) {
     fs.unlinkSync(tokenFilePath);
     killCurrentApiaryClient();
   }
