@@ -99,7 +99,3 @@ Most of the process is actually automated. Thous, it will ask you to provide a
 token and redirect you to the right page if it's not avaliable on your computer.
 All those commands are listed with an `Apiary` prefix. Therefore, to see what you
 can do, simply type `Apiary` in the command box to see what's going on.
-
-**Note:** When publishing back to Apiary, the file name is taken as a reference
-for the API Name. If those don't match, the publish will fail with a 404.
-If you have a better idea to provide recognisement, feel free to file an issue.
