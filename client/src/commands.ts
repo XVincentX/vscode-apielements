@@ -46,20 +46,12 @@ export function fetchApi(context: ExtensionContext) {
 
 export function publishApi(context: ExtensionContext, textEditor: TextEditor) {
   requestApiaryClient(context)
-    .then(client =>
-      Promise.all([client, window.showInputBox({
-        value: 'Saving API Description Document from VSCode',
-        placeHolder: 'Commit message for this change'
-      })])
-    )
-    .then(([client, message]) => {
+    .then((client) => {
       // Try to infer the API Name from the file
       const filePath = (textEditor.document.fileName);
       const apiName = path.basename(filePath, path.extname(filePath));
-
-      return Promise.all([client, filePath, apiName, message]);
+      return client.publishApi(apiName, textEditor.document.getText(), '');
     })
-    .then(([client, filePath, apiName, message]) => (<any>client).publishApi(apiName, textEditor.document.getText(), message))
     .then(() => window.showInformationMessage('API successuflly published on Apiary!'))
     .then(undefined, showMessage);
 }
