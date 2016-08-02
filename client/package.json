@@ -4,7 +4,7 @@
   "description": "VSCode client for API Elements",
   "author": "Vincenzo Chianese",
   "license": "MIT",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "preview": true,
   "icon": "logo.png",
   "bugs": {
@@ -32,7 +32,10 @@
   ],
   "activationEvents": [
     "onLanguage:API Blueprint",
-    "onCommand:apiElements.parserOutput"
+    "onCommand:apiElements.parserOutput",
+    "onCommand:apiElements.apiary.fetchApi",
+    "onCommand:apiElements.apiary.publishApi",
+    "onCommand:apiElements.apiary.logout"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -101,6 +104,24 @@
         "command": "apiElements.parserOutput",
         "title": "Show parser output",
         "category": "API Elements"
+      },
+      {
+        "command": "apiElements.apiary.fetchApi",
+        "title": "Fetch API from Apiary",
+        "category": "API Elements - Apiary",
+        "icon": "./resources/apiary.ico"
+      },
+      {
+        "command": "apiElements.apiary.publishApi",
+        "title": "Publish the current API to Apiary",
+        "category": "API Elements - Apiary",
+        "icon": "./resources/apiary.ico"
+      },
+      {
+        "command": "apiElements.apiary.logout",
+        "title": "Removes the current Apiary token from VSCode",
+        "category": "API Elements - Apiary",
+        "icon": "./resources/apiary.ico"
       }
     ]
   },
@@ -114,6 +135,7 @@
     "vscode": "^0.11.0"
   },
   "dependencies": {
+    "axios": "^0.13.1",
     "vscode-languageclient": "^2.2.1"
   }
 }

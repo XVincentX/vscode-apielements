@@ -161,7 +161,9 @@ connection.onDocumentSymbol((symbolParam) => {
 
 connection.onRequest({ method: "parserOutput" }, (code) => {
   try {
-    return parser.parse(code);
+    let settings = lodash.clone(currentSettings);
+    settings.json = false;
+    return parser.parse(code, settings);
   } catch (e) {
     return e.result;
   }

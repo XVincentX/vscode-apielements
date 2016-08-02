@@ -1,10 +1,11 @@
 ## [API Elements](http://api-elements.readthedocs.io/en/latest/) for [Visual Studio Code](https://code.visualstudio.com)
 
-Welcome to the API Elements extension for Visual Studio Code! This extension will improve your experience working with API description formats like [API Blueprint](https://apiblueprint.org) and [Swagger](https://swagger.io). It provides some great features, such as:
+Welcome to the API Elements extension for Visual Studio Code! This is a [totally untested](https://github.com/XVincentX/vscode-apielements/issues/8) extension which will improve your experience working with API description formats like [API Blueprint](https://apiblueprint.org) and [Swagger](https://swagger.io). It provides some great features, such as:
 
 * Syntax highlight
 * Parser error and warnings
 * Useful snippets
+* [Basic Apiary Integration](#basic-apiary-integration)
 * Parser output
 * [Basic symbol navigation (CMD + @)](#symbol-navigation)
 * [Best parser selection](#best-parser-selection)
@@ -82,3 +83,19 @@ Currently, the following resources are indexed:
 The idea would be, of course, to improve symbol navigation as much as possible and exploit
 sourcemaps in all their power. This, however, might take time. If you feel there are some
 important symbols I'm missing, please file an issue, I'll be happy to evaluate it.
+
+### Basic Apiary Integration
+This extension is able to provide basic Apiary integration. Fundamentally, all
+[Apiary client](https://github.com/apiaryio/apiary-client) have been reimplemented
+following the [Apiary API documentation](http://docs.apiary.apiary.io). It means that
+you can perform the following actions:
+
+1. Fetch an API Description Document from your account
+2. Publish an API Description Document to your account
+
+without having to leave the editor at all.
+
+Most of the process is actually automated. Thous, it will ask you to provide a 
+token and redirect you to the right page if it's not avaliable on your computer.
+All those commands are listed with an `Apiary` prefix. Therefore, to see what you
+can do, simply type `Apiary` in the command box to see what's going on.

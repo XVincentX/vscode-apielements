@@ -4,6 +4,10 @@ This changelog tracks changes starting from first public release.
 
 ## `master` branch - Not released yet
 
+- This extension provides now a basic [Apiary](https://apiary.io) integration. See the [README](./client/README.md) for more informations
+
+- Removed an useless `JSON.parse` and `JSON.stringify` round trip when asking for parser output.
+
 - The editor now adjustes new line, tab size and indend type when switching to an API Blueprint document.
 
 ## v0.1.3
