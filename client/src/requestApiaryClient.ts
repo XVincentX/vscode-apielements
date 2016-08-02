@@ -29,10 +29,12 @@ export function requestApiaryClient(context: ExtensionContext): Thenable<ApiaryC
     }
 
 
-    return window.showWarningMessage("Unable to find an Apiary Token. It's required to operate with Apiary", "Grab one!")
+    return window.showWarningMessage("Unable to find an Apiary Token. It's required to operate with Apiary", "Grab one!", "Paste one!")
       .then(result => {
         if (result === "Grab one!")
           return commands.executeCommand('vscode.open', Uri.parse("https://login.apiary.io/tokens"));
+        else if (result === "Paste one!")
+          return;
 
         throw 0;
       })

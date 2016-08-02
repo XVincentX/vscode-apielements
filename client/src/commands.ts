@@ -7,15 +7,7 @@ import {showMessage} from './showMessage';
 import {showUntitledWindow} from './showUntitledWindow';
 import {requestApiaryClient, killCurrentApiaryClient} from './requestApiaryClient';
 
-export function parseOutput(context: ExtensionContext, client: LanguageClient, editor: TextEditor) {
-  const statusBarDisposable = window.setStatusBarMessage('Parsing current document...');
-  client.sendRequest({ method: 'parserOutput' }, editor.document.getText())
-    .then(result => showUntitledWindow('parseResult.json', <string>result, context.extensionPath))
-    .then(() => statusBarDisposable.dispose())
-    .then(null, showMessage);
-}
-
-export function fetchApi(context: ExtensionContext) {
+function selectApi(context: ExtensionContext) {
   return requestApiaryClient(context)
     .then(client => Promise.all([client.getApiList(), client]))
     .then(([res, client]) => {
@@ -30,8 +22,19 @@ export function fetchApi(context: ExtensionContext) {
         matchOnDetail: false,
         placeHolder: "Select your API"
       }), client]);
-    })
+    });
+}
 
+export function parseOutput(context: ExtensionContext, client: LanguageClient, editor: TextEditor) {
+  const statusBarDisposable = window.setStatusBarMessage('Parsing current document...');
+  client.sendRequest({ method: 'parserOutput' }, editor.document.getText())
+    .then(result => showUntitledWindow('parseResult.json', <string>result, context.extensionPath))
+    .then(() => statusBarDisposable.dispose())
+    .then(null, showMessage);
+}
+
+export function fetchApi(context: ExtensionContext) {
+  return selectApi(context)
     .then(([selectedApi, client]) => {
       if (selectedApi === undefined) {
         throw 0;
@@ -45,12 +48,9 @@ export function fetchApi(context: ExtensionContext) {
 }
 
 export function publishApi(context: ExtensionContext, textEditor: TextEditor) {
-  requestApiaryClient(context)
-    .then((client) => {
-      // Try to infer the API Name from the file
-      const filePath = (textEditor.document.fileName);
-      const apiName = path.basename(filePath, path.extname(filePath));
-      return client.publishApi(apiName, textEditor.document.getText(), '');
+  selectApi(context)
+    .then(([selectedApi, client]) => {
+      return (<any>client).publishApi((<any>selectedApi).label, textEditor.document.getText(), '');
     })
     .then(() => window.showInformationMessage('API successuflly published on Apiary!'))
     .then(undefined, showMessage);
