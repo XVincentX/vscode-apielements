@@ -69,7 +69,7 @@ export function activate(context: ExtensionContext) {
   }
 
   const clientOptions: LanguageClientOptions = {
-    documentSelector: ['API Blueprint'],
+    documentSelector: ['API Blueprint', 'Swagger'],
     synchronize: {
       configurationSection: 'apiElements',
       fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
