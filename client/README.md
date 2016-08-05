@@ -24,11 +24,10 @@ API Elements is the structure for parse results of both API Blueprint and Swagge
 
 ### Future development / ideas
 * Swagger support (move from drafter to [fury](https://github.com/apiaryio/fury))
-* Provide parser output
 * Render the document using `aglio`
-* Login with Apiary account to use some features on the IDE directly
 * Provide autocomplete (if I type `+ Request [` I want to see Http verbs, or in payloads I want to recall MSON structures)
 * Use Codelens feature to provide MSON references and Dredd test status for endpoint
+* Integrate with other API tools (see [Dredd](https://github.com/apiaryio/dredd) or [drakov](https://github.com/Aconex/drakov))
 
 ### Found a Bug or - do you need a particular feature?
 Please file an issue at https://github.com/XVincentX/vscode-apielements.
