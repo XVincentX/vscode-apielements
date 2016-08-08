@@ -47,7 +47,7 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   };
 }
 
-export function query(element, elementQuery) {
+export function query(element, elementQueries, container: string = '') {
   /*
     NOTE: This function is a copy paste of https://github.com/apiaryio/refract-query
     The reason for that was to change some of its behavior and update it to use
@@ -62,12 +62,13 @@ export function query(element, elementQuery) {
     return [];
   }
 
-  const results = lodash.filter(element.content, elementQuery);
+  let results = lodash.flatten(lodash.map(elementQueries, elementQuery => lodash.filter(element.content, elementQuery)));
+  results.container = container;
 
   return lodash
     .chain(element.content)
     .map((nestedElement) => {
-      return query(nestedElement, elementQuery);
+      return query(nestedElement, elementQueries, lodash.get(nestedElement, 'meta.title.content', ''));
     })
     .flatten()
     .concat(results)
@@ -76,61 +77,41 @@ export function query(element, elementQuery) {
 
 export function extractSymbols(element: any,
   document: string,
-  documentLines: string[],
-  refractSymbol = refractSymbolsTree,
-  containerName: string = ""
+  documentLines: string[]
 ): SymbolInformation[] {
 
-  if (!element.content) {
-    return [];
-  }
 
-  if (!lodash.isArray(element.content)) {
-    return [];
-  }
+  let SymbolInformations: SymbolInformation[] = [];
 
-  const queryResults = query(element, refractSymbol.query);
+  const queryResults = query(element, lodash.map(refractSymbolsTree, t => t.query));
 
-  return lodash.flatten(queryResults.map((queryResult) => {
+
+  return lodash.transform(queryResults, (result, queryResult) => {
     const lineReference = createLineReferenceFromSourceMap(
       lodash.get(queryResult, 'meta.title.attributes.sourceMap', []),
       document,
       documentLines
     );
 
-    let results = {};
     const description = lodash.get(queryResult, 'meta.title.content', '');
 
-    const lodashChain =
-      lodash
-        .chain(refractSymbol.childs)
-        .map((child) => {
-          return extractSymbols(queryResult, document, documentLines, child, description);
-        })
-        .flatten()
-
     if (!lodash.isEmpty(lineReference)) {
-      results = SymbolInformation.create(
+      result.push(SymbolInformation.create(
         description,
-        refractSymbol.symbol,
+        SymbolKind.Class,
         Range.create(lineReference.startRow, lineReference.startIndex, lineReference.endRow, lineReference.endIndex),
         null,
-        containerName);
+        queryResult.container));
 
-      return lodashChain.concat(results).value();
     }
 
-    return lodashChain.value();
-
-  }));
+  });
 
 }
 
 interface RefractSymbolMap {
-  name: string,
-  symbol: SymbolKind,
+  symbolKind: SymbolKind,
   query: any,
-  childs: RefractSymbolMap[]
 };
 
 
@@ -140,9 +121,8 @@ interface RefractSymbolMap {
   This might not be the complete three, but just the elements we care about.
 */
 
-const refractSymbolsTree: RefractSymbolMap = {
-  name: "API",
-  symbol: SymbolKind.Namespace,
+const refractSymbolsTree: RefractSymbolMap[] = [{
+  symbolKind: SymbolKind.Namespace,
   query: {
     "element": "category",
     "meta": {
@@ -150,10 +130,9 @@ const refractSymbolsTree: RefractSymbolMap = {
         "api"
       ]
     }
-  },
-  childs: [{
-    name: "Resource Group",
-    symbol: SymbolKind.Class,
+  }
+}, {
+    symbolKind: SymbolKind.Class,
     query: {
       "element": "category",
       "meta": {
@@ -162,13 +141,9 @@ const refractSymbolsTree: RefractSymbolMap = {
         ]
       }
     },
-    childs: [{
-      name: "Resource",
-      symbol: SymbolKind.Method,
-      query: {
-        "element": "resource"
-      },
-      childs: []
-    }]
-  }]
-};
+  }, {
+    symbolKind: SymbolKind.Method,
+    query: {
+      "element": "resource"
+    },
+  }];
