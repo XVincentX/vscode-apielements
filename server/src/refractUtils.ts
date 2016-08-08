@@ -93,13 +93,13 @@ export function extractSymbols(element: any,
 
   return lodash.flatten(queryResults.map((queryResult) => {
     const lineReference = createLineReferenceFromSourceMap(
-      lodash.get(queryResult, refractSymbol.sourceMapPath, []),
+      lodash.get(queryResult, 'meta.title.attributes.sourceMap', []),
       document,
       documentLines
     );
 
     let results = {};
-    const description = lodash.get(queryResult, refractSymbol.descriptionPath, '');
+    const description = lodash.get(queryResult, 'meta.title.content', '');
 
     const lodashChain =
       lodash
@@ -130,8 +130,6 @@ interface RefractSymbolMap {
   name: string,
   symbol: SymbolKind,
   query: any,
-  sourceMapPath: string,
-  descriptionPath: string,
   childs: RefractSymbolMap[]
 };
 
@@ -153,8 +151,6 @@ const refractSymbolsTree: RefractSymbolMap = {
       ]
     }
   },
-  sourceMapPath: "meta.title.attributes.sourceMap",
-  descriptionPath: "meta.title.content",
   childs: [{
     name: "Resource Group",
     symbol: SymbolKind.Class,
@@ -166,16 +162,12 @@ const refractSymbolsTree: RefractSymbolMap = {
         ]
       }
     },
-    sourceMapPath: "meta.title.attributes.sourceMap",
-    descriptionPath: "meta.title.content",
     childs: [{
       name: "Resource",
       symbol: SymbolKind.Method,
       query: {
         "element": "resource"
       },
-      sourceMapPath: "meta.title.attributes.sourceMap",
-      descriptionPath: "meta.title.content",
       childs: []
     }]
   }]
