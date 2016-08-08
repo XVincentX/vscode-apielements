@@ -143,9 +143,7 @@ connection.onDocumentSymbol((symbolParam) => {
 });
 
 connection.onRequest({ method: 'parserOutput' }, (code: string) => {
-  let settings = lodash.clone(currentSettings.parser);
-  settings.json = false;
-  return parse(code, settings);
+  return parse(code, currentSettings.parser);
 });
 
 connection.listen();
