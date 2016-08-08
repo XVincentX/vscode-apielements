@@ -1,5 +1,9 @@
 ## [API Elements](http://api-elements.readthedocs.io/en/latest/) for [Visual Studio Code](https://code.visualstudio.com)
 
+![Marketplace link](https://vsmarketplacebadge.apphb.com/version/vncz.vscode-apielements.svg)
+![Installs](https://vsmarketplacebadge.apphb.com/installs/vncz.vscode-apielements.svg)
+![Rating](https://vsmarketplacebadge.apphb.com/rating/vncz.vscode-apielements.svg)
+
 Welcome to the API Elements extension for Visual Studio Code! This is a [totally untested](https://github.com/XVincentX/vscode-apielements/issues/8) extension which will improve your experience working with API description formats like [API Blueprint](https://apiblueprint.org) and [Swagger](https://swagger.io). It provides some great features, such as:
 
 * Syntax highlight
