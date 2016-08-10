@@ -47,7 +47,7 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   };
 }
 
-export function query(element, elementQueries, container: string = '') {
+export function query(element, elementQueries: RefractSymbolMap[], container: string = '') {
   /*
     NOTE: This function is a copy paste of https://github.com/apiaryio/refract-query
     The reason for that was to change some of its behavior and update it to use
@@ -62,7 +62,12 @@ export function query(element, elementQueries, container: string = '') {
     return [];
   }
 
-  let results = lodash.flatten(lodash.map(elementQueries, elementQuery => lodash.filter(element.content, elementQuery)));
+  const arrayOfArrayOfResults = lodash.map(elementQueries, (elementQuery: RefractSymbolMap) => {
+    let filterResult = lodash.filter(element.content, elementQuery.query);
+    lodash.forEach(filterResult, res => { res.symbolKind = elementQuery.symbolKind; });
+    return filterResult;
+  });
+  let results = lodash.flatten(arrayOfArrayOfResults);
   results.container = container;
 
   return lodash
@@ -83,7 +88,7 @@ export function extractSymbols(element: any,
 
   let SymbolInformations: SymbolInformation[] = [];
 
-  const queryResults = query(element, lodash.map(refractSymbolsTree, t => t.query));
+  const queryResults = query(element, refractSymbolsTree);
 
 
   return lodash.transform(queryResults, (result, queryResult) => {
@@ -98,7 +103,7 @@ export function extractSymbols(element: any,
     if (!lodash.isEmpty(lineReference)) {
       result.push(SymbolInformation.create(
         description,
-        SymbolKind.Class,
+        queryResult.symbolKind,
         Range.create(lineReference.startRow, lineReference.startIndex, lineReference.endRow, lineReference.endIndex),
         null,
         queryResult.container));
@@ -132,7 +137,7 @@ const refractSymbolsTree: RefractSymbolMap[] = [{
     }
   }
 }, {
-    symbolKind: SymbolKind.Class,
+    symbolKind: SymbolKind.Module,
     query: {
       "element": "category",
       "meta": {
@@ -142,8 +147,13 @@ const refractSymbolsTree: RefractSymbolMap[] = [{
       }
     },
   }, {
-    symbolKind: SymbolKind.Method,
+    symbolKind: SymbolKind.Class,
     query: {
       "element": "resource"
+    },
+  }, {
+    symbolKind: SymbolKind.Method,
+    query: {
+      "element": "transition"
     },
   }];
