@@ -73,7 +73,7 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
   return lodash
     .chain(element.content)
     .map((nestedElement) => {
-      return query(nestedElement, elementQueries, lodash.get(nestedElement, 'meta.title.content', ''));
+      return query(nestedElement, elementQueries, lodash.get(nestedElement, 'meta.title.content', lodash.get(nestedElement, 'attributes.href.content')));
     })
     .flatten()
     .concat(results)
@@ -93,12 +93,12 @@ export function extractSymbols(element: any,
 
   return lodash.transform(queryResults, (result, queryResult) => {
     const lineReference = createLineReferenceFromSourceMap(
-      lodash.get(queryResult, 'meta.title.attributes.sourceMap', []),
+      lodash.get(queryResult, 'meta.title.attributes.sourceMap', lodash.get(queryResult, 'attributes.href.attributes.sourceMap')),
       document,
       documentLines
     );
 
-    const description = lodash.get(queryResult, 'meta.title.content', '');
+    const description = lodash.get(queryResult, 'meta.title.content', lodash.get(queryResult, 'attributes.href.content'));
 
     if (!lodash.isEmpty(lineReference)) {
       result.push(SymbolInformation.create(
