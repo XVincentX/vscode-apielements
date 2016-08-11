@@ -2,7 +2,16 @@
 
 This changelog tracks changes starting from first public release.
 
-## `master` branch - Not released yet
+## v0.3.0
+
+- This extension provides now [Swagger](https://swagger.io) support. There might be some limitation due to the [Apiary Parser]() (known issues as well the way it's producing sourcemaps). I'll keep looking/updating the parser as soon the features are improved.
+
+- [transitions]() have been added as a symbol. Those should be really useful, even if probably a bit noisy. During the next release cycle I would like to set symbols as a configurable array.
+
+- In order to provide Swagger support I had to switch to fury, so the automatic parser mechanism had to be killed. All the things are now bundled into the extension itself, and nothing should change. I'll keep update those as soon as new versions are releases.
+
+
+## v0.2.0
 
 - This extension provides now a basic [Apiary](https://apiary.io) integration. See the [README](./client/README.md) for more informations
 
