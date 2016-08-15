@@ -95,7 +95,7 @@ function validateTextDocument(textDocument: TextDocument): void {
           documentLines
         );
 
-        diagnostics.push({
+        diagnostics.push(<Diagnostic>{
           severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
           code: annotation.attributes.code,
           range: Range.create(
@@ -121,7 +121,7 @@ connection.onDocumentSymbol((symbolParam) => {
       connection.window.showWarningMessage('\
         The current parser options have source maps disabled.\
         Without those, it\'s not possible to generate document symbol.\
-        ', { title: "More Info" }).then(() => {
+        ', { title: 'More Info' }).then(() => {
           connection.sendNotification({ method: 'openUrl' }, getHelpUrl('#no-sourcemaps-enabled'));
         });
 
