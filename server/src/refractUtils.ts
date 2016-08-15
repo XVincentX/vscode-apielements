@@ -64,11 +64,14 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
 
   const arrayOfArrayOfResults = lodash.map(elementQueries, (elementQuery: RefractSymbolMap) => {
     let filterResult = lodash.filter(element.content, elementQuery.query);
-    lodash.forEach(filterResult, res => { res.symbolKind = elementQuery.symbolKind; });
+    lodash.forEach(filterResult, res => {
+      res.symbolKind = elementQuery.symbolKind;
+      res.container = container;
+     });
     return filterResult;
   });
+
   let results = lodash.flatten(arrayOfArrayOfResults);
-  results.container = container;
 
   return lodash
     .chain(element.content)
