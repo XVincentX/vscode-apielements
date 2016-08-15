@@ -67,7 +67,7 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
     lodash.forEach(filterResult, res => {
       res.symbolKind = elementQuery.symbolKind;
       res.container = container;
-     });
+    });
     return filterResult;
   });
 
@@ -76,7 +76,14 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
   return lodash
     .chain(element.content)
     .map((nestedElement) => {
-      return query(nestedElement, elementQueries, lodash.get(nestedElement, 'meta.title.content', lodash.get(nestedElement, 'attributes.href.content')));
+      return query(nestedElement,
+        elementQueries,
+        lodash.get(nestedElement, 'meta.title.content',
+          lodash.get(nestedElement, 'attributes.href.content',
+            ''
+          )
+        )
+      );
     })
     .flatten()
     .concat(results)
@@ -93,21 +100,54 @@ export function extractSymbols(element: any,
 
   const queryResults = query(element, refractSymbolsTree);
 
-
   return lodash.transform(queryResults, (result, queryResult) => {
+
+    /*
+      WARNING: This might be your reaction when you'll look into this code: 😱
+      Thing is there is no really source map here and I do not want to solve this
+      thing in this release. The long term idea would be to wait till the underlying
+      parser will be updated to generate sourcemaps on generated content as well
+      and everybody will be happy; till that moment:
+      😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱
+    */
+
+    let sourceMap = undefined;
+    ['meta.title.attributes.sourceMap',
+      'attributes.href.attributes.sourceMap',
+      'content[0].content[0].attributes.method.attributes.sourceMap'].some((path) => {
+        if (lodash.has(queryResult, path)) {
+          sourceMap = lodash.get(queryResult, path);
+          return true;
+        }
+      });
+
     const lineReference = createLineReferenceFromSourceMap(
-      lodash.get(queryResult, 'meta.title.attributes.sourceMap', lodash.get(queryResult, 'attributes.href.attributes.sourceMap')),
+      sourceMap,
       document,
       documentLines
     );
 
-    const description = lodash.get(queryResult, 'meta.title.content', lodash.get(queryResult, 'attributes.href.content'));
+    let description = '';
+
+    ['meta.title.content',
+      'attributes.href.content',
+      'content[0].content[0].attributes.method.content'].some((path) => {
+        if (lodash.has(queryResult, path)) {
+          description = lodash.get(queryResult, path);
+          return true;
+        }
+      });
 
     if (!lodash.isEmpty(lineReference)) {
       result.push(SymbolInformation.create(
         description,
         queryResult.symbolKind,
-        Range.create(lineReference.startRow, lineReference.startIndex, lineReference.endRow, lineReference.endIndex),
+        Range.create(
+          lineReference.startRow,
+          lineReference.startIndex,
+          lineReference.endRow,
+          lineReference.endIndex
+        ),
         null,
         queryResult.container));
 
