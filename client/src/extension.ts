@@ -15,21 +15,11 @@ import * as Commands from './commands';
 
 function registerCommands(client: LanguageClient, context: ExtensionContext) {
   context.subscriptions.push(
-    commands.registerTextEditorCommand('apiElements.parserOutput', Commands.parseOutput.bind(this, context, client))
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand('apiElements.apiary.fetchApi', Commands.fetchApi.bind(this, context))
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand('apiElements.apiary.logout', Commands.logout.bind(this, context))
-  );
-
-  context.subscriptions.push(
+    commands.registerTextEditorCommand('apiElements.parserOutput', Commands.parseOutput.bind(this, context, client)),
+    commands.registerCommand('apiElements.apiary.fetchApi', Commands.fetchApi.bind(this, context)),
+    commands.registerCommand('apiElements.apiary.logout', Commands.logout.bind(this, context)),
     commands.registerTextEditorCommand('apiElements.apiary.publishApi', Commands.publishApi.bind(this, context))
   );
-
 }
 
 function registerNotifications(client: LanguageClient) {
