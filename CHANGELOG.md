@@ -10,6 +10,8 @@ This changelog tracks changes starting from first public release.
 
 - In order to provide Swagger support I had to switch to fury, so the automatic parser mechanism had to be killed. All the things are now bundled into the extension itself, and nothing should change. I'll keep update those as soon as new versions are releases.
 
+- All description paths are now decoded using `decodeURI` function. So you will not see anymore `user%2did`, but `user-id`
+
 
 ## v0.2.0
 

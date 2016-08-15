@@ -78,8 +78,8 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
     .map((nestedElement) => {
       return query(nestedElement,
         elementQueries,
-        lodash.get(nestedElement, 'meta.title.content',
-          lodash.get(nestedElement, 'attributes.href.content')
+        decodeURI(lodash.get(nestedElement, 'meta.title.content',
+          lodash.get(nestedElement, 'attributes.href.content'))
         )
       );
     })
@@ -138,11 +138,11 @@ export function extractSymbols(element: any,
       (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
-        description = lodash.get((<Function>path)(queryResult)[0], 'attributes.method.content');
+        description = decodeURI(lodash.get((<Function>path)(queryResult)[0], 'attributes.method.content'));
         return true;
       } else {
         if (lodash.has(queryResult, path)) {
-          description = lodash.get(queryResult, path);
+          description = decodeURI(lodash.get(queryResult, path));
           return true;
         }
       }
