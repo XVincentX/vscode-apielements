@@ -79,7 +79,9 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
       return query(nestedElement,
         elementQueries,
         decodeURI(lodash.get(nestedElement, 'meta.title.content',
-          lodash.get(nestedElement, 'attributes.href.content'))
+          lodash.get(nestedElement, 'attributes.href.content',
+            lodash.get(nestedElement, 'meta.title')
+          ))
         )
       );
     })
@@ -197,7 +199,8 @@ const refractSymbolsTree: RefractSymbolMap[] = [{
       "meta": {
         "classes": [
           "resourceGroup"
-        ]
+        ],
+        "title": {}
       }
     },
   }, {
