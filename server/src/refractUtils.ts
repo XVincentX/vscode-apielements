@@ -208,6 +208,9 @@ const refractSymbolsTree: RefractSymbolMap[] = [{
   }, {
     symbolKind: SymbolKind.Method,
     query: {
-      "element": "transition"
+      "element": "transition",
+      "content": [{
+        element: "httpTransaction"
+      }]
     },
   }];
