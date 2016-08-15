@@ -33,7 +33,7 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
     };
   }
 
-  const startRow = lodash.findIndex(documentLines, (line) => line.indexOf(lodash.head(sourceLines)) > -1);
+  const startRow = document.substring(0, sourceMap.charIndex).split(/\r?\n/g).length - 1;
   const endRow = startRow + (sourceLines.length > 1 ? sourceLines.length - 1 : sourceLines.length) - 1; // - 1 for the current line, - 1 for the last nextline
 
   const startIndex = documentLines[startRow].indexOf(lodash.head(sourceLines));
@@ -79,9 +79,7 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
       return query(nestedElement,
         elementQueries,
         lodash.get(nestedElement, 'meta.title.content',
-          lodash.get(nestedElement, 'attributes.href.content',
-            ''
-          )
+          lodash.get(nestedElement, 'attributes.href.content')
         )
       );
     })
@@ -114,12 +112,18 @@ export function extractSymbols(element: any,
     let sourceMap = undefined;
     ['meta.title.attributes.sourceMap',
       'attributes.href.attributes.sourceMap',
-      'content[0].content[0].attributes.method.attributes.sourceMap'].some((path) => {
+      (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
+    ].some((path: string | Function): boolean => {
+      if (typeof (path) === 'function') {
+        sourceMap = lodash.get((<Function>path)(queryResult)[0], 'attributes.method.attributes.sourceMap');
+        return true;
+      } else {
         if (lodash.has(queryResult, path)) {
           sourceMap = lodash.get(queryResult, path);
           return true;
         }
-      });
+      }
+    });
 
     const lineReference = createLineReferenceFromSourceMap(
       sourceMap,
@@ -131,12 +135,19 @@ export function extractSymbols(element: any,
 
     ['meta.title.content',
       'attributes.href.content',
-      'content[0].content[0].attributes.method.content'].some((path) => {
+      (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
+    ].some((path: string | Function): boolean => {
+      if (typeof (path) === 'function') {
+        description = lodash.get((<Function>path)(queryResult)[0], 'attributes.method.content');
+        return true;
+      } else {
         if (lodash.has(queryResult, path)) {
           description = lodash.get(queryResult, path);
           return true;
         }
-      });
+      }
+
+    });
 
     if (!lodash.isEmpty(lineReference)) {
       result.push(SymbolInformation.create(
