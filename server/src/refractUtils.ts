@@ -7,7 +7,12 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   const firstSourceMap = lodash.first(refractSourceMap);
 
   if (typeof (firstSourceMap) === 'undefined') {
-    return {};
+    return {
+      startRow: 0,
+      startIndex: 0,
+      endRow: documentLines.length - 1,
+      endIndex: documentLines[documentLines.length - 1].length
+    };
   }
 
   const sourceMapArray = lodash.map(firstSourceMap.content, (sm) => {
