@@ -1,7 +1,6 @@
 .vscode/**
 typings/**
-out/test/**
-test/**
+**/test/**
 src/**
 **/*.map
 .gitignore
@@ -12,3 +11,4 @@ vsc-extension-quickstart.md
 **/node_modules/**/*.md
 **/node_modules/**/*.txt
 .apiaryToken
+**/LICENSE
