@@ -160,6 +160,6 @@
   },
   "dependencies": {
     "axios": "^0.13.1",
-    "vscode-languageclient": "^2.2.1"
+    "vscode-languageclient": "^2.4.2"
   }
 }

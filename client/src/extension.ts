@@ -66,7 +66,7 @@ export function activate(context: ExtensionContext) {
     }
   }
 
-  const client = new LanguageClient('Api Elements', serverOptions, clientOptions);
+  const client = new LanguageClient('apiElements', 'Api Elements', serverOptions, clientOptions);
 
   registerCommands(client, context);
   registerNotifications(client);
