@@ -12,6 +12,8 @@ This changelog tracks changes starting from first public release.
 
 - All description paths are now decoded using `decodeURI` function. So you will not see anymore `user%2did`, but `user-id`, which is the correct way it should be shown.
 
+- When APIBlueprint document is selected and `adjustOptions` is set to true, this extension will now set spaces as tab separator by default as is the way drafter.js works
+
 
 ## v0.2.0
 

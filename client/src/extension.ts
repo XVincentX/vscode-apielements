@@ -37,7 +37,7 @@ function registerWindowEvents() {
 
       if (adjustEditor === true) {
         textEditor.options = {
-          insertSpaces: false,
+          insertSpaces: true,
           tabSize: 4,
         };
 
