@@ -4,7 +4,7 @@ This changelog tracks changes starting from first public release.
 
 ## v0.3.0
 
-- This extension provides now [Swagger](https://swagger.io) support. There might be some limitation due to the [Apiary adapter for API Elements](https://github.com/apiaryio/fury-adapter-swagger) (known issues as well the way it's producing sourcemaps). I'll keep looking/updating the parser as soon the features are improved. There are a lot of code smells I had to put and probably there are different edge cases that won't work propertly. Users are really invited to file an issue when they encounter those things.
+- This extension provides now [Swagger](https://swagger.io) support. There might be some limitation due to the [Apiary adapter for API Elements](https://github.com/apiaryio/fury-adapter-swagger) (known issues as well the way it's producing sourcemaps). I'll keep looking/updating the parser as soon the features are improved. There are a lot of code smells I had to put and probably there are different edge cases that won't work propertly. The reason for that is ultimately the will to release this to the public (as it has been strongly requested) as well not waiting for official fix in the parsers (whose I have no control, actually). Users are really invited to file an issue when they encounter those things.
 
 - [transitions]() have been added as a symbol. Those should be really useful, even if probably a bit noisy. During the next release cycle I would like to set symbols as a configurable array.
 
