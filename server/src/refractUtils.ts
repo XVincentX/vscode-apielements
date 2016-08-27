@@ -39,7 +39,7 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   }
 
   const startRow = document.substring(0, sourceMap.charIndex).split(/\r?\n/g).length - 1;
-  const endRow = startRow + (sourceLines.length > 1 ? sourceLines.length - 1 : sourceLines.length) - 1; // - 1 for the current line, - 1 for the last nextline
+  const endRow = startRow + sourceLines.length - 1;
 
   const startIndex = documentLines[startRow].indexOf(lodash.head(sourceLines));
   const endIndex = documentLines[endRow].length;
@@ -112,8 +112,7 @@ export function extractSymbols(element: any,
       Thing is there is no really source map here and I do not want to solve this
       thing in this release. The long term idea would be to wait till the underlying
       parser will be updated to generate sourcemaps on generated content as well
-      and everybody will be happy; till that moment:
-      😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱
+      and everybody will be happy; till that moment, please bear with me.
     */
 
     let sourceMap = undefined;
