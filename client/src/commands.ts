@@ -28,7 +28,7 @@ function selectApi(context: ExtensionContext) {
 export function parseOutput(context: ExtensionContext, client: LanguageClient, editor: TextEditor) {
   const statusBarDisposable = window.setStatusBarMessage('Parsing current document...');
   client.sendRequest({ method: 'parserOutput' }, editor.document.getText())
-    .then(result => showUntitledWindow('parseResult.json', <string>result, context.extensionPath))
+    .then(result => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath))
     .then(() => statusBarDisposable.dispose())
     .then(null, showMessage);
 }

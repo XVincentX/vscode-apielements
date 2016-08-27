@@ -7,7 +7,12 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   const firstSourceMap = lodash.first(refractSourceMap);
 
   if (typeof (firstSourceMap) === 'undefined') {
-    return {};
+    return {
+      startRow: 0,
+      startIndex: 0,
+      endRow: documentLines.length - 1,
+      endIndex: documentLines[documentLines.length - 1].length
+    };
   }
 
   const sourceMapArray = lodash.map(firstSourceMap.content, (sm) => {
@@ -33,8 +38,8 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
     };
   }
 
-  const startRow = lodash.findIndex(documentLines, (line) => line.indexOf(lodash.head(sourceLines)) > -1);
-  const endRow = startRow + (sourceLines.length > 1 ? sourceLines.length - 1 : sourceLines.length) - 1; // - 1 for the current line, - 1 for the last nextline
+  const startRow = document.substring(0, sourceMap.charIndex).split(/\r?\n/g).length - 1;
+  const endRow = startRow + sourceLines.length - 1;
 
   const startIndex = documentLines[startRow].indexOf(lodash.head(sourceLines));
   const endIndex = documentLines[endRow].length;
@@ -47,7 +52,7 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   };
 }
 
-export function query(element, elementQuery) {
+export function query(element, elementQueries: RefractSymbolMap[], container: string = '') {
   /*
     NOTE: This function is a copy paste of https://github.com/apiaryio/refract-query
     The reason for that was to change some of its behavior and update it to use
@@ -62,12 +67,28 @@ export function query(element, elementQuery) {
     return [];
   }
 
-  const results = lodash.filter(element.content, elementQuery);
+  const arrayOfArrayOfResults = lodash.map(elementQueries, (elementQuery: RefractSymbolMap) => {
+    let filterResult = lodash.filter(element.content, elementQuery.query);
+    lodash.forEach(filterResult, res => {
+      res.symbolKind = elementQuery.symbolKind;
+      res.container = container;
+    });
+    return filterResult;
+  });
+
+  let results = lodash.flatten(arrayOfArrayOfResults);
 
   return lodash
     .chain(element.content)
     .map((nestedElement) => {
-      return query(nestedElement, elementQuery);
+      return query(nestedElement,
+        elementQueries,
+        decodeURI(lodash.get(nestedElement, 'meta.title.content',
+          lodash.get(nestedElement, 'attributes.href.content',
+            lodash.get(nestedElement, 'meta.title')
+          ))
+        )
+      );
     })
     .flatten()
     .concat(results)
@@ -76,63 +97,86 @@ export function query(element, elementQuery) {
 
 export function extractSymbols(element: any,
   document: string,
-  documentLines: string[],
-  refractSymbol = refractSymbolsTree,
-  containerName: string = ""
+  documentLines: string[]
 ): SymbolInformation[] {
 
-  if (!element.content) {
-    return [];
-  }
 
-  if (!lodash.isArray(element.content)) {
-    return [];
-  }
+  let SymbolInformations: SymbolInformation[] = [];
 
-  const queryResults = query(element, refractSymbol.query);
+  const queryResults = query(element, refractSymbolsTree);
 
-  return lodash.flatten(queryResults.map((queryResult) => {
+  return lodash.transform(queryResults, (result, queryResult) => {
+
+    /*
+      WARNING: This might be your reaction when you'll look into this code: 😱
+      Thing is there is no really source map here and I do not want to solve this
+      thing in this release. The long term idea would be to wait till the underlying
+      parser will be updated to generate sourcemaps on generated content as well
+      and everybody will be happy; till that moment, please bear with me.
+    */
+
+    let sourceMap = undefined;
+    ['meta.title.attributes.sourceMap',
+      'attributes.href.attributes.sourceMap',
+      (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
+    ].some((path: string | Function): boolean => {
+      if (typeof (path) === 'function') {
+        sourceMap = lodash.get((<Function>path)(queryResult)[0], 'attributes.method.attributes.sourceMap');
+        return true;
+      } else {
+        if (lodash.has(queryResult, path)) {
+          sourceMap = lodash.get(queryResult, path);
+          return true;
+        }
+      }
+    });
+
     const lineReference = createLineReferenceFromSourceMap(
-      lodash.get(queryResult, refractSymbol.sourceMapPath, []),
+      sourceMap,
       document,
       documentLines
     );
 
-    let results = {};
-    const description = lodash.get(queryResult, refractSymbol.descriptionPath, '');
+    let description = '';
 
-    const lodashChain =
-      lodash
-        .chain(refractSymbol.childs)
-        .map((child) => {
-          return extractSymbols(queryResult, document, documentLines, child, description);
-        })
-        .flatten()
+    ['meta.title.content',
+      'attributes.href.content',
+      (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
+    ].some((path: string | Function): boolean => {
+      if (typeof (path) === 'function') {
+        description = decodeURI(lodash.get((<Function>path)(queryResult)[0], 'attributes.method.content'));
+        return true;
+      } else {
+        if (lodash.has(queryResult, path)) {
+          description = decodeURI(lodash.get(queryResult, path));
+          return true;
+        }
+      }
+
+    });
 
     if (!lodash.isEmpty(lineReference)) {
-      results = SymbolInformation.create(
+      result.push(SymbolInformation.create(
         description,
-        refractSymbol.symbol,
-        Range.create(lineReference.startRow, lineReference.startIndex, lineReference.endRow, lineReference.endIndex),
+        queryResult.symbolKind,
+        Range.create(
+          lineReference.startRow,
+          lineReference.startIndex,
+          lineReference.endRow,
+          lineReference.endIndex
+        ),
         null,
-        containerName);
+        queryResult.container));
 
-      return lodashChain.concat(results).value();
     }
 
-    return lodashChain.value();
-
-  }));
+  });
 
 }
 
 interface RefractSymbolMap {
-  name: string,
-  symbol: SymbolKind,
+  symbolKind: SymbolKind,
   query: any,
-  sourceMapPath: string,
-  descriptionPath: string,
-  childs: RefractSymbolMap[]
 };
 
 
@@ -142,9 +186,8 @@ interface RefractSymbolMap {
   This might not be the complete three, but just the elements we care about.
 */
 
-const refractSymbolsTree: RefractSymbolMap = {
-  name: "API",
-  symbol: SymbolKind.Namespace,
+const refractSymbolsTree: RefractSymbolMap[] = [{
+  symbolKind: SymbolKind.Namespace,
   query: {
     "element": "category",
     "meta": {
@@ -152,31 +195,29 @@ const refractSymbolsTree: RefractSymbolMap = {
         "api"
       ]
     }
-  },
-  sourceMapPath: "meta.title.attributes.sourceMap",
-  descriptionPath: "meta.title.content",
-  childs: [{
-    name: "Resource Group",
-    symbol: SymbolKind.Class,
+  }
+}, {
+    symbolKind: SymbolKind.Module,
     query: {
       "element": "category",
       "meta": {
         "classes": [
           "resourceGroup"
-        ]
+        ],
+        "title": {}
       }
     },
-    sourceMapPath: "meta.title.attributes.sourceMap",
-    descriptionPath: "meta.title.content",
-    childs: [{
-      name: "Resource",
-      symbol: SymbolKind.Method,
-      query: {
-        "element": "resource"
-      },
-      sourceMapPath: "meta.title.attributes.sourceMap",
-      descriptionPath: "meta.title.content",
-      childs: []
-    }]
-  }]
-};
+  }, {
+    symbolKind: SymbolKind.Class,
+    query: {
+      "element": "resource"
+    },
+  }, {
+    symbolKind: SymbolKind.Method,
+    query: {
+      "element": "transition",
+      "content": [{
+        element: "httpTransaction"
+      }]
+    },
+  }];

@@ -82,6 +82,7 @@ Currently, the following resources are indexed:
 1. [API Title]()
 2. [resource]()
 3. [resourceGroup](http://api-elements.readthedocs.io/en/latest/element-definitions/#properties_6)
+4. [transitions]()
 
 The idea would be, of course, to improve symbol navigation as much as possible and exploit
 sourcemaps in all their power. This, however, might take time. If you feel there are some

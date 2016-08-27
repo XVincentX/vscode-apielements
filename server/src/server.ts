@@ -10,11 +10,10 @@ import {
 import * as refractUtils from './refractUtils';
 import {utf16to8} from './utfUtils';
 
+import {parse} from './parser';
+
 let lodash = require('lodash');
 let apiDescriptionMixins = require('lodash-api-description');
-
-let parser = undefined;
-let parserName = undefined;
 
 let refractDocuments = new Map();
 apiDescriptionMixins(lodash);
@@ -23,17 +22,12 @@ const getHelpUrl = (section: string): string => {
   return `https://github.com/XVincentX/vscode-apielements/blob/master/TROUBLESHOT.md${section}`
 }
 
-const setParser = (value, type: string) => {
-  parser = value;
-  parserName = type;
-}
-
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 let documents: TextDocuments = new TextDocuments();
 documents.listen(connection);
 
 let workspaceRoot: string;
-connection.onInitialize((params): Thenable<InitializeResult | ResponseError<InitializeError>> => {
+connection.onInitialize((params): InitializeResult => {
   workspaceRoot = params.rootPath;
 
   const capabilities: ServerCapabilities = {
@@ -41,18 +35,10 @@ connection.onInitialize((params): Thenable<InitializeResult | ResponseError<Init
     documentSymbolProvider: true
   }
 
-  return Files.resolveModule(workspaceRoot, 'drafter.js').then((value) => {
-    setParser(value, 'Drafter.js');
-    return { capabilities: capabilities };
-  }, (error) => {
-    return Files.resolveModule(workspaceRoot, 'protagonist').then((value) => {
-      setParser(value, 'Protagonist');
-      return { capabilities: capabilities };
-    }, (error) => {
-      setParser(require('drafter.js'), 'Ext Drafter.js');
-      return { capabilities: capabilities };
-    });
-  });
+  return <InitializeResult>{
+    capabilities: capabilities
+  };
+
 });
 
 documents.onDidChangeContent((change) => {
@@ -91,30 +77,25 @@ function validateTextDocument(textDocument: TextDocument): void {
   let diagnostics: Diagnostic[] = [];
   let text = textDocument.getText();
 
-  let refractOutput = undefined;
+  parse(text, currentSettings.parser)
+    .then(output => output, (error) => error.result)
+    .then(refractOutput => {
 
-  try {
-    refractOutput = parser.parse(text, currentSettings.parser);
-  } catch (err) {
-    refractOutput = err.result;
-  } finally {
+      refractDocuments.set(textDocument.uri.toString(), refractOutput);
+      let annotations = lodash.filterContent(refractOutput, { element: 'annotation' });
 
-    refractDocuments.set(textDocument.uri.toString(), refractOutput);
-    let annotations = lodash.filterContent(refractOutput, { element: 'annotation' });
+      const utf8Text = utf16to8(text);
+      const documentLines = utf8Text.split(/\r?\n/g);
 
-    const utf8Text = utf16to8(text);
-    const documentLines = utf8Text.split(/\r?\n/g);
+      lodash.forEach(annotations, (annotation) => {
 
-    lodash.forEach(annotations, (annotation) => {
+        const lineReference = refractUtils.createLineReferenceFromSourceMap(
+          annotation.attributes.sourceMap,
+          text,
+          documentLines
+        );
 
-      const lineReference = refractUtils.createLineReferenceFromSourceMap(
-        annotation.attributes.sourceMap,
-        text,
-        documentLines
-      );
-
-      if (!lodash.isEmpty(lineReference)) {
-        diagnostics.push({
+        diagnostics.push(<Diagnostic>{
           severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
           code: annotation.attributes.code,
           range: Range.create(
@@ -124,23 +105,24 @@ function validateTextDocument(textDocument: TextDocument): void {
             lineReference.endIndex
           ),
           message: annotation.content,
-          source: parserName
+          source: 'fury'
         });
-      }
-    });
 
-    connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-  }
+      });
+
+      connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+    })
+
 }
 
 connection.onDocumentSymbol((symbolParam) => {
   try {
     if (currentSettings.parser.exportSourcemap === false) {
-      connection.window.showWarningMessage("\
+      connection.window.showWarningMessage('\
         The current parser options have source maps disabled.\
-        Without those, it's not possible to generate document symbol.\
-        ", { title: "More Info" }).then(() => {
-          connection.sendNotification({ method: "openUrl" }, getHelpUrl('#no-sourcemaps-enabled'));
+        Without those, it\'s not possible to generate document symbol.\
+        ', { title: 'More Info' }).then(() => {
+          connection.sendNotification({ method: 'openUrl' }, getHelpUrl('#no-sourcemaps-enabled'));
         });
 
       return Promise.resolve([]); // I cannot let you navigate if I have no source map.
@@ -159,14 +141,8 @@ connection.onDocumentSymbol((symbolParam) => {
 
 });
 
-connection.onRequest({ method: "parserOutput" }, (code) => {
-  try {
-    let settings = lodash.clone(currentSettings);
-    settings.json = false;
-    return parser.parse(code, settings);
-  } catch (e) {
-    return e.result;
-  }
-})
+connection.onRequest({ method: 'parserOutput' }, (code: string) => {
+  return parse(code, currentSettings.parser);
+});
 
 connection.listen();
