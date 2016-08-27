@@ -14,6 +14,8 @@ This changelog tracks changes starting from first public release.
 
 - When APIBlueprint document is selected and `adjustOptions` is set to true, this extension will now set spaces as tab separator by default as is the way drafter.js works
 
+- Minimum VSCode version has been highered to 1.4.0 and I'll keep update it as interesting features will be released. Please keep in mind I'll never consider this a breaking change.
+
 
 ## v0.2.0
 
