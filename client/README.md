@@ -67,8 +67,8 @@ sourcemaps in all their power. This, however, might take time. If you feel there
 important symbols I'm missing, please file an issue, I'll be happy to evaluate it.
 
 ### Basic Apiary Integration
-This extension is able to provide basic Apiary integration. Fundamentally, all
-[Apiary client](https://github.com/apiaryio/apiary-client) have been reimplemented
+This extension is able to provide basic Apiary integration. Fundamentally, the entire
+[Apiary client](https://github.com/apiaryio/apiary-client) has been reimplemented
 following the [Apiary API documentation](http://docs.apiary.apiary.io). It means that
 you can perform the following actions:
 
