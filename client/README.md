@@ -27,7 +27,6 @@ API Elements is the structure for parse results of both API Blueprint and Swagge
 -----
 
 ### Future development / ideas
-* Swagger support (move from drafter to [fury](https://github.com/apiaryio/fury))
 * Render the document using `aglio`
 * Provide autocomplete (if I type `+ Request [` I want to see Http verbs, or in payloads I want to recall MSON structures)
 * Use Codelens feature to provide MSON references and Dredd test status for endpoint
