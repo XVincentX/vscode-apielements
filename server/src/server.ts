@@ -128,7 +128,22 @@ connection.onDocumentSymbol((symbolParam) => {
       return Promise.resolve([]); // I cannot let you navigate if I have no source map.
     }
 
-    const textDocument = utf16to8(documents.get(symbolParam.textDocument.uri).getText());
+    const documentObject = documents.get(symbolParam.textDocument.uri);
+    let textDocument = documentObject.getText();
+
+    if (documentObject.languageId === 'API Blueprint') {
+      textDocument = utf16to8(textDocument);
+
+      /*
+        The reason why this is happening just for API Blueprint is that drafter.js
+        is coming from C++ code (using es). Swagger parser is pure javascript thuos
+        sourcemaps are char based and not byte based.
+
+        See https://github.com/apiaryio/fury.js/issues/63 for more details.
+      */
+    }
+
+
     const documentLines = textDocument.split(/\r?\n/g);
     const refractOutput = refractDocuments.get(symbolParam.textDocument.uri.toString());
 
