@@ -39,7 +39,7 @@ Please file an issue at https://github.com/XVincentX/vscode-apielements.
 
 First install:
 * Node.js (newer than 4.3.1)
-* Npm (newer 2.14.12)
+* Npm (newer 2.14.12) - probably 3.x would be even better
 
 This extension is built on top of Visual Studio template; so:
 
