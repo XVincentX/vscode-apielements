@@ -12,7 +12,6 @@ Welcome to the API Elements extension for Visual Studio Code! This is a [totally
 * [Basic Apiary Integration](#basic-apiary-integration)
 * Parser output
 * [Basic symbol navigation (CMD + @)](#symbol-navigation)
-* [Best parser selection](#best-parser-selection)
 
 ![Basic Screenshot](./screenshot.png)
 
@@ -53,26 +52,6 @@ To **run and develop** do the following:
 * Press F5 in the server to debug and use the extension in the VS Host instance.
 
 ## Notes
-
-### Best parser selection
-As you might know, [Apiary](https://apiary.io) offers multiple parsers for API Elements
-which get updated multiple times per week. In order to decouple this extension from
-the "parsing service" itself, the mechanism to detect the parser to use is the following.
-
-This extension ships with [drafter.js](https://github.com/apiaryio/drafter.js) whose version
-can be determined looking at `package.json` of the `server` directory.
-The idea would be to update it everytime a new parser version comes out.
-
-However, I know this cannot be always possible. So, whenever this extension is started,
-it will try to
-
-1. Lookup for a local `drafter.js` version in your current workspace
-2. Lookup for a local [protagonist](https://github.com/apiaryio/protagonist) version in your current workspace.
-
-If neither one or the other is found, the extension will use its internal parser.
-
-In this way, you should be able to work with your preferred version without having to wait for update
-on my side. If a particular parser version breaks the extension, please file an issue.
 
 ### Symbol navigation
 Symbol navigation is strongly dependant on sourcemaps quality provided by the parser.
