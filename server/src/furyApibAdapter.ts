@@ -1,6 +1,6 @@
 // API Blueprint parser for Fury.js
 
-const drafter = require('drafter');
+const drafter = require('drafter.js');
 
 export const name = 'api-blueprint';
 export const mediaTypes = [
