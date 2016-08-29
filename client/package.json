@@ -159,7 +159,7 @@
     "vscode": "^0.11.0"
   },
   "dependencies": {
-    "axios": "^0.13.1",
+    "axios": "^0.14.0",
     "vscode-languageclient": "^2.4.2"
   }
 }
