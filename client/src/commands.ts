@@ -80,15 +80,15 @@ export function browse(context: ExtensionContext, textEditor: TextEditor) {
   const url = `http://docs.${documentFilename}.apiary.io/`;
 
   return axios.get(url)
-    .then(() => commands.executeCommand('vscode.open', Uri.parse(url)), () => {
+    .then(() => Uri.parse(url), () => {
       return selectApi(context)
         .then(([selectedApi]) => {
           if (selectedApi === undefined) {
             throw 0;
           }
 
-          return commands.executeCommand('vscode.open', Uri.parse((<any>selectedApi).detail))
+          return <any>Uri.parse((<any>selectedApi).detail);
         })
     })
-    .then(undefined, <any>showMessage);
+    .then(url => commands.executeCommand('vscode.open', url), <any>showMessage);
 }
