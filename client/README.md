@@ -51,6 +51,9 @@ To **run and develop** do the following:
 * Open the client in Visual Studio Code (`code .`) and run the `launch` task
 * Press F5 in the server to debug and use the extension in the VS Host instance.
 
+_Note:_ If you're on a Unix envirnonment, you might want to use `open.sh` file which
+will open both **client** and **server** instances at the same time.
+
 ## Notes
 
 ### Symbol navigation
