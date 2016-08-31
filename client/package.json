@@ -36,7 +36,8 @@
     "onCommand:apiElements.parserOutput",
     "onCommand:apiElements.apiary.fetchApi",
     "onCommand:apiElements.apiary.publishApi",
-    "onCommand:apiElements.apiary.logout"
+    "onCommand:apiElements.apiary.logout",
+    "onCommand:apiElements.apiary.browse"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -139,6 +140,12 @@
       {
         "command": "apiElements.apiary.logout",
         "title": "Removes the current Apiary token from VSCode",
+        "category": "API Elements - Apiary",
+        "icon": "./resources/apiary.ico"
+      },
+      {
+        "command": "apiElements.apiary.browse",
+        "title": "Browses the current API on Apiary documentation",
         "category": "API Elements - Apiary",
         "icon": "./resources/apiary.ico"
       }
