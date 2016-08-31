@@ -1,5 +1,4 @@
 const fury = require('fury');
-// const apibParser = require('fury-adapter-apib-parser');
 const apibParser = require('./furyApibAdapter');
 const swaggerParser = require('fury-adapter-swagger');
 

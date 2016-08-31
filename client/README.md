@@ -12,7 +12,6 @@ Welcome to the API Elements extension for Visual Studio Code! This is a [totally
 * [Basic Apiary Integration](#basic-apiary-integration)
 * Parser output
 * [Basic symbol navigation (CMD + @)](#symbol-navigation)
-* [Best parser selection](#best-parser-selection)
 
 ![Basic Screenshot](./screenshot.png)
 
@@ -27,8 +26,7 @@ API Elements is the structure for parse results of both API Blueprint and Swagge
 -----
 
 ### Future development / ideas
-* Swagger support (move from drafter to [fury](https://github.com/apiaryio/fury))
-* Render the document using `aglio`
+* Render the document using `aglio` (this requires investigation as it's able to work just with API Blueprint)
 * Provide autocomplete (if I type `+ Request [` I want to see Http verbs, or in payloads I want to recall MSON structures)
 * Use Codelens feature to provide MSON references and Dredd test status for endpoint
 * Integrate with other API tools (see [Dredd](https://github.com/apiaryio/dredd) or [drakov](https://github.com/Aconex/drakov))
@@ -40,7 +38,7 @@ Please file an issue at https://github.com/XVincentX/vscode-apielements.
 
 First install:
 * Node.js (newer than 4.3.1)
-* Npm (newer 2.14.12)
+* Npm (newer 2.14.12) - probably 3.x would be even better
 
 This extension is built on top of Visual Studio template; so:
 
@@ -54,26 +52,6 @@ To **run and develop** do the following:
 * Press F5 in the server to debug and use the extension in the VS Host instance.
 
 ## Notes
-
-### Best parser selection
-As you might know, [Apiary](https://apiary.io) offers multiple parsers for API Elements
-which get updated multiple times per week. In order to decouple this extension from
-the "parsing service" itself, the mechanism to detect the parser to use is the following.
-
-This extension ships with [drafter.js](https://github.com/apiaryio/drafter.js) whose version
-can be determined looking at `package.json` of the `server` directory.
-The idea would be to update it everytime a new parser version comes out.
-
-However, I know this cannot be always possible. So, whenever this extension is started,
-it will try to
-
-1. Lookup for a local `drafter.js` version in your current workspace
-2. Lookup for a local [protagonist](https://github.com/apiaryio/protagonist) version in your current workspace.
-
-If neither one or the other is found, the extension will use its internal parser.
-
-In this way, you should be able to work with your preferred version without having to wait for update
-on my side. If a particular parser version breaks the extension, please file an issue.
 
 ### Symbol navigation
 Symbol navigation is strongly dependant on sourcemaps quality provided by the parser.
@@ -89,8 +67,8 @@ sourcemaps in all their power. This, however, might take time. If you feel there
 important symbols I'm missing, please file an issue, I'll be happy to evaluate it.
 
 ### Basic Apiary Integration
-This extension is able to provide basic Apiary integration. Fundamentally, all
-[Apiary client](https://github.com/apiaryio/apiary-client) have been reimplemented
+This extension is able to provide basic Apiary integration. Fundamentally, the entire
+[Apiary client](https://github.com/apiaryio/apiary-client) has been reimplemented
 following the [Apiary API documentation](http://docs.apiary.apiary.io). It means that
 you can perform the following actions:
 

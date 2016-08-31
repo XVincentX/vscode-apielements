@@ -4,7 +4,7 @@ This changelog tracks changes starting from first public release.
 
 ## v0.3.0
 
-- This extension provides now [Swagger](https://swagger.io) support. There might be some limitation due to the [Apiary adapter for API Elements](https://github.com/apiaryio/fury-adapter-swagger) (known issues as well the way it's producing sourcemaps). I'll keep looking/updating the parser as soon the features are improved. There are a lot of code smells I had to put and probably there are different edge cases that won't work propertly. Users are really invited to file an issue when they encounter those things.
+- This extension provides now [Swagger](https://swagger.io) support. There might be some limitation due to the [Apiary adapter for API Elements](https://github.com/apiaryio/fury-adapter-swagger) (known issues as well the way it's producing sourcemaps). I'll keep looking/updating the parser as soon the features are improved. There are a lot of code smells I had to put and probably there are different edge cases that won't work propertly. The reason for that is ultimately the will to release this to the public (as it has been strongly requested) as well not waiting for official fix in the parsers (whose I have no control, actually). Users are really invited to file an issue when they encounter those things.
 
 - [transitions]() have been added as a symbol. Those should be really useful, even if probably a bit noisy. During the next release cycle I would like to set symbols as a configurable array.
 
@@ -13,6 +13,10 @@ This changelog tracks changes starting from first public release.
 - All description paths are now decoded using `decodeURI` function. So you will not see anymore `user%2did`, but `user-id`, which is the correct way it should be shown.
 
 - When APIBlueprint document is selected and `adjustOptions` is set to true, this extension will now set spaces as tab separator by default as is the way drafter.js works
+
+- Minimum VSCode version has been highered to 1.4.0 and I'll keep update it as interesting features will be released. Please keep in mind I'll never consider this a breaking change.
+
+- The `json` option for drafter.js has been removed as, using `fury`, all the payload will be converted in JSON anyway.
 
 
 ## v0.2.0

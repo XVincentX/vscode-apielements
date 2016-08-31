@@ -10,5 +10,6 @@ vsc-extension-quickstart.md
 **/*.ts
 **/node_modules/**/*.md
 **/node_modules/**/*.txt
+**/node_modules/.bin/**
 .apiaryToken
 **/LICENSE
