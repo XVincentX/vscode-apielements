@@ -16,6 +16,8 @@ This changelog tracks changes starting from first public release.
 
 - Minimum VSCode version has been highered to 1.4.0 and I'll keep update it as interesting features will be released. Please keep in mind I'll never consider this a breaking change.
 
+- The `json` option for drafter.js has been removed as, using `fury`, all the payload will be converted in JSON anyway.
+
 
 ## v0.2.0
 
