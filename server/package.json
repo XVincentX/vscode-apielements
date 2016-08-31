@@ -16,10 +16,21 @@
     "vscode-languageserver": "^2.2.0"
   },
   "devDependencies": {
+    "jest-cli": "^15.0.0",
     "typescript": "^1.8.9"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/__tests__/preprocessor.js",
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "tsx"
+    ],
+    "testRegex": "/__tests__/.*\\.(ts)$"
   },
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc",
-    "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch"
+    "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch",
+    "test": "jest"
   }
 }
