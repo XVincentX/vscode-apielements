@@ -1,1 +1,116 @@
-<h1>One day there will be docs here.</h1>
+
+<h2 id="api-elements-for-visual-studio-code"><a href="http://api-elements.readthedocs.io/en/latest/">API Elements</a> for <a href="https://code.visualstudio.com">Visual Studio Code</a></h2>
+
+<p><img src="https://vsmarketplacebadge.apphb.com/version/vncz.vscode-apielements.svg" alt="Marketplace link" title=""> <br>
+<img src="https://vsmarketplacebadge.apphb.com/installs/vncz.vscode-apielements.svg" alt="Installs" title=""> <br>
+<img src="https://vsmarketplacebadge.apphb.com/rating/vncz.vscode-apielements.svg" alt="Rating" title=""></p>
+
+<p>Welcome to the API Elements extension for Visual Studio Code! This is a <a href="https://github.com/XVincentX/vscode-apielements/issues/8">totally untested</a> extension which will improve your experience working with API description formats like <a href="https://apiblueprint.org">API Blueprint</a> and <a href="https://swagger.io">Swagger</a>. It provides some great features, such as:</p>
+
+<ul>
+<li>Syntax highlight</li>
+<li>Parser error and warnings</li>
+<li>Useful snippets</li>
+<li><a href="#basic-apiary-integration">Basic Apiary Integration</a></li>
+<li>Parser output</li>
+<li><a href="#symbol-navigation">Basic symbol navigation (CMD + @)</a></li>
+</ul>
+
+<h3 id="whats-api-elements-about">Whatâ€™s API Elements about?</h3>
+
+<p>API Elements is the structure for parse results of both API Blueprint and Swagger, and it is built on the <a href="https://github.com/refractproject/refract-spec#refract">Refract</a> format. It provides a single format for interacting with parse results from various API description formats. So far, only API Blueprint and Swagger are supported.</p>
+
+<hr>
+
+<p><strong>Warning: This package is alpha and probably might be buggy,</strong> but I decided to share the progress for those who are interested. Proceed at your own risk!</p>
+
+<hr>
+
+
+
+<h3 id="future-development-ideas">Future development / ideas</h3>
+
+<ul>
+<li>Render the document using <code>aglio</code> (this requires investigation as itâ€™s able to work just with API Blueprint)</li>
+<li>Provide autocomplete (if I type <code>+ Request [</code> I want to see Http verbs, or in payloads I want to recall MSON structures)</li>
+<li>Use Codelens feature to provide MSON references and Dredd test status for endpoint</li>
+<li>Integrate with other API tools (see <a href="https://github.com/apiaryio/dredd">Dredd</a> or <a href="https://github.com/Aconex/drakov">drakov</a>)</li>
+</ul>
+
+
+
+<h3 id="found-a-bug-or-do-you-need-a-particular-feature">Found a Bug or - do you need a particular feature?</h3>
+
+<p>Please file an issue at <a href="https://github.com/XVincentX/vscode-apielements">https://github.com/XVincentX/vscode-apielements</a>.</p>
+
+
+
+<h3 id="development">Development</h3>
+
+<p>First install: <br>
+* Node.js (newer than 4.3.1) <br>
+* Npm (newer 2.14.12) - probably 3.x would be even better</p>
+
+<p>This extension is built on top of Visual Studio template; so:</p>
+
+<p>To <strong>run and develop</strong> do the following:</p>
+
+<ul>
+<li><p>For both <code>server</code> and <code>client</code> directory (in the exact order):</p></li>
+<li><p>Run <code>npm i</code></p></li>
+<li>Open the server in Visual Studio Code (<code>code .</code>) and run the <code>build</code> task</li>
+<li>Open the client in Visual Studio Code (<code>code .</code>) and run the <code>launch</code> task</li>
+<li>Press F5 in the server to debug and use the extension in the VS Host instance.</li>
+</ul>
+
+<p><em>Note:</em> If youâ€™re on a Unix envirnonment, you might want to use <code>open.sh</code> file which <br>
+will open both <strong>client</strong> and <strong>server</strong> instances at the same time.</p>
+
+
+
+<h2 id="notes">Notes</h2>
+
+
+
+<h3 id="symbol-navigation">Symbol navigation</h3>
+
+<p>Symbol navigation is strongly dependant on sourcemaps quality provided by the parser. <br>
+Currently, the following resources are indexed:</p>
+
+<ol>
+<li><a href="">API Title</a></li>
+<li><a href="">resource</a></li>
+<li><a href="http://api-elements.readthedocs.io/en/latest/element-definitions/#properties_6">resourceGroup</a></li>
+<li><a href="">transitions</a></li>
+</ol>
+
+<p>The idea would be, of course, to improve symbol navigation as much as possible and exploit <br>
+sourcemaps in all their power. This, however, might take time. If you feel there are some <br>
+important symbols Iâ€™m missing, please file an issue, Iâ€™ll be happy to evaluate it.</p>
+
+
+
+<h3 id="basic-apiary-integration">Basic Apiary Integration</h3>
+
+<p>This extension is able to provide basic Apiary integration. Fundamentally, the entire <br>
+<a href="https://github.com/apiaryio/apiary-client">Apiary client</a> has been reimplemented <br>
+following the <a href="http://docs.apiary.apiary.io">Apiary API documentation</a>. It means that <br>
+you can perform the following actions:</p>
+
+<ol>
+<li>Fetch an API Description Document from your account</li>
+<li>Publish an API Description Document to your account</li>
+</ol>
+
+<p>without having to leave the editor at all.</p>
+
+<p>Most of the process is actually automated. Thous, it will ask you to provide a  <br>
+token and redirect you to the right page if itâ€™s not avaliable on your computer. <br>
+All those commands are listed with an <code>Apiary</code> prefix. Therefore, to see what you <br>
+can do, simply type <code>Apiary</code> in the command box to see whatâ€™s going on.</p>
+
+
+
+<h4 id="acknowledges">Acknowledges</h4>
+
+<p>Even if I currently work for Apiary, this extension is my personal work and itâ€™s not backed by Apiary.</p>
