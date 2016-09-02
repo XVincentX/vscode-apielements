@@ -10,6 +10,8 @@ This changelog tracks changes starting from first public release.
 
 - A debounce value for document validation has been introduced, in order to not flood the server process with useless requests whose content is discarded since another one is coming (this is what usually happens when sending keystrokes). The delay value is configurable and it's default value is `1000ms`. Feel free to adjust it with the value that will make you happy.
 
+- All the long running operations have now a status bar text so that the user knows something is going on. As next step I would like to add a spinner or an animation.
+
 ## v0.3.0
 
 - This extension provides now [Swagger](https://swagger.io) support. There might be some limitation due to the [Apiary adapter for API Elements](https://github.com/apiaryio/fury-adapter-swagger) (known issues as well the way it's producing sourcemaps). I'll keep looking/updating the parser as soon the features are improved. There are a lot of code smells I had to put and probably there are different edge cases that won't work propertly. The reason for that is ultimately the will to release this to the public (as it has been strongly requested) as well not waiting for official fix in the parsers (whose I have no control, actually). Users are really invited to file an issue when they encounter those things.
