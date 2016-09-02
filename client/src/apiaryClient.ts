@@ -1,4 +1,4 @@
-const axios = require("axios");
+import axios from 'axios';
 
 
 interface Api {
@@ -30,7 +30,7 @@ export class ApiaryClient {
     if (err.response.data.message)
       throw new Error(err.response.data.message);
 
-    throw err
+    throw err;
   };
 
   getApiList(): Thenable<ApiResult> {

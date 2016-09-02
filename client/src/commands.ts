@@ -1,11 +1,13 @@
-import {TextEditor, ExtensionContext, commands, window, QuickPickItem, Position, Range} from 'vscode';
-import {LanguageClient} from 'vscode-languageclient';
 import * as path from 'path';
 import * as fs from 'fs';
 
+import {TextEditor, ExtensionContext, commands, window, QuickPickItem, Position, Range, Uri} from 'vscode';
+import {LanguageClient} from 'vscode-languageclient';
 import {showMessage} from './showMessage';
 import {showUntitledWindow} from './showUntitledWindow';
 import {requestApiaryClient, killCurrentApiaryClient} from './requestApiaryClient';
+
+import axios from 'axios';
 
 function selectApi(context: ExtensionContext) {
   return requestApiaryClient(context)
@@ -30,7 +32,7 @@ export function parseOutput(context: ExtensionContext, client: LanguageClient, e
   client.sendRequest({ method: 'parserOutput' }, editor.document.getText())
     .then(result => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath))
     .then(() => statusBarDisposable.dispose())
-    .then(null, showMessage);
+    .then(undefined, showMessage);
 }
 
 export function fetchApi(context: ExtensionContext) {
@@ -71,4 +73,22 @@ export function logout(context: ExtensionContext) {
     fs.unlinkSync(tokenFilePath);
     killCurrentApiaryClient();
   }
+}
+
+export function browse(context: ExtensionContext, textEditor: TextEditor) {
+  const documentFilename = path.basename(textEditor.document.fileName, path.extname(textEditor.document.fileName));
+  const url = `http://docs.${documentFilename}.apiary.io/`;
+
+  return axios.get(url)
+    .then(() => Uri.parse(url), () => {
+      return selectApi(context)
+        .then(([selectedApi]) => {
+          if (selectedApi === undefined) {
+            throw 0;
+          }
+
+          return <any>Uri.parse((<any>selectedApi).detail);
+        })
+    })
+    .then(url => commands.executeCommand('vscode.open', url), <any>showMessage);
 }

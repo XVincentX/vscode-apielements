@@ -18,7 +18,8 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
     commands.registerTextEditorCommand('apiElements.parserOutput', Commands.parseOutput.bind(this, context, client)),
     commands.registerCommand('apiElements.apiary.fetchApi', Commands.fetchApi.bind(this, context)),
     commands.registerCommand('apiElements.apiary.logout', Commands.logout.bind(this, context)),
-    commands.registerTextEditorCommand('apiElements.apiary.publishApi', Commands.publishApi.bind(this, context))
+    commands.registerTextEditorCommand('apiElements.apiary.publishApi', Commands.publishApi.bind(this, context)),
+    commands.registerTextEditorCommand('apiElements.apiary.browse', Commands.browse.bind(this, context))
   );
 }
 
