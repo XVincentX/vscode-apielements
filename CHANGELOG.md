@@ -6,6 +6,8 @@ This changelog tracks changes starting from first public release.
 
 - The Apiary integrated client is now sending the `shouldCommit` parameter (set it to `true` by default). This was driven by [offical client update](https://github.com/apiaryio/apiary-client/pull/130)
 
+- Browse to API command has been introduced. Just select it on `Apiary` commands and select it. It will try to get the API name from the current file; if it won't be able to understand it, it will show you a dropdown item where you can select the one you want to browse to.
+
 ## v0.3.0
 
 - This extension provides now [Swagger](https://swagger.io) support. There might be some limitation due to the [Apiary adapter for API Elements](https://github.com/apiaryio/fury-adapter-swagger) (known issues as well the way it's producing sourcemaps). I'll keep looking/updating the parser as soon the features are improved. There are a lot of code smells I had to put and probably there are different edge cases that won't work propertly. The reason for that is ultimately the will to release this to the public (as it has been strongly requested) as well not waiting for official fix in the parsers (whose I have no control, actually). Users are really invited to file an issue when they encounter those things.
