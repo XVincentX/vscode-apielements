@@ -88,3 +88,10 @@ can do, simply type `Apiary` in the command box to see what's going on.
 
 #### Acknowledges
 Even if I currently work for Apiary, this extension is my personal work and it's not backed by Apiary.
+
+#### Dependencies status:
+Client:
+[![dependencies Status](https://david-dm.org/XVincentX/vscode-apielements/status.svg?path=server)](https://david-dm.org/XVincentX/vscode-apielements?path=server)
+
+Server:
+[![dependencies Status](https://david-dm.org/XVincentX/vscode-apielements/status.svg?path=client)](https://david-dm.org/XVincentX/vscode-apielements?path=server)
