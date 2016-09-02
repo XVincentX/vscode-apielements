@@ -59,6 +59,11 @@
           "type": "boolean",
           "description": "On opening API Elements documents, editor settings will be adjusted for you",
           "default": true
+        },
+        "apiElements.validation.debounce": {
+          "type": "number",
+          "description": "Debounce time before triggering the validation parser logic",
+          "default": 1000
         }
       }
     },

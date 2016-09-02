@@ -7,16 +7,18 @@ import {
   InitializeResult, SymbolInformation, Files, ResponseError, InitializeError
 } from 'vscode-languageserver';
 
+import {ApiElementsSettings, ParserSettings, ValidationSettings} from './structures'
 import * as refractUtils from './refractUtils';
 import {utf16to8} from './utfUtils';
-
 import {parse} from './parser';
 
-let lodash = require('lodash');
-let apiDescriptionMixins = require('lodash-api-description');
+const lodash = require('lodash');
+const apiDescriptionMixins = require('lodash-api-description');
 
-let refractDocuments = new Map();
+const refractDocuments = new Map();
 apiDescriptionMixins(lodash);
+
+let debouncedValidateTextDocument: Function = validateTextDocument;
 
 const getHelpUrl = (section: string): string => {
   return `https://github.com/XVincentX/vscode-apielements/blob/master/TROUBLESHOT.md${section}`
@@ -42,7 +44,7 @@ connection.onInitialize((params): InitializeResult => {
 });
 
 documents.onDidChangeContent((change) => {
-  validateTextDocument(change.document);
+  debouncedValidateTextDocument(change.document);
 });
 
 
@@ -50,25 +52,12 @@ documents.onDidClose((event) => {
   connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
 });
 
-interface Settings {
-  apiElements: ApiElementsSettings;
-};
-
-interface ApiElementsSettings {
-  parser: ParserSettings;
-};
-
-interface ParserSettings {
-  exportSourcemap: boolean;
-  json: boolean;
-  requireBlueprintName: boolean;
-  type: string;
-};
-
 let currentSettings: ApiElementsSettings;
 
 connection.onDidChangeConfiguration((change) => {
-  currentSettings = lodash.cloneDeep(change.settings.apiElements);
+  const apiElementsSettings: ApiElementsSettings = change.settings.apiElements;
+  currentSettings = lodash.cloneDeep(apiElementsSettings);
+  debouncedValidateTextDocument = lodash.debounce(validateTextDocument, apiElementsSettings.validation.debounce);
   // Revalidate any open text documents
   documents.all().forEach(validateTextDocument);
 });
