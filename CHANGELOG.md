@@ -2,7 +2,7 @@
 
 This changelog tracks changes starting from first public release.
 
-## master branch
+## v0.4.0
 
 - The Apiary integrated client is now sending the `shouldCommit` parameter (set it to `true` by default). This was driven by [offical client update](https://github.com/apiaryio/apiary-client/pull/130)
 
