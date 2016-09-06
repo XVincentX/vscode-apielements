@@ -1,7 +1,7 @@
 {
   "name": "vscode-apielements",
   "description": "VSCode language server for ApiElements",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "Vincenzo Chianese",
   "license": "MIT",
   "engines": {
