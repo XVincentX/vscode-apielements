@@ -77,6 +77,7 @@ you can perform the following actions:
 
 1. Fetch an API Description Document from your account
 2. Publish an API Description Document to your account
+3. Browse an API Description (navigating on Apiary.io hosted documentation)
 
 without having to leave the editor at all.
 
