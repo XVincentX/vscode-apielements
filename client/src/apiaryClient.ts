@@ -25,10 +25,12 @@ export class ApiaryClient {
 
   private getDataObject = res => res.data;
   private formatError = err => {
-    if (err.response.data.parserError !== undefined)
-      throw new Error(err.response.data.parserError);
-    if (err.response.data.message)
-      throw new Error(err.response.data.message);
+    if (err.response !== undefined) {
+      if (err.response.data.parserError !== undefined)
+        throw new Error(err.response.data.parserError);
+      if (err.response.data.message !== undefined)
+        throw new Error(err.response.data.message);
+    }
 
     throw err;
   };
