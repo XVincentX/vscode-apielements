@@ -31,7 +31,14 @@ export function parseOutput(context: ExtensionContext, client: LanguageClient, e
   window.setStatusBarMessage(
     'Parsing current document...',
     client.sendRequest({ method: 'parserOutput' }, editor.document.getText())
-      .then(result => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath))
+      .then(result => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath),
+      (err) => {
+        if (err.result !== undefined) {
+          return showUntitledWindow('parseResult.json', JSON.stringify(err.result, null, 2), context.extensionPath)
+        }
+
+        throw err;
+      })
       .then(undefined, showMessage)
   );
 }
