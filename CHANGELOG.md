@@ -2,9 +2,10 @@
 
 This changelog tracks changes starting from first public release.
 
-## master
+## v0.4.2
 
 - Provide better error messaging for all failed HTTP requestes.
+- The extension is now able to provide the parser output even if there's a parsing error
 
 ## v0.4.1
 
