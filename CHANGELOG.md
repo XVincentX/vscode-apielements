@@ -2,6 +2,10 @@
 
 This changelog tracks changes starting from first public release.
 
+## master
+
+- Provide better error messaging for all failed HTTP requestes.
+
 ## v0.4.1
 
 - Recall in the README the new feature of browsing an API
