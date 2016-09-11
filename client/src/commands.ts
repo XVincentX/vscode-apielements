@@ -22,7 +22,7 @@ function selectApi(context: ExtensionContext) {
       return Promise.all([window.showQuickPick(elements, {
         matchOnDescription: true,
         matchOnDetail: false,
-        placeHolder: "Select your API"
+        placeHolder: 'Select your API'
       }), client]);
     });
 }
