@@ -19,12 +19,6 @@ Welcome to the API Elements extension for Visual Studio Code! This is a [totally
 
 API Elements is the structure for parse results of both API Blueprint and Swagger, and it is built on the [Refract](https://github.com/refractproject/refract-spec#refract) format. It provides a single format for interacting with parse results from various API description formats. So far, only API Blueprint and Swagger are supported.
 
-----
-
-**Warning: This package is alpha and probably might be buggy,** but I decided to share the progress for those who are interested. Proceed at your own risk!
-
------
-
 ### Future development / ideas
 * Render the document using `aglio` (this requires investigation as it's able to work just with API Blueprint)
 * Provide autocomplete (if I type `+ Request [` I want to see Http verbs, or in payloads I want to recall MSON structures)
@@ -81,7 +75,7 @@ you can perform the following actions:
 
 without having to leave the editor at all.
 
-Most of the process is actually automated. Thous, it will ask you to provide a 
+Most of the process is actually automated. Thous, it will ask you to provide a
 token and redirect you to the right page if it's not avaliable on your computer.
 All those commands are listed with an `Apiary` prefix. Therefore, to see what you
 can do, simply type `Apiary` in the command box to see what's going on.
