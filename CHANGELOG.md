@@ -5,7 +5,10 @@ This changelog tracks changes starting from first public release.
 ## v0.4.2
 
 - Provide better error messaging for all failed HTTP requestes.
+
 - The extension is now able to provide the parser output even if there's a parsing error
+
+- Do not throw a error when fetching the same API multiple times as an untitled window
 
 ## v0.4.1
 
