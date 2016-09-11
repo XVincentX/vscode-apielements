@@ -54,8 +54,11 @@ export function fetchApi(context: ExtensionContext) {
         return Promise.all([(<any>client).getApiCode((<any>selectedApi).label), (<any>selectedApi).label]);
       })
       .then(([res, apiName]): Thenable<any> => {
-        if (window.activeTextEditor === undefined)
+
+        if (window.activeTextEditor === undefined) {
           return showUntitledWindow(`${apiName}.apib`, (<any>res).code, context.extensionPath)
+        }
+
         return window.activeTextEditor.edit((builder) => {
           const lastLine = window.activeTextEditor.document.lineCount;
           const lastChar = window.activeTextEditor.document.lineAt(lastLine - 1).range.end.character;
