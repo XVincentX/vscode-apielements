@@ -5,7 +5,7 @@
   "author": "Vincenzo Chianese",
   "license": "MIT",
   "version": "0.4.2",
-  "preview": true,
+  "preview": false,
   "icon": "logo.png",
   "bugs": {
     "url": "https://github.com/XVincentX/vscode-apielements/issues"

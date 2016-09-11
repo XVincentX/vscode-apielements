@@ -10,6 +10,8 @@ This changelog tracks changes starting from first public release.
 
 - Do not throw a error when fetching the same API multiple times as an untitled window
 
+- This extension is not more flagged as preview stuff (finally)
+
 ## v0.4.1
 
 - Recall in the README the new feature of browsing an API
