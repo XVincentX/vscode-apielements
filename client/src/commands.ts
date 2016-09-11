@@ -44,7 +44,7 @@ export function parseOutput(context: ExtensionContext, client: LanguageClient, e
 }
 
 export function fetchApi(context: ExtensionContext) {
-  window.setStatusBarMessage('Fetching API from Apiary...',
+  window.setStatusBarMessage('Fetching API list from Apiary...',
     selectApi(context)
       .then(([selectedApi, client]) => {
         if (selectedApi === undefined) {
@@ -56,7 +56,7 @@ export function fetchApi(context: ExtensionContext) {
       .then(([res, apiName]): Thenable<any> => {
 
         if (window.activeTextEditor === undefined) {
-          return showUntitledWindow(`${apiName}.apib`, (<any>res).code, context.extensionPath)
+          return showUntitledWindow(`${apiName}`, (<any>res).code, context.extensionPath)
         }
 
         return window.activeTextEditor.edit((builder) => {
