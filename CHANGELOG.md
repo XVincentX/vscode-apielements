@@ -2,6 +2,10 @@
 
 This changelog tracks changes starting from first public release.
 
+## master
+
+- YAML syntax colorisation has been updated according to the changes made in [VSCode repository](https://github.com/Microsoft/vscode/pull/11666).
+
 ## v0.4.2
 
 - Provide better error messaging for all failed HTTP requestes.
