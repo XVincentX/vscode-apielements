@@ -13,7 +13,7 @@
     "fury-adapter-swagger": "^0.9.5",
     "lodash": "^4.15.0",
     "lodash-api-description": "0.0.2",
-    "vscode-languageserver": "^2.2.0"
+    "vscode-languageserver": "^2.5.0"
   },
   "devDependencies": {
     "jest-cli": "^15.0.0",
