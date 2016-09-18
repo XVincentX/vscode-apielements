@@ -12,4 +12,12 @@ describe('refractUtils', () => {
     expect(3 + 1).toBe(4);
   });
 
+  it('does something else', () => {
+    const src = drafter.parse("# nasino");
+    expect(src).toBe("Nasino");
+  })
+
+  it('can test modules', () => {
+    const s = refractUtils.query({}, [], "Nasino");
+  });
 })

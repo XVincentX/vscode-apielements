@@ -25,9 +25,10 @@
     "moduleFileExtensions": [
       "ts",
       "js",
-      "tsx"
+      "json"
     ],
-    "testRegex": "/__tests__/.*\\.(ts)$"
+    "testRegex": "/__tests__/.*\\.(ts)$",
+    "testEnvironment": "node"
   },
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc",
