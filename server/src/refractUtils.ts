@@ -46,10 +46,10 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   const endIndex = documentLines[endRow].length;
 
   return {
-    startRow: startRow,
-    endRow: endRow,
-    startIndex: startIndex,
-    endIndex: endIndex
+    startRow,
+    endRow,
+    startIndex,
+    endIndex
   };
 }
 
@@ -120,6 +120,7 @@ export function extractSymbols(element: any,
     ['meta.title.attributes.sourceMap',
       'attributes.href.attributes.sourceMap',
       'content[0].meta.id.attributes.sourceMap',
+      'content.key.attributes.sourceMap',
       (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
@@ -144,6 +145,7 @@ export function extractSymbols(element: any,
     ['meta.title.content',
       'attributes.href.content',
       'content[0].meta.id.content',
+      'content.key.content',
       (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
@@ -226,5 +228,10 @@ const refractSymbolsTree: RefractSymbolMap[] = [{
           "id": {}
         }
       }]
+    }
+  }, {
+    symbolKind: SymbolKind.Property,
+    query: {
+      "element": "member"
     }
   }];
