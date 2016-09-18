@@ -17,10 +17,11 @@
   },
   "devDependencies": {
     "jest-cli": "^15.0.0",
-    "typescript": "^1.8.9"
+    "typescript": "^1.8.9",
+    "typescript-babel-jest": "^0.1.2"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/__tests__/preprocessor.js",
+    "scriptPreprocessor": "<rootDir>/node_modules/typescript-babel-jest",
     "moduleFileExtensions": [
       "ts",
       "js",
