@@ -118,6 +118,7 @@ export function extractSymbols(element: any,
     let sourceMap = undefined;
     ['meta.title.attributes.sourceMap',
       'attributes.href.attributes.sourceMap',
+      'content[0].meta.id.attributes.sourceMap',
       (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
@@ -141,6 +142,7 @@ export function extractSymbols(element: any,
 
     ['meta.title.content',
       'attributes.href.content',
+      'content[0].meta.id.content',
       (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
@@ -220,4 +222,9 @@ const refractSymbolsTree: RefractSymbolMap[] = [{
         element: "httpTransaction"
       }]
     },
+  }, {
+    symbolKind: SymbolKind.Interface,
+    query: {
+      "element": "dataStructure"
+    }
   }];
