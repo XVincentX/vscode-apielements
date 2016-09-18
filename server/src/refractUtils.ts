@@ -1,5 +1,4 @@
-const lodash = require("lodash");
-
+const lodash = require('lodash');
 import {SymbolInformation, Range, SymbolKind} from 'vscode-languageserver';
 
 export function createLineReferenceFromSourceMap(refractSourceMap, document: string, documentLines: string[]): any {

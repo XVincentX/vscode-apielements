@@ -23,9 +23,9 @@
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/ts-jest/preprocessor.js",
     "moduleFileExtensions": [
-      "ts",
       "js",
-      "json"
+      "json",
+      "ts"
     ],
     "testRegex": "/__tests__/.*\\.(ts)$",
     "testEnvironment": "node",
