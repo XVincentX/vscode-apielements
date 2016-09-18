@@ -86,7 +86,7 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
         elementQueries,
         decodeURI(lodash.get(nestedElement, 'meta.title.content',
           lodash.get(nestedElement, 'attributes.href.content',
-            lodash.get(nestedElement, 'meta.title')
+            lodash.get(nestedElement, 'meta.title', '')
           ))
         )
       );
@@ -214,12 +214,17 @@ const refractSymbolsTree: RefractSymbolMap[] = [{
     query: {
       "element": "transition",
       "content": [{
-        element: "httpTransaction"
+        "element": "httpTransaction"
       }]
     },
   }, {
     symbolKind: SymbolKind.Interface,
     query: {
-      "element": "dataStructure"
+      "element": "dataStructure",
+      "content": [{
+        "meta": {
+          "id": {}
+        }
+      }]
     }
   }];
