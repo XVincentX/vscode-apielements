@@ -136,8 +136,11 @@ connection.onDocumentSymbol((symbolParam) => {
     const documentLines = textDocument.split(/\r?\n/g);
     const refractOutput = refractDocuments.get(symbolParam.textDocument.uri.toString());
 
-    const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument, documentLines);
-    return Promise.resolve(symbolArray);
+    if (refractOutput === undefined) {
+      throw new Error('Document hasn\'t been parsed yet. Hold on!');
+    }
+
+    return Promise.resolve(refractUtils.extractSymbols(refractOutput, textDocument, documentLines));
   } catch (err) {
     connection.window.showErrorMessage(err.message);
   }
