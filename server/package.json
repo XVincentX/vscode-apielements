@@ -17,18 +17,24 @@
   },
   "devDependencies": {
     "jest-cli": "^15.0.0",
-    "typescript": "^1.8.9",
-    "typescript-babel-jest": "^0.1.2"
+    "ts-jest": "^0.1.4",
+    "typescript": "^1.8.9"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/typescript-babel-jest",
+    "scriptPreprocessor": "<rootDir>/node_modules/ts-jest/preprocessor.js",
     "moduleFileExtensions": [
       "ts",
       "js",
       "json"
     ],
     "testRegex": "/__tests__/.*\\.(ts)$",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "globals": {
+      "__TS_CONFIG__": {
+        "module": "commonjs",
+        "jsx": "react"
+      }
+    }
   },
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc",
