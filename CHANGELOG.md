@@ -4,7 +4,13 @@ This changelog tracks changes starting from first public release.
 
 ## master
 
+## v0.4.3
+
 - YAML syntax colorisation has been updated according to the changes made in [VSCode repository](https://github.com/Microsoft/vscode/pull/11666).
+
+- Drafter.js bundled parser was a beta version by mistake - locked to 2.5.0
+
+- Changelog.md file is now being uploaded to MS Servers. Thanks to [my contribution](https://github.com/Microsoft/vscode/issues/11940) next VSCode version will show the changelog directly from the Extension tab.
 
 ## v0.4.2
 
