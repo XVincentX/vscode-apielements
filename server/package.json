@@ -8,7 +8,7 @@
     "node": "*"
   },
   "dependencies": {
-    "drafter.js": "^2.5.0-pre.0",
+    "drafter.js": "^2.5.0",
     "fury": "^2.2.0",
     "fury-adapter-swagger": "^0.9.5",
     "lodash": "^4.15.0",
