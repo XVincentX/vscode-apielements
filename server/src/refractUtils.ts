@@ -1,6 +1,7 @@
 const lodash = require("lodash");
 
 import {SymbolInformation, Range, SymbolKind} from 'vscode-languageserver';
+import {RefractSymbolMap} from './structures'
 
 export function createLineReferenceFromSourceMap(refractSourceMap, document: string, documentLines: string[]): any {
 
@@ -45,10 +46,10 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   const endIndex = documentLines[endRow].length;
 
   return {
-    startRow: startRow,
-    endRow: endRow,
-    startIndex: startIndex,
-    endIndex: endIndex
+    startRow,
+    endRow,
+    startIndex,
+    endIndex
   };
 }
 
@@ -85,7 +86,7 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
         elementQueries,
         decodeURI(lodash.get(nestedElement, 'meta.title.content',
           lodash.get(nestedElement, 'attributes.href.content',
-            lodash.get(nestedElement, 'meta.title')
+            lodash.get(nestedElement, 'meta.title', '')
           ))
         )
       );
@@ -118,6 +119,8 @@ export function extractSymbols(element: any,
     let sourceMap = undefined;
     ['meta.title.attributes.sourceMap',
       'attributes.href.attributes.sourceMap',
+      'content[0].meta.id.attributes.sourceMap',
+      'content.key.attributes.sourceMap',
       (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
@@ -141,6 +144,8 @@ export function extractSymbols(element: any,
 
     ['meta.title.content',
       'attributes.href.content',
+      'content[0].meta.id.content',
+      'content.key.content',
       (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
@@ -173,12 +178,6 @@ export function extractSymbols(element: any,
   });
 
 }
-
-interface RefractSymbolMap {
-  symbolKind: SymbolKind,
-  query: any,
-};
-
 
 /*
   The following structure is based on
@@ -217,7 +216,22 @@ const refractSymbolsTree: RefractSymbolMap[] = [{
     query: {
       "element": "transition",
       "content": [{
-        element: "httpTransaction"
+        "element": "httpTransaction"
       }]
     },
+  }, {
+    symbolKind: SymbolKind.Interface,
+    query: {
+      "element": "dataStructure",
+      "content": [{
+        "meta": {
+          "id": {}
+        }
+      }]
+    }
+  }, {
+    symbolKind: SymbolKind.Property,
+    query: {
+      "element": "member"
+    }
   }];
