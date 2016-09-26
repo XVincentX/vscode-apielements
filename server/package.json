@@ -11,7 +11,7 @@
     "drafter.js": "^2.5.0",
     "fury": "^2.2.0",
     "fury-adapter-swagger": "^0.9.5",
-    "lodash": "^4.15.0",
+    "lodash": "^4.16.2",
     "lodash-api-description": "0.0.2",
     "vscode-languageserver": "^2.2.0"
   },
