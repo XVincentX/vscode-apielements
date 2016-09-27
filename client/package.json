@@ -64,6 +64,26 @@
           "type": "number",
           "description": "Debounce time before triggering the validation parser logic",
           "default": 1000
+        },
+        "apiElements.symbols.api": {
+          "type": "boolean",
+          "description": "Determines if look for api when symbols are requested",
+          "default": true
+        },
+        "apiElements.symbols.resourceGroup": {
+          "type": "boolean",
+          "description": "Determines if look for resourceGroup when symbols are requested",
+          "default": true
+        },
+        "apiElements.symbols.resource": {
+          "type": "boolean",
+          "description": "Determines if look for resource when symbols are requested",
+          "default": true
+        },
+        "apiElements.symbols.transition": {
+          "type": "boolean",
+          "description": "Determines if look for transition when symbols are requested",
+          "default": true
         }
       }
     },
