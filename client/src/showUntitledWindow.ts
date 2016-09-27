@@ -19,7 +19,7 @@ export function showUntitledWindow(fileName: string, content: string, fallbackPa
       edit.insert(<Uri>uri, new Position(0, 0), content);
       return Promise.all([<any>textDocument, workspace.applyEdit(edit)]);
     })
-    .then(([textDocument, editApplied]) => {
+    .then(([textDocument]) => {
       return window.showTextDocument(<any>textDocument, ViewColumn.One, false);
-    })
+    });
 }

@@ -1,9 +1,9 @@
 import {SymbolKind} from 'vscode-languageserver';
 
 interface RefractSymbolMap {
-  symbolKind: SymbolKind,
-  query: any,
-  friendlyName?: string
+  symbolKind: SymbolKind;
+  query: any;
+  friendlyName?: string;
 };
 
 /*

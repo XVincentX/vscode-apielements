@@ -5,12 +5,8 @@
 'use strict';
 
 import * as path from 'path';
-import * as fs from 'fs';
 import { window, workspace, ExtensionContext, commands, Uri, EndOfLine } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
-
-import {showUntitledWindow} from './showUntitledWindow';
-import {showMessage} from './showMessage';
 import * as Commands from './commands';
 
 function registerCommands(client: LanguageClient, context: ExtensionContext) {
@@ -47,7 +43,7 @@ function registerWindowEvents() {
         );
       }
     }
-  })
+  });
 
 }
 
@@ -57,7 +53,7 @@ export function activate(context: ExtensionContext) {
   const serverOptions: ServerOptions = {
     run: { module: serverModule, transport: TransportKind.ipc },
     debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
-  }
+  };
 
   const clientOptions: LanguageClientOptions = {
     documentSelector: ['API Blueprint', 'Swagger'],
@@ -65,7 +61,7 @@ export function activate(context: ExtensionContext) {
       configurationSection: 'apiElements',
       fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
     }
-  }
+  };
 
   const client = new LanguageClient('apiElements', 'Api Elements', serverOptions, clientOptions);
 

@@ -1,14 +1,13 @@
 'use strict';
 
 import {
-  IPCMessageReader, IPCMessageWriter, ServerCapabilities, SymbolKind, Range,
-  createConnection, IConnection, TextDocumentSyncKind,
-  TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
-  InitializeResult, SymbolInformation, Files, ResponseError, InitializeError
+  IPCMessageReader, IPCMessageWriter, ServerCapabilities, Range,
+  createConnection, IConnection, TextDocuments, TextDocument,
+  Diagnostic, DiagnosticSeverity, InitializeResult
 } from 'vscode-languageserver';
 
-import {ApiElementsSettings, ParserSettings, ValidationSettings} from './structures'
-import {defaultRefractSymbolsTree, RefractSymbolMap} from './refractSymbolMap';
+import {ApiElementsSettings} from './structures';
+import {defaultRefractSymbolsTree} from './refractSymbolMap';
 import * as refractUtils from './refractUtils';
 import {utf16to8} from './utfUtils';
 import {parse} from './parser';
@@ -22,8 +21,8 @@ apiDescriptionMixins(lodash);
 let debouncedValidateTextDocument: Function = validateTextDocument;
 
 const getHelpUrl = (section: string): string => {
-  return `https://github.com/XVincentX/vscode-apielements/blob/master/TROUBLESHOT.md${section}`
-}
+  return `https://github.com/XVincentX/vscode-apielements/blob/master/TROUBLESHOT.md${section}`;
+};
 
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 let documents: TextDocuments = new TextDocuments();
@@ -36,7 +35,7 @@ connection.onInitialize((params): InitializeResult => {
   const capabilities: ServerCapabilities = {
     textDocumentSync: documents.syncKind,
     documentSymbolProvider: true
-  }
+  };
 
   return <InitializeResult>{
     capabilities: capabilities
@@ -109,7 +108,7 @@ function validateTextDocument(textDocument: TextDocument): void {
       });
 
       connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-    })
+    });
 
 }
 

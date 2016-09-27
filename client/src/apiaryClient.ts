@@ -2,17 +2,17 @@ import axios from 'axios';
 
 
 interface Api {
-  apiName: string,
-  apiSubdomain: string,
-  apiDocumentationUrl: string
-  apiIsPrivate: boolean,
-  apiIsPublic: boolean,
-  apiIsTeam: boolean,
-  apiIsPersonal: boolean
+  apiName: string;
+  apiSubdomain: string;
+  apiDocumentationUrl: string;
+  apiIsPrivate: boolean;
+  apiIsPublic: boolean;
+  apiIsTeam: boolean;
+  apiIsPersonal: boolean;
 }
 
 interface ApiResult {
-  apis: Array<Api>
+  apis: Array<Api>;
 }
 
 export class ApiaryClient {
@@ -26,10 +26,11 @@ export class ApiaryClient {
   private getDataObject = res => res.data;
   private formatError = err => {
     if (err.response !== undefined) {
-      if (err.response.data.parserError !== undefined)
+      if (err.response.data.parserError !== undefined) {
         throw new Error(err.response.data.parserError);
-      if (err.response.data.message !== undefined)
+      } else if (err.response.data.message !== undefined) {
         throw new Error(err.response.data.message);
+      }
     }
 
     throw err;

@@ -1,6 +1,6 @@
 const lodash = require("lodash");
 
-import {SymbolInformation, Range, SymbolKind} from 'vscode-languageserver';
+import {SymbolInformation, Range} from 'vscode-languageserver';
 import {RefractSymbolMap} from './refractSymbolMap';
 
 export function createLineReferenceFromSourceMap(refractSourceMap, document: string, documentLines: string[]): any {
@@ -20,7 +20,7 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
     return {
       charIndex: lodash.head(sm),
       charCount: lodash.last(sm)
-    }
+    };
   });
 
   // I didn't find any useful example of multiple sourcemap elements.
@@ -101,9 +101,6 @@ export function extractSymbols(element: any,
   documentLines: string[],
   symbolsType: RefractSymbolMap[]
 ): SymbolInformation[] {
-
-
-  let SymbolInformations: SymbolInformation[] = [];
 
   const queryResults = query(element, symbolsType);
 

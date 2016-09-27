@@ -34,7 +34,7 @@ export function parseOutput(context: ExtensionContext, client: LanguageClient, e
       .then(result => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath),
       (err) => {
         if (err.result !== undefined) {
-          return showUntitledWindow('parseResult.json', JSON.stringify(err.result, null, 2), context.extensionPath)
+          return showUntitledWindow('parseResult.json', JSON.stringify(err.result, null, 2), context.extensionPath);
         }
 
         throw err;
@@ -56,7 +56,7 @@ export function fetchApi(context: ExtensionContext) {
       .then(([res, apiName]): Thenable<any> => {
 
         if (window.activeTextEditor === undefined) {
-          return showUntitledWindow(`${apiName}`, (<any>res).code, context.extensionPath)
+          return showUntitledWindow(`${apiName}`, (<any>res).code, context.extensionPath);
         }
 
         return window.activeTextEditor.edit((builder) => {
@@ -103,7 +103,7 @@ export function browse(context: ExtensionContext, textEditor: TextEditor) {
           }
 
           return <any>Uri.parse((<any>selectedApi).detail);
-        })
+        });
     })
     .then(url => commands.executeCommand('vscode.open', url), <any>showMessage);
 }
