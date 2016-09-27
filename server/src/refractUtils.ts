@@ -1,6 +1,7 @@
 const lodash = require("lodash");
 
 import {SymbolInformation, Range, SymbolKind} from 'vscode-languageserver';
+import {RefractSymbolMap} from './refractSymbolMap';
 
 export function createLineReferenceFromSourceMap(refractSourceMap, document: string, documentLines: string[]): any {
 
@@ -173,13 +174,6 @@ export function extractSymbols(element: any,
   });
 
 }
-
-interface RefractSymbolMap {
-  symbolKind: SymbolKind,
-  query: any,
-  friendlyName?: string
-};
-
 
 /*
   The following structure is based on
