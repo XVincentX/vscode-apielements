@@ -61,10 +61,11 @@ connection.onDidChangeConfiguration((change) => {
   currentSettings = lodash.cloneDeep(apiElementsSettings);
   debouncedValidateTextDocument = lodash.debounce(validateTextDocument, apiElementsSettings.validation.debounce);
 
-  const desideredSymbols =
+  const desideredSymbolNames =
     Object.keys(apiElementsSettings.symbols).filter(sym => apiElementsSettings.symbols[sym] === true);
 
-
+  desideredSymbols =
+    defaultRefractSymbolsTree.filter(sym => lodash.includes(desideredSymbolNames, sym.friendlyName));
 
   // Revalidate any open text documents
   documents.all().forEach(validateTextDocument);
