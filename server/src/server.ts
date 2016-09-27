@@ -8,6 +8,7 @@ import {
 } from 'vscode-languageserver';
 
 import {ApiElementsSettings, ParserSettings, ValidationSettings} from './structures'
+import {defaultRefractSymbolsTree, RefractSymbolMap} from './refractSymbolMap';
 import * as refractUtils from './refractUtils';
 import {utf16to8} from './utfUtils';
 import {parse} from './parser';
@@ -53,11 +54,18 @@ documents.onDidClose((event) => {
 });
 
 let currentSettings: ApiElementsSettings;
+let desideredSymbols = defaultRefractSymbolsTree;
 
 connection.onDidChangeConfiguration((change) => {
   const apiElementsSettings: ApiElementsSettings = change.settings.apiElements;
   currentSettings = lodash.cloneDeep(apiElementsSettings);
   debouncedValidateTextDocument = lodash.debounce(validateTextDocument, apiElementsSettings.validation.debounce);
+
+  const desideredSymbols =
+    Object.keys(apiElementsSettings.symbols).filter(sym => apiElementsSettings.symbols[sym] === true);
+
+
+
   // Revalidate any open text documents
   documents.all().forEach(validateTextDocument);
 });
@@ -136,7 +144,7 @@ connection.onDocumentSymbol((symbolParam) => {
     const documentLines = textDocument.split(/\r?\n/g);
     const refractOutput = refractDocuments.get(symbolParam.textDocument.uri.toString());
 
-    const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument, documentLines);
+    const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument, documentLines, desideredSymbols);
     return Promise.resolve(symbolArray);
   } catch (err) {
     connection.window.showErrorMessage(err.message);
