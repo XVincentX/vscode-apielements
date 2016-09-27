@@ -177,6 +177,7 @@ export function extractSymbols(element: any,
 interface RefractSymbolMap {
   symbolKind: SymbolKind,
   query: any,
+  friendlyName?: string
 };
 
 
@@ -188,6 +189,7 @@ interface RefractSymbolMap {
 
 const refractSymbolsTree: RefractSymbolMap[] = [{
   symbolKind: SymbolKind.Namespace,
+  friendlyName: 'api',
   query: {
     "element": "category",
     "meta": {
@@ -198,6 +200,7 @@ const refractSymbolsTree: RefractSymbolMap[] = [{
   }
 }, {
     symbolKind: SymbolKind.Module,
+    friendlyName: 'resourceGroup',
     query: {
       "element": "category",
       "meta": {
@@ -209,11 +212,13 @@ const refractSymbolsTree: RefractSymbolMap[] = [{
     },
   }, {
     symbolKind: SymbolKind.Class,
+    friendlyName: 'resource',
     query: {
       "element": "resource"
     },
   }, {
     symbolKind: SymbolKind.Method,
+    friendlyName: 'transition',
     query: {
       "element": "transition",
       "content": [{
