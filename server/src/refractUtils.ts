@@ -1,6 +1,7 @@
 const lodash = require("lodash");
 
 import {SymbolInformation, Range, SymbolKind} from 'vscode-languageserver';
+import {RefractSymbolMap} from './refractSymbolMap';
 
 export function createLineReferenceFromSourceMap(refractSourceMap, document: string, documentLines: string[]): any {
 
@@ -97,13 +98,14 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
 
 export function extractSymbols(element: any,
   document: string,
-  documentLines: string[]
+  documentLines: string[],
+  symbolsType: RefractSymbolMap[]
 ): SymbolInformation[] {
 
 
   let SymbolInformations: SymbolInformation[] = [];
 
-  const queryResults = query(element, refractSymbolsTree);
+  const queryResults = query(element, symbolsType);
 
   return lodash.transform(queryResults, (result, queryResult) => {
 
@@ -173,51 +175,3 @@ export function extractSymbols(element: any,
   });
 
 }
-
-interface RefractSymbolMap {
-  symbolKind: SymbolKind,
-  query: any,
-};
-
-
-/*
-  The following structure is based on
-  http://api-elements.readthedocs.io/en/latest/overview/#relationship-of-elements.
-  This might not be the complete three, but just the elements we care about.
-*/
-
-const refractSymbolsTree: RefractSymbolMap[] = [{
-  symbolKind: SymbolKind.Namespace,
-  query: {
-    "element": "category",
-    "meta": {
-      "classes": [
-        "api"
-      ]
-    }
-  }
-}, {
-    symbolKind: SymbolKind.Module,
-    query: {
-      "element": "category",
-      "meta": {
-        "classes": [
-          "resourceGroup"
-        ],
-        "title": {}
-      }
-    },
-  }, {
-    symbolKind: SymbolKind.Class,
-    query: {
-      "element": "resource"
-    },
-  }, {
-    symbolKind: SymbolKind.Method,
-    query: {
-      "element": "transition",
-      "content": [{
-        element: "httpTransaction"
-      }]
-    },
-  }];
