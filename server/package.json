@@ -13,13 +13,32 @@
     "fury-adapter-swagger": "^0.9.5",
     "lodash": "^4.16.2",
     "lodash-api-description": "0.0.2",
-    "vscode-languageserver": "^2.2.0"
+    "vscode-languageserver": "^2.5.0"
   },
   "devDependencies": {
+    "jest-cli": "^15.0.0",
+    "ts-jest": "^0.1.4",
     "typescript": "^1.8.9"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/ts-jest/preprocessor.js",
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "testRegex": "/__tests__/.*\\.(ts)$",
+    "testEnvironment": "node",
+    "globals": {
+      "__TS_CONFIG__": {
+        "module": "commonjs",
+        "jsx": "react"
+      }
+    }
   },
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc",
-    "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch"
+    "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch",
+    "test": "jest"
   }
 }

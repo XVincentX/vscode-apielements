@@ -5,7 +5,8 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "../client/server",
-    "allowJs": true
+    "allowJs": true,
+    "removeComments": true
   },
   "exclude": [
     "node_modules"

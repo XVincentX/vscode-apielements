@@ -1,5 +1,3 @@
-'use strict';
-
 import {
   IPCMessageReader, IPCMessageWriter, ServerCapabilities, SymbolKind, Range,
   createConnection, IConnection, TextDocumentSyncKind,
