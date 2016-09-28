@@ -1,6 +1,6 @@
-import {workspace, Uri, window, Position, ViewColumn, WorkspaceEdit} from 'vscode';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
+import {workspace, Uri, window, Position, ViewColumn, WorkspaceEdit} from 'vscode';
 
 export function showUntitledWindow(fileName: string, content: string, fallbackPath: string) {
   const filePath = path.join(workspace.rootPath || fallbackPath, fileName);

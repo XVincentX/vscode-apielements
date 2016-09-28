@@ -1,12 +1,19 @@
 {
+  "extends": [
+    "tslint:latest"
+  ],
 	"rules": {
-		"no-unused-expression": true,
-		"no-duplicate-variable": true,
-		"no-duplicate-key": true,
-		"no-unused-variable": true,
-		"curly": true,
-		"class-name": true,
-		"semicolon": ["always"],
-		"triple-equals": true
+    "quotemark": [
+      "single"
+    ],
+    "no-var-requires": false,
+    "interface-name": [
+      false,
+      "always-prefix"
+    ],
+    "whitespace": [
+      false,
+      "check-typecast"
+    ]
 	}
 }

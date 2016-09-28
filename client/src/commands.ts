@@ -1,11 +1,11 @@
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
 
 import {TextEditor, ExtensionContext, commands, window, QuickPickItem, Position, Range, Uri} from 'vscode';
+import {killCurrentApiaryClient, requestApiaryClient} from './requestApiaryClient';
 import {LanguageClient} from 'vscode-languageclient';
 import {showMessage} from './showMessage';
 import {showUntitledWindow} from './showUntitledWindow';
-import {requestApiaryClient, killCurrentApiaryClient} from './requestApiaryClient';
 
 import axios from 'axios';
 
@@ -15,14 +15,14 @@ function selectApi(context: ExtensionContext) {
     .then(([res, client]) => {
       const elements = (<any>res).apis.map(element =>
         <QuickPickItem>{
-          label: element.apiSubdomain,
           description: element.apiName,
-          detail: element.apiDocumentationUrl
+          detail: element.apiDocumentationUrl,
+          label: element.apiSubdomain,
         });
       return Promise.all([window.showQuickPick(elements, {
         matchOnDescription: true,
         matchOnDetail: false,
-        placeHolder: 'Select your API'
+        placeHolder: 'Select your API',
       }), client]);
     });
 }
@@ -105,5 +105,5 @@ export function browse(context: ExtensionContext, textEditor: TextEditor) {
           return <any>Uri.parse((<any>selectedApi).detail);
         });
     })
-    .then(url => commands.executeCommand('vscode.open', url), <any>showMessage);
+    .then(uri => commands.executeCommand('vscode.open', uri), <any>showMessage);
 }

@@ -2,9 +2,14 @@ import {commands, window, ExtensionContext, Uri} from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 
-
 import {ApiaryClient} from './apiaryClient';
 import {showMessage} from './showMessage';
+
+class TypedError extends Error {
+  constructor(public message: string, public type: string) {
+    super(message);
+  }
+}
 
 let apiaryClient = undefined;
 
@@ -28,8 +33,11 @@ export function requestApiaryClient(context: ExtensionContext): Thenable<ApiaryC
 
     }
 
-
-    return window.showWarningMessage('Unable to find an Apiary Token. It\'s required to operate with Apiary', 'Grab one!', 'Paste one!')
+    return window.showWarningMessage(
+      'Unable to find an Apiary Token. It\'s required to operate with Apiary',
+      'Grab one!',
+      'Paste one!'
+    )
       .then(result => {
         if (result === 'Grab one!') {
           return commands.executeCommand('vscode.open', Uri.parse('https://login.apiary.io/tokens'));
@@ -39,12 +47,10 @@ export function requestApiaryClient(context: ExtensionContext): Thenable<ApiaryC
 
         throw 0;
       })
-      .then(() => window.showInputBox({ placeHolder: 'Paste Apiary token here', password: true }))
+      .then(() => window.showInputBox({ password: true, placeHolder: 'Paste Apiary token here' }))
       .then(token => {
         if (token === undefined) {
-          const e = new Error('No Apiary token provided');
-          e['type'] = 'info';
-          throw e;
+          throw new TypedError('No Apiary token provided', 'info');
         }
 
         try {
