@@ -5,7 +5,6 @@ const swaggerParser = require('fury-adapter-swagger');
 fury.use(swaggerParser);
 fury.use(apibParser); // Everything is APIB if something fails
 
-
 export function parse(source: string, options: any): Thenable<any> {
   return new Promise((resolve, reject) => {
     fury.parse({ source, generateSourceMap: true, options }, (err, result) => {

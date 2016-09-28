@@ -1,5 +1,5 @@
 export function utf16to8(str: string): string {
-  var out, i, len, c;
+  let out, i, len, c;
 
   out = "";
   len = str.length;
@@ -20,8 +20,8 @@ export function utf16to8(str: string): string {
 }
 
 export function utf8to16(str: string): string {
-  var out, i, len, c;
-  var char2, char3;
+  let out, i, len, c;
+  let char2, char3;
 
   out = "";
   len = str.length;

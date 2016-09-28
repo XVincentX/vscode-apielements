@@ -1,7 +1,7 @@
 const lodash = require("lodash");
 
-import {SymbolInformation, Range} from 'vscode-languageserver';
 import {RefractSymbolMap} from './refractSymbolMap';
+import {Range, SymbolInformation} from 'vscode-languageserver';
 
 export function createLineReferenceFromSourceMap(refractSourceMap, document: string, documentLines: string[]): any {
 
@@ -9,17 +9,17 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
 
   if (typeof (firstSourceMap) === 'undefined') {
     return {
-      startRow: 0,
-      startIndex: 0,
+      endIndex: documentLines[documentLines.length - 1].length,
       endRow: documentLines.length - 1,
-      endIndex: documentLines[documentLines.length - 1].length
+      startIndex: 0,
+      startRow: 0,
     };
   }
 
   const sourceMapArray = lodash.map(firstSourceMap.content, (sm) => {
     return {
+      charCount: lodash.last(sm),
       charIndex: lodash.head(sm),
-      charCount: lodash.last(sm)
     };
   });
 
@@ -32,10 +32,10 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   if (sourceSubstring === '\n' || sourceSubstring === '\r') {
     // It's on a newline which I cannot show in the document.
     return {
-      startRow: 0,
+      endIndex: lodash.last(documentLines).length,
       endRow: documentLines.length,
       startIndex: 0,
-      endIndex: lodash.last(documentLines).length
+      startRow: 0,
     };
   }
 
@@ -46,10 +46,10 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   const endIndex = documentLines[endRow].length;
 
   return {
-    startRow: startRow,
-    endRow: endRow,
-    startIndex: startIndex,
-    endIndex: endIndex
+    startRow,
+    endRow,
+    startIndex,
+    endIndex,
   };
 }
 
@@ -96,7 +96,8 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
     .value();
 }
 
-export function extractSymbols(element: any,
+export function extractSymbols(
+  element: any,
   document: string,
   documentLines: string[],
   symbolsType: RefractSymbolMap[]
@@ -117,7 +118,7 @@ export function extractSymbols(element: any,
     let sourceMap = undefined;
     ['meta.title.attributes.sourceMap',
       'attributes.href.attributes.sourceMap',
-      (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
+      (qs) => query(qs, [{ query: { attributes: { method: {} } }, symbolKind: 0 }]),
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
         sourceMap = lodash.get((<Function>path)(queryResult)[0], 'attributes.method.attributes.sourceMap');
@@ -140,7 +141,7 @@ export function extractSymbols(element: any,
 
     ['meta.title.content',
       'attributes.href.content',
-      (qs) => query(qs, [{ symbolKind: 0, query: { "attributes": { "method": {} } } }])
+      (qs) => query(qs, [{ query: { attributes: { method: {} } }, symbolKind: 0 }]),
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
         description = decodeURI(lodash.get((<Function>path)(queryResult)[0], 'attributes.method.content'));

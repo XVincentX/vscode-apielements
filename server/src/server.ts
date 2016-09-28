@@ -3,14 +3,14 @@
 import {
   IPCMessageReader, IPCMessageWriter, ServerCapabilities, Range,
   createConnection, IConnection, TextDocuments, TextDocument,
-  Diagnostic, DiagnosticSeverity, InitializeResult
+  Diagnostic, DiagnosticSeverity, InitializeResult,
 } from 'vscode-languageserver';
 
-import {ApiElementsSettings} from './structures';
+import {parse} from './parser';
 import {defaultRefractSymbolsTree} from './refractSymbolMap';
 import * as refractUtils from './refractUtils';
+import {ApiElementsSettings} from './structures';
 import {utf16to8} from './utfUtils';
-import {parse} from './parser';
 
 const lodash = require('lodash');
 const apiDescriptionMixins = require('lodash-api-description');
@@ -33,12 +33,12 @@ connection.onInitialize((params): InitializeResult => {
   workspaceRoot = params.rootPath;
 
   const capabilities: ServerCapabilities = {
+    documentSymbolProvider: true,
     textDocumentSync: documents.syncKind,
-    documentSymbolProvider: true
   };
 
-  return <InitializeResult>{
-    capabilities: capabilities
+  return <InitializeResult> {
+    capabilities,
   };
 
 });
@@ -47,9 +47,8 @@ documents.onDidChangeContent((change) => {
   debouncedValidateTextDocument(change.document);
 });
 
-
 documents.onDidClose((event) => {
-  connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
+  connection.sendDiagnostics({ diagnostics: [], uri: event.document.uri });
 });
 
 let currentSettings: ApiElementsSettings;
@@ -92,17 +91,18 @@ function validateTextDocument(textDocument: TextDocument): void {
           documentLines
         );
 
-        diagnostics.push(<Diagnostic>{
-          severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
+        diagnostics.push(<Diagnostic> {
           code: annotation.attributes.code,
+          message: annotation.content,
           range: Range.create(
             lineReference.startRow,
             lineReference.startIndex,
             lineReference.endRow,
             lineReference.endIndex
           ),
-          message: annotation.content,
-          source: 'fury'
+          severity: ((lodash.head(annotation.meta.classes) === 'warning')
+          ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
+          source: 'fury',
         });
 
       });
@@ -140,7 +140,6 @@ connection.onDocumentSymbol((symbolParam) => {
       */
     }
 
-
     const documentLines = textDocument.split(/\r?\n/g);
     const refractOutput = refractDocuments.get(symbolParam.textDocument.uri.toString());
 
@@ -149,7 +148,6 @@ connection.onDocumentSymbol((symbolParam) => {
   } catch (err) {
     connection.window.showErrorMessage(err.message);
   }
-
 
 });
 
