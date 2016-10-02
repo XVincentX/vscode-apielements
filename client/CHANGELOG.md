@@ -8,6 +8,8 @@ This changelog tracks changes starting from first public release.
 
 - The entire codebase has been linted with `tslint` and will continue to be managed in this way
 
+- When a `token` is grabbed for the internal Apiary Client, this is now tested on the spot so you do not have to wait until the first usage
+
 ## v0.4.3
 
 - YAML syntax colorisation has been updated according to the changes made in [VSCode repository](https://github.com/Microsoft/vscode/pull/11666).
