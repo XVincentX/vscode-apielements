@@ -1,17 +1,15 @@
 'use strict';
 
 import {
-  IPCMessageReader, IPCMessageWriter, ServerCapabilities, SymbolKind, Range,
-  createConnection, IConnection, TextDocumentSyncKind,
-  TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
-  InitializeResult, SymbolInformation, Files, ResponseError, InitializeError
+  Diagnostic, DiagnosticSeverity, IConnection, IPCMessageReader, IPCMessageWriter, InitializeResult,
+  Range, ServerCapabilities, TextDocument, TextDocuments, createConnection,
 } from 'vscode-languageserver';
 
-import {ApiElementsSettings, ParserSettings, ValidationSettings} from './structures'
-import {defaultRefractSymbolsTree, RefractSymbolMap} from './refractSymbolMap';
-import * as refractUtils from './refractUtils';
-import {utf16to8} from './utfUtils';
 import {parse} from './parser';
+import {defaultRefractSymbolsTree} from './refractSymbolMap';
+import * as refractUtils from './refractUtils';
+import {ApiElementsSettings} from './structures';
+import {utf16to8} from './utfUtils';
 
 const lodash = require('lodash');
 const apiDescriptionMixins = require('lodash-api-description');
@@ -22,8 +20,8 @@ apiDescriptionMixins(lodash);
 let debouncedValidateTextDocument: Function = validateTextDocument;
 
 const getHelpUrl = (section: string): string => {
-  return `https://github.com/XVincentX/vscode-apielements/blob/master/TROUBLESHOT.md${section}`
-}
+  return `https://github.com/XVincentX/vscode-apielements/blob/master/TROUBLESHOT.md${section}`;
+};
 
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 let documents: TextDocuments = new TextDocuments();
@@ -34,12 +32,12 @@ connection.onInitialize((params): InitializeResult => {
   workspaceRoot = params.rootPath;
 
   const capabilities: ServerCapabilities = {
+    documentSymbolProvider: true,
     textDocumentSync: documents.syncKind,
-    documentSymbolProvider: true
-  }
+  };
 
   return <InitializeResult>{
-    capabilities: capabilities
+    capabilities,
   };
 
 });
@@ -48,9 +46,8 @@ documents.onDidChangeContent((change) => {
   debouncedValidateTextDocument(change.document);
 });
 
-
 documents.onDidClose((event) => {
-  connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
+  connection.sendDiagnostics({ diagnostics: [], uri: event.document.uri });
 });
 
 let currentSettings: ApiElementsSettings;
@@ -94,22 +91,23 @@ function validateTextDocument(textDocument: TextDocument): void {
         );
 
         diagnostics.push(<Diagnostic>{
-          severity: ((lodash.head(annotation.meta.classes) === 'warning') ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
           code: annotation.attributes.code,
+          message: annotation.content,
           range: Range.create(
             lineReference.startRow,
             lineReference.startIndex,
             lineReference.endRow,
             lineReference.endIndex
           ),
-          message: annotation.content,
-          source: 'fury'
+          severity: ((lodash.head(annotation.meta.classes) === 'warning')
+            ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
+          source: 'fury',
         });
 
       });
 
       connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-    })
+    });
 
 }
 
@@ -141,7 +139,6 @@ connection.onDocumentSymbol((symbolParam) => {
       */
     }
 
-
     const documentLines = textDocument.split(/\r?\n/g);
     const refractOutput = refractDocuments.get(symbolParam.textDocument.uri.toString());
 
@@ -150,7 +147,6 @@ connection.onDocumentSymbol((symbolParam) => {
   } catch (err) {
     connection.window.showErrorMessage(err.message);
   }
-
 
 });
 

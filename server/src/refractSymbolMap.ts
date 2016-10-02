@@ -1,9 +1,9 @@
 import {SymbolKind} from 'vscode-languageserver';
 
 interface RefractSymbolMap {
-  symbolKind: SymbolKind,
-  query: any,
-  friendlyName?: string
+  symbolKind: SymbolKind;
+  query: any;
+  friendlyName?: string;
 };
 
 /*
@@ -13,43 +13,43 @@ interface RefractSymbolMap {
 */
 
 const defaultRefractSymbolsTree: RefractSymbolMap[] = [{
-  symbolKind: SymbolKind.Namespace,
   friendlyName: 'api',
   query: {
-    "element": "category",
-    "meta": {
-      "classes": [
-        "api"
-      ]
-    }
-  }
+    element: "category",
+    meta: {
+      classes: [
+        "api",
+      ],
+    },
+  },
+  symbolKind: SymbolKind.Namespace,
 }, {
-    symbolKind: SymbolKind.Module,
     friendlyName: 'resourceGroup',
     query: {
-      "element": "category",
-      "meta": {
-        "classes": [
-          "resourceGroup"
+      element: "category",
+      meta: {
+        classes: [
+          "resourceGroup",
         ],
-        "title": {}
-      }
+        title: {},
+      },
     },
+    symbolKind: SymbolKind.Module,
   }, {
-    symbolKind: SymbolKind.Class,
     friendlyName: 'resource',
     query: {
-      "element": "resource"
+      element: "resource",
     },
+    symbolKind: SymbolKind.Class,
   }, {
-    symbolKind: SymbolKind.Method,
     friendlyName: 'transition',
     query: {
-      "element": "transition",
-      "content": [{
-        element: "httpTransaction"
-      }]
+      content: [{
+        element: "httpTransaction",
+      }],
+      element: "transition",
     },
+    symbolKind: SymbolKind.Method,
   }];
 
 export {RefractSymbolMap, defaultRefractSymbolsTree};

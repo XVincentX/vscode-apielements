@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "tslint:latest"
+  ],
+	"rules": {
+    "quotemark": [
+      "single"
+    ],
+    "no-var-requires": false,
+    "interface-name": [
+      false,
+      "always-prefix"
+    ],
+    "whitespace": [
+      false,
+      "check-typecast"
+    ]
+	}
+}

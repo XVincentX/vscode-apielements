@@ -1,11 +1,11 @@
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
 
-import {TextEditor, ExtensionContext, commands, window, QuickPickItem, Position, Range, Uri} from 'vscode';
-import {LanguageClient} from 'vscode-languageclient';
+import {killCurrentApiaryClient, requestApiaryClient} from './requestApiaryClient';
 import {showMessage} from './showMessage';
 import {showUntitledWindow} from './showUntitledWindow';
-import {requestApiaryClient, killCurrentApiaryClient} from './requestApiaryClient';
+import {ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri, commands, window} from 'vscode';
+import {LanguageClient} from 'vscode-languageclient';
 
 import axios from 'axios';
 
@@ -15,14 +15,14 @@ function selectApi(context: ExtensionContext) {
     .then(([res, client]) => {
       const elements = (<any>res).apis.map(element =>
         <QuickPickItem>{
-          label: element.apiSubdomain,
           description: element.apiName,
-          detail: element.apiDocumentationUrl
+          detail: element.apiDocumentationUrl,
+          label: element.apiSubdomain,
         });
       return Promise.all([window.showQuickPick(elements, {
         matchOnDescription: true,
         matchOnDetail: false,
-        placeHolder: 'Select your API'
+        placeHolder: 'Select your API',
       }), client]);
     });
 }
@@ -34,7 +34,7 @@ export function parseOutput(context: ExtensionContext, client: LanguageClient, e
       .then(result => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath),
       (err) => {
         if (err.result !== undefined) {
-          return showUntitledWindow('parseResult.json', JSON.stringify(err.result, null, 2), context.extensionPath)
+          return showUntitledWindow('parseResult.json', JSON.stringify(err.result, null, 2), context.extensionPath);
         }
 
         throw err;
@@ -56,7 +56,7 @@ export function fetchApi(context: ExtensionContext) {
       .then(([res, apiName]): Thenable<any> => {
 
         if (window.activeTextEditor === undefined) {
-          return showUntitledWindow(`${apiName}`, (<any>res).code, context.extensionPath)
+          return showUntitledWindow(`${apiName}`, (<any>res).code, context.extensionPath);
         }
 
         return window.activeTextEditor.edit((builder) => {
@@ -103,7 +103,7 @@ export function browse(context: ExtensionContext, textEditor: TextEditor) {
           }
 
           return <any>Uri.parse((<any>selectedApi).detail);
-        })
+        });
     })
-    .then(url => commands.executeCommand('vscode.open', url), <any>showMessage);
+    .then(uri => commands.executeCommand('vscode.open', uri), <any>showMessage);
 }

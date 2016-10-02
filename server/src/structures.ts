@@ -5,7 +5,7 @@ export interface Settings {
 export interface ApiElementsSettings {
   parser: ParserSettings;
   validation: ValidationSettings;
-  symbols: SymbolsSettings
+  symbols: SymbolsSettings;
 };
 
 export interface ParserSettings {
@@ -16,12 +16,12 @@ export interface ParserSettings {
 };
 
 export interface ValidationSettings {
-  debounce: number
+  debounce: number;
 };
 
 export interface SymbolsSettings {
-  api: boolean,
-  resourceGroup: boolean,
-  resource: boolean,
-  transition: boolean
+  api: boolean;
+  resourceGroup: boolean;
+  resource: boolean;
+  transition: boolean;
 }
