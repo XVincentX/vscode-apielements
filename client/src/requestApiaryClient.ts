@@ -53,14 +53,23 @@ export function requestApiaryClient(context: ExtensionContext): Thenable<ApiaryC
           throw new TypedError('No Apiary token provided', 'info');
         }
 
+        apiaryClient = new ApiaryClient(token);
+        return Promise.all([apiaryClient, token, apiaryClient.getApiList()]);
+      })
+      .then(([client, token]) => {
         try {
           fs.writeFileSync(tokenFilePath, token, { encoding: 'utf8' });
         } catch (e) {
           showMessage(e);
+          throw 0;
         }
-        apiaryClient = new ApiaryClient(token);
-        return apiaryClient;
 
+        return client;
+      },
+      (err) => {
+        apiaryClient = undefined;
+        showMessage('It seems like the token you provided is not valid. Please try again.');
+        throw 0;
       });
   }
 
