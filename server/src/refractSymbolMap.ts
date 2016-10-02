@@ -50,6 +50,13 @@ const defaultRefractSymbolsTree: RefractSymbolMap[] = [{
       element: "transition",
     },
     symbolKind: SymbolKind.Method,
+  }, {
+    friendlyName: 'dataStructure',
+    query: {
+      content: [{ meta: { id: {} } }],
+      element: 'dataStructure',
+    },
+    symbolKind: SymbolKind.Interface,
   }];
 
 export {RefractSymbolMap, defaultRefractSymbolsTree};
