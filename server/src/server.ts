@@ -1,9 +1,8 @@
 'use strict';
 
 import {
-  IPCMessageReader, IPCMessageWriter, ServerCapabilities, Range,
-  createConnection, IConnection, TextDocuments, TextDocument,
-  Diagnostic, DiagnosticSeverity, InitializeResult,
+  Diagnostic, DiagnosticSeverity, IConnection, IPCMessageReader, IPCMessageWriter, InitializeResult,
+  Range, ServerCapabilities, TextDocument, TextDocuments, createConnection,
 } from 'vscode-languageserver';
 
 import {parse} from './parser';
@@ -37,7 +36,7 @@ connection.onInitialize((params): InitializeResult => {
     textDocumentSync: documents.syncKind,
   };
 
-  return <InitializeResult> {
+  return <InitializeResult>{
     capabilities,
   };
 
@@ -91,7 +90,7 @@ function validateTextDocument(textDocument: TextDocument): void {
           documentLines
         );
 
-        diagnostics.push(<Diagnostic> {
+        diagnostics.push(<Diagnostic>{
           code: annotation.attributes.code,
           message: annotation.content,
           range: Range.create(
@@ -101,7 +100,7 @@ function validateTextDocument(textDocument: TextDocument): void {
             lineReference.endIndex
           ),
           severity: ((lodash.head(annotation.meta.classes) === 'warning')
-          ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
+            ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
           source: 'fury',
         });
 

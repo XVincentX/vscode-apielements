@@ -4,10 +4,10 @@
  * ------------------------------------------------------------------------------------------ */
 'use strict';
 
-import * as path from 'path';
-import { window, workspace, ExtensionContext, commands, Uri, EndOfLine } from 'vscode';
-import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
 import * as Commands from './commands';
+import * as path from 'path';
+import { EndOfLine, ExtensionContext, Uri, commands, window, workspace } from 'vscode';
+import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
 
 function registerCommands(client: LanguageClient, context: ExtensionContext) {
   context.subscriptions.push(
@@ -51,16 +51,16 @@ export function activate(context: ExtensionContext) {
   const serverModule = context.asAbsolutePath(path.join('server', 'server.js'));
   const debugOptions = { execArgv: ["--nolazy", "--debug=6004"] };
   const serverOptions: ServerOptions = {
+    debug: { module: serverModule, options: debugOptions, transport: TransportKind.ipc },
     run: { module: serverModule, transport: TransportKind.ipc },
-    debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
   };
 
   const clientOptions: LanguageClientOptions = {
     documentSelector: ['API Blueprint', 'Swagger'],
     synchronize: {
       configurationSection: 'apiElements',
-      fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
-    }
+      fileEvents: workspace.createFileSystemWatcher('**/.clientrc'),
+    },
   };
 
   const client = new LanguageClient('apiElements', 'Api Elements', serverOptions, clientOptions);

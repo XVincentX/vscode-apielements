@@ -1,6 +1,6 @@
-import {commands, window, ExtensionContext, Uri} from 'vscode';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
+import {ExtensionContext, Uri, commands, window} from 'vscode';
 
 import {ApiaryClient} from './apiaryClient';
 import {showMessage} from './showMessage';
@@ -30,7 +30,7 @@ export function requestApiaryClient(context: ExtensionContext): Thenable<ApiaryC
       apiaryClient = new ApiaryClient(token);
       return Promise.resolve(apiaryClient);
     } catch (e) {
-
+      ;
     }
 
     return window.showWarningMessage(

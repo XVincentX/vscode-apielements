@@ -1,6 +1,5 @@
 import {window} from 'vscode';
 
-
 export function showMessage(err) {
   if (typeof err === 'number') {
     return;

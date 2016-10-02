@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-
 interface Api {
   apiName: string;
   apiSubdomain: string;
@@ -22,7 +21,6 @@ export class ApiaryClient {
     axios.defaults.headers.common.Authentication = `Token ${token}`;
     axios.defaults.baseURL = "https://api.apiary.io/";
   }
-
 
   public getApiList(): Thenable<ApiResult> {
     return axios.get('me/apis')

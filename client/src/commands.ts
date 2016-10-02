@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {TextEditor, ExtensionContext, commands, window, QuickPickItem, Position, Range, Uri} from 'vscode';
 import {killCurrentApiaryClient, requestApiaryClient} from './requestApiaryClient';
-import {LanguageClient} from 'vscode-languageclient';
 import {showMessage} from './showMessage';
 import {showUntitledWindow} from './showUntitledWindow';
+import {ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri, commands, window} from 'vscode';
+import {LanguageClient} from 'vscode-languageclient';
 
 import axios from 'axios';
 
