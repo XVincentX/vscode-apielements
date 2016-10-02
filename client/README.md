@@ -48,6 +48,16 @@ To **run and develop** do the following:
 _Note:_ If you're on a Unix envirnonment, you might want to use `open.sh` file which
 will open both **client** and **server** instances at the same time.
 
+### Testing the sources
+
+Sometimes the master branch is not in sync with the latest published version (which is normal). If you want to test the latest change in your VSCode instance, just follow the following steps
+
+1. `npm install -g vsce`
+2. Clone the current repository and switch to the requested branch
+3. Navigate to the `server` directory, then `npm install` and `npm run compile`
+4. Navigate to the `client` directory, then `npm install` and `npm run compile` and `vsce package`
+5. Drag and drop the generated `vsix` file into Visual Studio Code, which will load the extension.
+
 ## Notes
 
 ### Symbol navigation
