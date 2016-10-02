@@ -6,6 +6,8 @@ This changelog tracks changes starting from first public release.
 
 - It is now possible to configure what you think it's a Symbol to report and not. All of them are extension parameters and are enabled by default.
 
+- The entire codebase has been linted with `tslint` and will continue to be managed in this way
+
 ## v0.4.3
 
 - YAML syntax colorisation has been updated according to the changes made in [VSCode repository](https://github.com/Microsoft/vscode/pull/11666).
