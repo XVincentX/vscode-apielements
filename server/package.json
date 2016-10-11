@@ -16,6 +16,7 @@
     "vscode-languageserver": "^2.2.0"
   },
   "devDependencies": {
+    "@types/node": "^6.0.45",
     "tslint": "^3.15.1",
     "typescript": "^2.0.3"
   },
