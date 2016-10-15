@@ -13,7 +13,7 @@
     "fury-adapter-swagger": "^0.9.6",
     "lodash": "^4.16.4",
     "lodash-api-description": "0.0.2",
-    "vscode-languageserver": "^2.2.0"
+    "vscode-languageserver": "^2.6.0"
   },
   "devDependencies": {
     "@types/node": "^6.0.45",

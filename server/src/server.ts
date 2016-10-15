@@ -1,5 +1,7 @@
 'use strict';
 
+interface Thenable<T> extends PromiseLike<T> {};
+
 import {
   Diagnostic, DiagnosticSeverity, IConnection, IPCMessageReader, IPCMessageWriter, InitializeResult,
   Range, ServerCapabilities, TextDocument, TextDocuments, createConnection,

@@ -7,7 +7,7 @@ export function showUntitledWindow(fileName: string, content: string, fallbackPa
   const uri = Uri.parse(`untitled:${filePath}`);
 
   try {
-    fs.accessSync(filePath, fs.F_OK);
+    fs.accessSync(filePath, fs.constants.F_OK);
     fs.unlinkSync(filePath);
   } catch (err) {
     ;
