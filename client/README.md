@@ -92,7 +92,7 @@ can do, simply type `Apiary` in the command box to see what's going on.
 
 
 #### Acknowledges
-Even if I currently work for Apiary, this extension is my personal work and it's not backed by Apiary.
+Even if I currently work for Apiary, this extension is my personal work and **it's not backed by Apiary.**
 
 #### Dependencies status:
 Client:
