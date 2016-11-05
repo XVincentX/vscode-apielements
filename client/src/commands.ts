@@ -4,7 +4,7 @@ import * as path from 'path';
 import {killCurrentApiaryClient, requestApiaryClient} from './requestApiaryClient';
 import {showMessage} from './showMessage';
 import {showUntitledWindow} from './showUntitledWindow';
-import {ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri, commands, window} from 'vscode';
+import {ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri, ViewColumn, commands, window} from 'vscode';
 import {LanguageClient} from 'vscode-languageclient';
 
 import axios from 'axios';
@@ -89,7 +89,7 @@ export function previewApi(context: ExtensionContext, textEditor: TextEditor) {
     <html lang="en">
     <head>
     <meta charset="UTF-8">
-    <title>Nasino pariosino</title>
+    <title>API Preview</title>
     </head>
     <body>
     <script src="https://api.apiary.io/seeds/embed.js"></script>
@@ -101,9 +101,10 @@ export function previewApi(context: ExtensionContext, textEditor: TextEditor) {
     </body>
     </html>`;
 
-  fs.writeFileSync('./tmp.html', preview, 'utf8');
+  const filePath = path.join(context.extensionPath, 'preview.html');
+  fs.writeFileSync(filePath, preview, 'utf8');
 
-  return commands.executeCommand('vscode.previewHtml', Uri.parse('file://tmp.html'));
+  return commands.executeCommand('vscode.previewHtml', Uri.parse(`file:${filePath}`), getViewColumn());
 }
 
 export function logout(context: ExtensionContext) {
@@ -130,4 +131,24 @@ export function browse(context: ExtensionContext, textEditor: TextEditor) {
         });
     })
     .then(uri => commands.executeCommand('vscode.open', uri), <any>showMessage);
+}
+
+function getViewColumn(sideBySide = true): ViewColumn {
+  const active = window.activeTextEditor;
+  if (!active) {
+    return ViewColumn.One;
+  }
+
+  if (!sideBySide) {
+    return active.viewColumn;
+  }
+
+  switch (active.viewColumn) {
+    case ViewColumn.One:
+      return ViewColumn.Two;
+    case ViewColumn.Two:
+      return ViewColumn.Three;
+    default:
+      return active.viewColumn;
+  }
 }
