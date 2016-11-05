@@ -82,6 +82,30 @@ export function publishApi(context: ExtensionContext, textEditor: TextEditor) {
   );
 }
 
+export function previewApi(context: ExtensionContext, textEditor: TextEditor) {
+  const code = textEditor.document.getText();
+  const preview =
+    `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <title>Nasino pariosino</title>
+    </head>
+    <body>
+    <script src="https://api.apiary.io/seeds/embed.js"></script>
+    <script>
+    var embed = new Apiary.Embed({
+    apiBlueprint: \`${code}\`,
+    });
+    </script>
+    </body>
+    </html>`;
+
+  fs.writeFileSync('./tmp.html', preview, 'utf8');
+
+  return commands.executeCommand('vscode.previewHtml', Uri.parse('file://tmp.html'));
+}
+
 export function logout(context: ExtensionContext) {
   const tokenFilePath = path.join(context.extensionPath, '.apiaryToken');
   if (fs.existsSync(path.join(context.extensionPath, '.apiaryToken'))) {

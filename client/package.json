@@ -173,6 +173,12 @@
         "title": "Browses the current API on Apiary documentation",
         "category": "API Elements - Apiary",
         "icon": "./resources/apiary.ico"
+      },
+      {
+        "command": "apiElements.apiary.preview",
+        "title": "Previews the current API on Apiary documentation",
+        "category": "API Elements - Apiary",
+        "icon": "./resources/apiary.ico"
       }
     ]
   },
