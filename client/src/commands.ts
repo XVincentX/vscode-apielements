@@ -9,6 +9,8 @@ import {LanguageClient} from 'vscode-languageclient';
 
 import axios from 'axios';
 
+const escape = require('lodash.escape');
+
 function selectApi(context: ExtensionContext) {
   return requestApiaryClient(context)
     .then(client => Promise.all([client.getApiList(), client]))
@@ -83,7 +85,7 @@ export function publishApi(context: ExtensionContext, textEditor: TextEditor) {
 }
 
 export function previewApi(context: ExtensionContext, textEditor: TextEditor) {
-  const code = textEditor.document.getText();
+  const code = escape(textEditor.document.getText());
   const preview =
     `<!DOCTYPE html>
     <html lang="en">

@@ -194,6 +194,7 @@
   },
   "dependencies": {
     "axios": "^0.14.0",
+    "lodash.escape": "^4.0.1",
     "vscode-languageclient": "^2.4.2"
   }
 }
