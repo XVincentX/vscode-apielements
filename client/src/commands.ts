@@ -4,7 +4,8 @@ import * as path from 'path';
 import {killCurrentApiaryClient, requestApiaryClient} from './requestApiaryClient';
 import {showMessage} from './showMessage';
 import {showUntitledWindow} from './showUntitledWindow';
-import {ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri, ViewColumn, commands, window} from 'vscode';
+import {ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri,
+  ViewColumn, commands, window, workspace} from 'vscode';
 import {LanguageClient} from 'vscode-languageclient';
 
 import axios from 'axios';
@@ -103,10 +104,11 @@ export function previewApi(context: ExtensionContext, textEditor: TextEditor) {
     </body>
     </html>`;
 
-  const filePath = path.join(context.extensionPath, 'preview.html');
+  const filePath = path.join(workspace.rootPath || context.extensionPath, 'preview.html');
   fs.writeFileSync(filePath, preview, 'utf8');
 
-  return commands.executeCommand('vscode.previewHtml', Uri.parse(`file:${filePath}`), getViewColumn());
+  return commands.executeCommand('vscode.previewHtml', Uri.parse(`file:${filePath}`), getViewColumn())
+    .then(() => fs.unlinkSync(filePath));
 }
 
 export function logout(context: ExtensionContext) {

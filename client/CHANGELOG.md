@@ -2,6 +2,10 @@
 
 This changelog tracks changes starting from first public release.
 
+## v0.5.1
+
+- It is now possible to preview the documentation you're working now currently in Apiary using the appropriate feature. Just look for Apiary: Preview command.
+
 ## v0.5.0
 
 - It is now possible to configure what you think it's a Symbol to report and not. All of them are extension parameters and are enabled by default.
