@@ -4,10 +4,13 @@ import * as path from 'path';
 import {killCurrentApiaryClient, requestApiaryClient} from './requestApiaryClient';
 import {showMessage} from './showMessage';
 import {showUntitledWindow} from './showUntitledWindow';
-import {ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri, commands, window} from 'vscode';
+import {ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri,
+  ViewColumn, commands, window, workspace} from 'vscode';
 import {LanguageClient} from 'vscode-languageclient';
 
 import axios from 'axios';
+
+const escape = require('lodash.escape');
 
 function selectApi(context: ExtensionContext) {
   return requestApiaryClient(context)
@@ -82,6 +85,32 @@ export function publishApi(context: ExtensionContext, textEditor: TextEditor) {
   );
 }
 
+export function previewApi(context: ExtensionContext, textEditor: TextEditor) {
+  const code = escape(textEditor.document.getText());
+  const preview =
+    `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <title>API Preview</title>
+    </head>
+    <body>
+    <script src="https://api.apiary.io/seeds/embed.js"></script>
+    <script>
+    var embed = new Apiary.Embed({
+    apiBlueprint: \`${code}\`,
+    });
+    </script>
+    </body>
+    </html>`;
+
+  const filePath = path.join(workspace.rootPath || context.extensionPath, 'preview.html');
+  fs.writeFileSync(filePath, preview, 'utf8');
+
+  return commands.executeCommand('vscode.previewHtml', Uri.parse(`file:${filePath}`), getViewColumn())
+    .then(() => fs.unlinkSync(filePath));
+}
+
 export function logout(context: ExtensionContext) {
   const tokenFilePath = path.join(context.extensionPath, '.apiaryToken');
   if (fs.existsSync(path.join(context.extensionPath, '.apiaryToken'))) {
@@ -106,4 +135,24 @@ export function browse(context: ExtensionContext, textEditor: TextEditor) {
         });
     })
     .then(uri => commands.executeCommand('vscode.open', uri), <any>showMessage);
+}
+
+function getViewColumn(sideBySide = true): ViewColumn {
+  const active = window.activeTextEditor;
+  if (!active) {
+    return ViewColumn.One;
+  }
+
+  if (!sideBySide) {
+    return active.viewColumn;
+  }
+
+  switch (active.viewColumn) {
+    case ViewColumn.One:
+      return ViewColumn.Two;
+    case ViewColumn.Two:
+      return ViewColumn.Three;
+    default:
+      return active.viewColumn;
+  }
 }
