@@ -3,8 +3,8 @@
 interface Thenable<T> extends PromiseLike<T> {};
 
 import {
-  Diagnostic, DiagnosticSeverity, IConnection, IPCMessageReader, IPCMessageWriter, InitializeResult,
-  Range, ServerCapabilities, TextDocument, TextDocuments, createConnection,
+  Diagnostic, DiagnosticSeverity, IConnection, InitializeResult, IPCMessageReader, IPCMessageWriter,
+  Range, RequestType, ServerCapabilities, TextDocument, TextDocuments, createConnection
 } from 'vscode-languageserver';
 
 import {parse} from './parser';
@@ -120,7 +120,7 @@ connection.onDocumentSymbol((symbolParam) => {
         The current parser options have source maps disabled.\
         Without those, it\'s not possible to generate document symbol.\
         ', { title: 'More Info' }).then(() => {
-          connection.sendNotification('openUrl', getHelpUrl('#no-sourcemaps-enabled'));
+          connection.sendNotification({method: 'openUrl'}, getHelpUrl('#no-sourcemaps-enabled'));
         });
 
       return Promise.resolve([]); // I cannot let you navigate if I have no source map.
@@ -152,7 +152,7 @@ connection.onDocumentSymbol((symbolParam) => {
 
 });
 
-connection.onRequest('parserOutput', (code: string) => {
+connection.onRequest({method: 'parserOutput'}, (code: string) => {
   return parse(code, currentSettings.parser);
 });
 
