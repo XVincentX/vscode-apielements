@@ -2,6 +2,10 @@
 
 This changelog tracks changes starting from first public release.
 
+## master
+
+- The entire extension has now been migrated to Typescript 2. Long journey, but we made it.
+
 ## v0.6.0
 
 - It is now possible to preview the documentation you're working now currently in Apiary using the appropriate feature. Just look for Apiary: Preview command.
