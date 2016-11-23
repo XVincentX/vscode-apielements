@@ -2,21 +2,26 @@
 
 const drafter = require('drafter.js');
 
-export const name = 'api-blueprint';
-export const mediaTypes = [
+const name = 'api-blueprint';
+const mediaTypes = [
   'text/vnd.apiblueprint',
 ];
 
-export function detect(source) {
+function detect(source) {
   return true;
 }
 
 /*
  * Parse an API Blueprint into refract elements.
  */
-export function parse({source, generateSourceMap}, done) {
+function parse({source, generateSourceMap}, done) {
   const options = { exportSourcemap: generateSourceMap };
   drafter.parse(source, options, done);
 }
 
-export default { name, mediaTypes, detect, parse };
+function validate({source, requireBlueprintName}, done) {
+  const options = { requireBlueprintName };
+  drafter.validate(source, options, done);
+}
+
+export default { name, mediaTypes, detect, validate, parse };
