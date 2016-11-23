@@ -8,16 +8,17 @@
     "node": "*"
   },
   "dependencies": {
-    "drafter.js": "^2.5.1",
-    "fury": "^2.2.0",
-    "fury-adapter-swagger": "^0.9.5",
-    "lodash": "^4.16.4",
+    "drafter.js": "^2.6.0",
+    "fury": "^2.3.0",
+    "fury-adapter-swagger": "^0.9.9",
+    "lodash": "^4.17.2",
     "lodash-api-description": "0.0.2",
-    "vscode-languageserver": "^2.2.0"
+    "vscode-languageserver": "^2.6.1"
   },
   "devDependencies": {
-    "tslint": "^3.15.1",
-    "typescript": "^1.8.9"
+    "@types/node": "^6.0.46",
+    "tslint": "^4.0.1",
+    "typescript": "^2.0.7"
   },
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc",

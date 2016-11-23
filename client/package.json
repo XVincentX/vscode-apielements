@@ -183,18 +183,19 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
-    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "devDependencies": {
-    "tslint": "^3.15.1",
-    "typescript": "^1.8.9",
-    "vscode": "^0.11.18"
+    "@types/node": "^6.0.50",
+    "tslint": "^4.0.1",
+    "typescript": "^2.0.10",
+    "vscode": "^1.0.3"
   },
   "dependencies": {
-    "axios": "^0.14.0",
     "lodash.escape": "^4.0.1",
-    "vscode-languageclient": "^2.4.2"
+    "axios": "^0.15.2",
+    "vscode-languageclient": "^2.6.3"
   }
 }

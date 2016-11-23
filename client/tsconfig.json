@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es2015",
     "module": "commonjs",
-    "moduleResolution": "node",
+    "target": "es6",
     "outDir": "out",
-    "noLib": true,
+    "lib": [
+      "es6"
+    ],
     "sourceMap": true
   },
   "exclude": [
-    "node_modules",
-    "server"
+    "node_modules"
   ]
 }
