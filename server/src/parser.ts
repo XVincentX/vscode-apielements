@@ -19,3 +19,18 @@ export function parse(source: string, options: any): Thenable<any> {
     });
   });
 }
+
+export function validate(source: string, options: any): Thenable<any> {
+  return new Promise((resolve, reject) => {
+    fury.validate({ source, options }, (err, result) => {
+      // Yet callbacks in 2016? Yes.
+
+      if (result !== undefined) {
+        return resolve(result.toRefract());
+      }
+
+      return reject(err);
+
+    });
+  });
+}
