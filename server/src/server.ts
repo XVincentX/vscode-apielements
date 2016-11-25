@@ -3,8 +3,8 @@
 interface Thenable<T> extends PromiseLike<T> { };
 
 import {
-  Diagnostic, DiagnosticSeverity, IConnection, InitializeResult, IPCMessageReader, IPCMessageWriter,
-  Range, RequestType, ServerCapabilities, TextDocument, TextDocuments, createConnection,
+  createConnection, Diagnostic, DiagnosticSeverity, IConnection, InitializeResult, IPCMessageReader, IPCMessageWriter,
+  Range, RequestType, ServerCapabilities, TextDocument, TextDocuments,
 } from 'vscode-languageserver';
 
 import { parse, validate } from './parser';

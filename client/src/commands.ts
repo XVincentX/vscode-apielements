@@ -1,22 +1,27 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {killCurrentApiaryClient, requestApiaryClient} from './requestApiaryClient';
-import {showMessage} from './showMessage';
-import {showUntitledWindow} from './showUntitledWindow';
-import {ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri,
-  ViewColumn, commands, window, workspace} from 'vscode';
-import {LanguageClient} from 'vscode-languageclient';
+import { killCurrentApiaryClient, requestApiaryClient } from './requestApiaryClient';
+import { showMessage } from './showMessage';
+import { showUntitledWindow } from './showUntitledWindow';
+import {
+  commands, ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri,
+  ViewColumn, window, workspace,
+} from 'vscode';
+
+import { LanguageClient } from 'vscode-languageclient';
 
 import axios from 'axios';
 
 const escape = require('lodash.escape');
 
+const API_VALIDATION_FAILED = 'The current API is invalid. Please fix it first.';
+
 function selectApi(context: ExtensionContext) {
   return requestApiaryClient(context)
-    .then(client => Promise.all([client.getApiList(), client]))
+    .then((client) => Promise.all([client.getApiList(), client]))
     .then(([res, client]) => {
-      const elements = (<any>res).apis.map(element =>
+      const elements = (<any>res).apis.map((element) =>
         <QuickPickItem>{
           description: element.apiName,
           detail: element.apiDocumentationUrl,
@@ -34,7 +39,7 @@ export function parseOutput(context: ExtensionContext, client: LanguageClient, e
   window.setStatusBarMessage(
     'Parsing current document...',
     client.sendRequest({ method: 'parserOutput' }, editor.document.getText())
-      .then(result => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath),
+      .then((result) => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath),
       (err) => {
         if (err.result !== undefined) {
           return showUntitledWindow('parseResult.json', JSON.stringify(err.result, null, 2), context.extensionPath);
@@ -74,11 +79,15 @@ export function fetchApi(context: ExtensionContext) {
 
 }
 
-export function publishApi(context: ExtensionContext, textEditor: TextEditor) {
+export function publishApi(context: ExtensionContext, languageClient: LanguageClient, textEditor: TextEditor) {
   window.setStatusBarMessage('Publishing API on Apiary...',
-    selectApi(context)
+    languageClient.sendRequest({ method: 'validate' }, textEditor.document.getText())
+      .then(() => selectApi(context), () => showMessage(API_VALIDATION_FAILED))
       .then(([selectedApi, client]) => {
-        return (<any>client).publishApi((<any>selectedApi).label, textEditor.document.getText(), '');
+        if (selectedApi !== undefined) {
+          return (<any>client).publishApi((<any>selectedApi).label, textEditor.document.getText(), '');
+        }
+        throw 0;
       })
       .then(() => window.showInformationMessage('API successuflly published on Apiary!'))
       .then(undefined, showMessage)
@@ -134,7 +143,7 @@ export function browse(context: ExtensionContext, textEditor: TextEditor) {
           return <any>Uri.parse((<any>selectedApi).detail);
         });
     })
-    .then(uri => commands.executeCommand('vscode.open', uri), <any>showMessage);
+    .then((uri) => commands.executeCommand('vscode.open', uri), <any>showMessage);
 }
 
 function getViewColumn(sideBySide = true): ViewColumn {
