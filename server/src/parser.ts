@@ -25,11 +25,11 @@ export function validate(source: string, options: any): Thenable<any> {
     fury.validate({ source, options }, (err, result) => {
       // Yet callbacks in 2016? Yes.
 
-      if (result !== undefined) {
+      if (result !== undefined && result !== null) {
         return resolve(result.toRefract());
       }
 
-      return reject(err);
+      return reject(err || new Error('No result came from the parser!'));
 
     });
   });
