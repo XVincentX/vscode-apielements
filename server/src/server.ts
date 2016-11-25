@@ -1,17 +1,17 @@
 'use strict';
 
-interface Thenable<T> extends PromiseLike<T> {};
+interface Thenable<T> extends PromiseLike<T> { };
 
 import {
   Diagnostic, DiagnosticSeverity, IConnection, InitializeResult, IPCMessageReader, IPCMessageWriter,
-  Range, RequestType, ServerCapabilities, TextDocument, TextDocuments, createConnection
+  Range, RequestType, ServerCapabilities, TextDocument, TextDocuments, createConnection,
 } from 'vscode-languageserver';
 
-import {parse} from './parser';
-import {defaultRefractSymbolsTree} from './refractSymbolMap';
+import { parse, validate } from './parser';
+import { defaultRefractSymbolsTree } from './refractSymbolMap';
 import * as refractUtils from './refractUtils';
-import {ApiElementsSettings} from './structures';
-import {utf16to8} from './utfUtils';
+import { ApiElementsSettings } from './structures';
+import { utf16to8 } from './utfUtils';
 
 const lodash = require('lodash');
 const apiDescriptionMixins = require('lodash-api-description');
@@ -61,10 +61,10 @@ connection.onDidChangeConfiguration((change) => {
   debouncedValidateTextDocument = lodash.debounce(validateTextDocument, apiElementsSettings.validation.debounce);
 
   const desideredSymbolNames =
-    Object.keys(apiElementsSettings.symbols).filter(sym => apiElementsSettings.symbols[sym] === true);
+    Object.keys(apiElementsSettings.symbols).filter((sym) => apiElementsSettings.symbols[sym] === true);
 
   desideredSymbols =
-    defaultRefractSymbolsTree.filter(sym => lodash.includes(desideredSymbolNames, sym.friendlyName));
+    defaultRefractSymbolsTree.filter((sym) => lodash.includes(desideredSymbolNames, sym.friendlyName));
 
   // Revalidate any open text documents
   documents.all().forEach(validateTextDocument);
@@ -75,8 +75,8 @@ function validateTextDocument(textDocument: TextDocument): void {
   let text = textDocument.getText();
 
   parse(text, currentSettings.parser)
-    .then(output => output, (error) => error.result)
-    .then(refractOutput => {
+    .then((output) => output, (error) => error.result)
+    .then((refractOutput) => {
 
       refractDocuments.set(textDocument.uri.toString(), refractOutput);
       let annotations = lodash.filterContent(refractOutput, { element: 'annotation' });
@@ -89,7 +89,7 @@ function validateTextDocument(textDocument: TextDocument): void {
         const lineReference = refractUtils.createLineReferenceFromSourceMap(
           annotation.attributes.sourceMap,
           text,
-          documentLines
+          documentLines,
         );
 
         diagnostics.push(<Diagnostic>{
@@ -99,7 +99,7 @@ function validateTextDocument(textDocument: TextDocument): void {
             lineReference.startRow,
             lineReference.startIndex,
             lineReference.endRow,
-            lineReference.endIndex
+            lineReference.endIndex,
           ),
           severity: ((lodash.head(annotation.meta.classes) === 'warning')
             ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
@@ -120,7 +120,7 @@ connection.onDocumentSymbol((symbolParam) => {
         The current parser options have source maps disabled.\
         Without those, it\'s not possible to generate document symbol.\
         ', { title: 'More Info' }).then(() => {
-          connection.sendNotification({method: 'openUrl'}, getHelpUrl('#no-sourcemaps-enabled'));
+          connection.sendNotification({ method: 'openUrl' }, getHelpUrl('#no-sourcemaps-enabled'));
         });
 
       return Promise.resolve([]); // I cannot let you navigate if I have no source map.
@@ -152,8 +152,7 @@ connection.onDocumentSymbol((symbolParam) => {
 
 });
 
-connection.onRequest({method: 'parserOutput'}, (code: string) => {
-  return parse(code, currentSettings.parser);
-});
+connection.onRequest({ method: 'parserOutput' }, (code: string) => parse(code, currentSettings.parser));
+connection.onRequest({ method: 'validate' }, (code: string) => validate(code, currentSettings.parser));
 
 connection.listen();
