@@ -93,6 +93,7 @@ can do, simply type `Apiary` in the command box to see what's going on.
 
 #### Acknowledges
 Even if I currently work for Apiary, this extension is my personal work and **it's not backed by Apiary.**
+If you're enjoying the extension and would like to help, consider [a donation](https://paypal.me/vncz)
 
 #### Dependencies status:
 Client:
