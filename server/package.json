@@ -10,7 +10,7 @@
   "dependencies": {
     "drafter.js": "^2.6.0",
     "fury": "^2.3.0",
-    "fury-adapter-swagger": "^0.9.9",
+    "fury-adapter-swagger": "^0.9.11",
     "lodash": "^4.17.2",
     "lodash-api-description": "0.0.2",
     "vscode-languageserver": "^2.6.1"

@@ -37,7 +37,8 @@
     "onCommand:apiElements.apiary.fetchApi",
     "onCommand:apiElements.apiary.publishApi",
     "onCommand:apiElements.apiary.logout",
-    "onCommand:apiElements.apiary.browse"
+    "onCommand:apiElements.apiary.browse",
+    "onCommand:apiElements.apiary.preview"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -188,14 +189,14 @@
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "devDependencies": {
-    "@types/node": "^6.0.50",
-    "tslint": "^4.0.1",
+    "@types/node": "^6.0.51",
+    "tslint": "^4.0.2",
     "typescript": "^2.0.10",
     "vscode": "^1.0.3"
   },
   "dependencies": {
+    "axios": "^0.15.3",
     "lodash.escape": "^4.0.1",
-    "axios": "^0.15.2",
     "vscode-languageclient": "^2.6.3"
   }
 }
