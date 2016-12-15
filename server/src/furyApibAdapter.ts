@@ -1,5 +1,3 @@
-// API Blueprint parser for Fury.js
-
 const drafter = require('drafter.js');
 
 export const name = 'api-blueprint';
@@ -11,12 +9,10 @@ export function detect(source) {
   return true;
 }
 
-/*
- * Parse an API Blueprint into refract elements.
- */
-export function parse({source, generateSourceMap}, done) {
-  const options = { exportSourcemap: generateSourceMap };
-  drafter.parse(source, options, done);
+export function parse(options, done) {
+  drafter.parse(options.source, options, done);
 }
 
-export default { name, mediaTypes, detect, parse };
+export function validate(options, done) {
+  drafter.validate(options.source, options, done);
+}

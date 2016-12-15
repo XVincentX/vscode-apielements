@@ -14,20 +14,20 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
     commands.registerTextEditorCommand('apiElements.parserOutput', Commands.parseOutput.bind(this, context, client)),
     commands.registerCommand('apiElements.apiary.fetchApi', Commands.fetchApi.bind(this, context)),
     commands.registerCommand('apiElements.apiary.logout', Commands.logout.bind(this, context)),
-    commands.registerTextEditorCommand('apiElements.apiary.publishApi', Commands.publishApi.bind(this, context)),
+    commands.registerTextEditorCommand('apiElements.apiary.publishApi', Commands.publishApi.bind(this, context, client)),
     commands.registerTextEditorCommand('apiElements.apiary.browse', Commands.browse.bind(this, context)),
-    commands.registerTextEditorCommand('apiElements.apiary.preview', Commands.previewApi.bind(this, context))
+    commands.registerTextEditorCommand('apiElements.apiary.preview', Commands.previewApi.bind(this, context, client)),
   );
 }
 
 function registerNotifications(client: LanguageClient) {
-  client.onNotification({ method: "openUrl" }, url =>
+  client.onNotification({ method: "openUrl" }, (url) =>
     commands.executeCommand("vscode.open", Uri.parse(<string>url))
   );
 }
 
 function registerWindowEvents() {
-  window.onDidChangeActiveTextEditor(textEditor => {
+  window.onDidChangeActiveTextEditor((textEditor) => {
 
     if (textEditor.document.languageId === 'API Blueprint') {
 
@@ -39,7 +39,7 @@ function registerWindowEvents() {
           tabSize: 4,
         };
 
-        textEditor.edit(editBuilder =>
+        textEditor.edit((editBuilder) =>
           editBuilder.setEndOfLine(EndOfLine.LF)
         );
       }
