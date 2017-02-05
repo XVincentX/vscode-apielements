@@ -1,10 +1,8 @@
 'use strict';
 
-interface Thenable<T> extends PromiseLike<T> {};
-
 import {
   Diagnostic, DiagnosticSeverity, IConnection, InitializeResult, IPCMessageReader, IPCMessageWriter,
-  Range, RequestType, ServerCapabilities, TextDocument, TextDocuments, createConnection
+  Range, RequestType, ServerCapabilities, TextDocument, TextDocuments, createConnection,
 } from 'vscode-languageserver';
 
 import {parse} from './parser';
@@ -25,8 +23,8 @@ const getHelpUrl = (section: string): string => {
   return `https://github.com/XVincentX/vscode-apielements/blob/master/TROUBLESHOT.md${section}`;
 };
 
-let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
-let documents: TextDocuments = new TextDocuments();
+const connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
+const documents: TextDocuments = new TextDocuments();
 documents.listen(connection);
 
 let workspaceRoot: string;
@@ -38,9 +36,9 @@ connection.onInitialize((params): InitializeResult => {
     textDocumentSync: documents.syncKind,
   };
 
-  return <InitializeResult>{
+  return {
     capabilities,
-  };
+  } as InitializeResult;
 
 });
 
@@ -61,25 +59,25 @@ connection.onDidChangeConfiguration((change) => {
   debouncedValidateTextDocument = lodash.debounce(validateTextDocument, apiElementsSettings.validation.debounce);
 
   const desideredSymbolNames =
-    Object.keys(apiElementsSettings.symbols).filter(sym => apiElementsSettings.symbols[sym] === true);
+    Object.keys(apiElementsSettings.symbols).filter((sym) => apiElementsSettings.symbols[sym] === true);
 
   desideredSymbols =
-    defaultRefractSymbolsTree.filter(sym => lodash.includes(desideredSymbolNames, sym.friendlyName));
+    defaultRefractSymbolsTree.filter((sym) => lodash.includes(desideredSymbolNames, sym.friendlyName));
 
   // Revalidate any open text documents
   documents.all().forEach(validateTextDocument);
 });
 
 function validateTextDocument(textDocument: TextDocument): void {
-  let diagnostics: Diagnostic[] = [];
-  let text = textDocument.getText();
+  const diagnostics: Diagnostic[] = [];
+  const text = textDocument.getText();
 
   parse(text, currentSettings.parser)
-    .then(output => output, (error) => error.result)
-    .then(refractOutput => {
+    .then((output) => output, (error) => error.result)
+    .then((refractOutput) => {
 
       refractDocuments.set(textDocument.uri.toString(), refractOutput);
-      let annotations = lodash.filterContent(refractOutput, { element: 'annotation' });
+      const annotations = lodash.filterContent(refractOutput, { element: 'annotation' });
 
       const utf8Text = utf16to8(text);
       const documentLines = utf8Text.split(/\r?\n/g);
@@ -89,22 +87,22 @@ function validateTextDocument(textDocument: TextDocument): void {
         const lineReference = refractUtils.createLineReferenceFromSourceMap(
           annotation.attributes.sourceMap,
           text,
-          documentLines
+          documentLines,
         );
 
-        diagnostics.push(<Diagnostic>{
+        diagnostics.push({
           code: annotation.attributes.code,
           message: annotation.content,
           range: Range.create(
             lineReference.startRow,
             lineReference.startIndex,
             lineReference.endRow,
-            lineReference.endIndex
+            lineReference.endIndex,
           ),
           severity: ((lodash.head(annotation.meta.classes) === 'warning')
             ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
           source: 'fury',
-        });
+        } as Diagnostic);
 
       });
 
@@ -120,7 +118,7 @@ connection.onDocumentSymbol((symbolParam) => {
         The current parser options have source maps disabled.\
         Without those, it\'s not possible to generate document symbol.\
         ', { title: 'More Info' }).then(() => {
-          connection.sendNotification({method: 'openUrl'}, getHelpUrl('#no-sourcemaps-enabled'));
+          connection.sendNotification('openUrl', getHelpUrl('#no-sourcemaps-enabled'));
         });
 
       return Promise.resolve([]); // I cannot let you navigate if I have no source map.
@@ -152,7 +150,7 @@ connection.onDocumentSymbol((symbolParam) => {
 
 });
 
-connection.onRequest({method: 'parserOutput'}, (code: string) => {
+connection.onRequest('parserOutput', (code: string) => {
   return parse(code, currentSettings.parser);
 });
 

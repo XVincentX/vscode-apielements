@@ -53,7 +53,7 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
   };
 }
 
-export function query(element, elementQueries: RefractSymbolMap[], container: string = '') {
+export function query(element, elementQueries, container: string = '') {
   /*
     NOTE: This function is a copy paste of https://github.com/apiaryio/refract-query
     The reason for that was to change some of its behavior and update it to use
@@ -69,15 +69,15 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
   }
 
   const arrayOfArrayOfResults = lodash.map(elementQueries, (elementQuery: RefractSymbolMap) => {
-    let filterResult = lodash.filter(element.content, elementQuery.query);
-    lodash.forEach(filterResult, res => {
+    const filterResult = lodash.filter(element.content, elementQuery.query);
+    lodash.forEach(filterResult, (res) => {
       res.symbolKind = elementQuery.symbolKind;
       res.container = container;
     });
     return filterResult;
   });
 
-  let results = lodash.flatten(arrayOfArrayOfResults);
+  const results = lodash.flatten(arrayOfArrayOfResults);
 
   return lodash
     .chain(element.content)
@@ -86,9 +86,9 @@ export function query(element, elementQueries: RefractSymbolMap[], container: st
         elementQueries,
         decodeURI(lodash.get(nestedElement, 'meta.title.content',
           lodash.get(nestedElement, 'attributes.href.content',
-            lodash.get(nestedElement, 'meta.title')
-          ))
-        )
+            lodash.get(nestedElement, 'meta.title'),
+          )),
+        ),
       );
     })
     .flatten()
@@ -100,7 +100,7 @@ export function extractSymbols(
   element: any,
   document: string,
   documentLines: string[],
-  symbolsType: RefractSymbolMap[]
+  symbolsType: RefractSymbolMap[],
 ): SymbolInformation[] {
 
   const queryResults = query(element, symbolsType);
@@ -115,13 +115,13 @@ export function extractSymbols(
       and everybody will be happy; till that moment, please bear with me.
     */
 
-    let sourceMap = undefined;
+    let sourceMap;
     ['meta.title.attributes.sourceMap',
       'attributes.href.attributes.sourceMap',
       (qs) => query(qs, [{ query: { attributes: { method: {} } }, symbolKind: 0 }]),
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
-        sourceMap = lodash.get((<Function>path)(queryResult)[0], 'attributes.method.attributes.sourceMap');
+        sourceMap = lodash.get((path as Function)(queryResult)[0], 'attributes.method.attributes.sourceMap');
         return true;
       } else {
         if (lodash.has(queryResult, path)) {
@@ -134,7 +134,7 @@ export function extractSymbols(
     const lineReference = createLineReferenceFromSourceMap(
       sourceMap,
       document,
-      documentLines
+      documentLines,
     );
 
     let description = '';
@@ -144,7 +144,7 @@ export function extractSymbols(
       (qs) => query(qs, [{ query: { attributes: { method: {} } }, symbolKind: 0 }]),
     ].some((path: string | Function): boolean => {
       if (typeof (path) === 'function') {
-        description = decodeURI(lodash.get((<Function>path)(queryResult)[0], 'attributes.method.content'));
+        description = decodeURI(lodash.get((path as Function)(queryResult)[0], 'attributes.method.content'));
         return true;
       } else {
         if (lodash.has(queryResult, path)) {
@@ -163,7 +163,7 @@ export function extractSymbols(
           lineReference.startRow,
           lineReference.startIndex,
           lineReference.endRow,
-          lineReference.endIndex
+          lineReference.endIndex,
         ),
         null,
         queryResult.container));
