@@ -4,7 +4,10 @@ This changelog tracks changes starting from first public release.
 
 ## master
 
+## v0.6.1
+
 - The entire extension has now been migrated to Typescript 2. Long journey, but we made it.
+- Package update with latest parser versions
 
 ## v0.6.0
 
