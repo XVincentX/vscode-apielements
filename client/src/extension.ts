@@ -29,7 +29,7 @@ function registerNotifications(client: LanguageClient) {
 function registerWindowEvents() {
   window.onDidChangeActiveTextEditor(textEditor => {
 
-    if (textEditor.document.languageId === 'API Blueprint') {
+    if (textEditor.document.languageId === 'apiblueprint') {
 
       const adjustEditor = workspace.getConfiguration('apiElements').get('editor.adjustOptions');
 
@@ -57,7 +57,7 @@ export function activate(context: ExtensionContext) {
   };
 
   const clientOptions: LanguageClientOptions = {
-    documentSelector: ['API Blueprint', 'Swagger'],
+    documentSelector: ['apiblueprint', 'swagger'],
     synchronize: {
       configurationSection: 'apiElements',
       fileEvents: workspace.createFileSystemWatcher('**/.clientrc'),

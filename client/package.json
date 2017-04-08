@@ -31,8 +31,8 @@
     "apiElements"
   ],
   "activationEvents": [
-    "onLanguage:API Blueprint",
-    "onLanguage:Swagger",
+    "onLanguage:apiblueprint",
+    "onLanguage:swagger",
     "onCommand:apiElements.parserOutput",
     "onCommand:apiElements.apiary.fetchApi",
     "onCommand:apiElements.apiary.publishApi",
@@ -90,7 +90,10 @@
     },
     "languages": [
       {
-        "id": "API Blueprint",
+        "id": "apiblueprint",
+        "aliases": [
+          "API Blueprint"
+        ],
         "extensions": [
           ".apib",
           ".apiblueprint"
@@ -101,13 +104,19 @@
         ]
       },
       {
-        "id": "MSON",
+        "id": "mson",
+        "aliases": [
+          "MSON"
+        ],
         "extensions": [
           ".mson"
         ]
       },
       {
-        "id": "Swagger",
+        "id": "swagger",
+        "aliases": [
+          "Swagger"
+        ],
         "extensions": [
           ".swagger"
         ],
@@ -120,28 +129,28 @@
     ],
     "grammars": [
       {
-        "language": "API Blueprint",
+        "language": "apiblueprint",
         "scopeName": "text.html.markdown.source.gfm.apib",
         "path": "./syntaxes/APIBlueprint.tmLanguage"
       },
       {
-        "language": "MSON",
+        "language": "mson",
         "scopeName": "text.html.markdown.source.gfm.mson",
         "path": "./syntaxes/MSON.tmLanguage"
       },
       {
-        "language": "Swagger",
+        "language": "swagger",
         "scopeName": "source.yaml",
         "path": "./syntaxes/YAML.tmLanguage"
       }
     ],
     "snippets": [
       {
-        "language": "API Blueprint",
+        "language": "apiblueprint",
         "path": "./snippets/APIBlueprint.json"
       },
       {
-        "language": "Swagger",
+        "language": "swagger",
         "path": "./snippets/Swagger.json"
       }
     ],
