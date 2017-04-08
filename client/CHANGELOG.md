@@ -10,6 +10,9 @@ go in trouble with these anymore.
 - Languages ID have been changed to be lower case. This will help introducing
 custom icons for these supported languages. See [#69](https://github.com/XVincentX/vscode-apielements/issues/69) for more details
 
+- A new command has been added that will simply show the Parser Output on the right side of your editor, so you do not
+lose the focus on your work.
+
 ## v0.6.1
 
 - The entire extension has now been migrated to Typescript 2. Long journey, but we made it.
