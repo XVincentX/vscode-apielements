@@ -4,6 +4,8 @@ This changelog tracks changes starting from first public release.
 
 ## master
 
+## v0.6.2
+
 - Updated all the dependencies as well make sure they're locked down so I do not
 go in trouble with these anymore.
 
