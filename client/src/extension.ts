@@ -21,7 +21,7 @@ function registerCommands(client: LanguageClient, context: ExtensionContext) {
 }
 
 function registerNotifications(client: LanguageClient) {
-  client.onNotification({ method: "openUrl" }, url =>
+  client.onNotification("openUrl", url =>
     commands.executeCommand("vscode.open", Uri.parse(<string>url))
   );
 }
@@ -66,9 +66,11 @@ export function activate(context: ExtensionContext) {
 
   const client = new LanguageClient('apiElements', 'Api Elements', serverOptions, clientOptions);
 
-  registerCommands(client, context);
-  registerNotifications(client);
-  registerWindowEvents();
+  client.onReady().then(() => {
+    registerCommands(client, context);
+    registerNotifications(client);
+    registerWindowEvents();
+  });
 
   context.subscriptions.push(client.start());
 
