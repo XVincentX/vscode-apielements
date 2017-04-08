@@ -33,7 +33,7 @@ function selectApi(context: ExtensionContext) {
 export function parseOutput(context: ExtensionContext, client: LanguageClient, editor: TextEditor) {
   window.setStatusBarMessage(
     'Parsing current document...',
-    client.sendRequest({ method: 'parserOutput' }, editor.document.getText())
+    client.sendRequest('parserOutput', editor.document.getText())
       .then(result => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath),
       (err) => {
         if (err.result !== undefined) {

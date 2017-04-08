@@ -4,6 +4,9 @@ This changelog tracks changes starting from first public release.
 
 ## master
 
+- Updated all the dependencies as well make sure they're locked down so I do not
+go in trouble with these anymore.
+
 ## v0.6.1
 
 - The entire extension has now been migrated to Typescript 2. Long journey, but we made it.

@@ -17,7 +17,7 @@
   },
   "publisher": "vncz",
   "engines": {
-    "vscode": "^1.9.0"
+    "vscode": "^1.11.0"
   },
   "categories": [
     "Languages",
@@ -189,14 +189,14 @@
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "devDependencies": {
-    "@types/node": "^6.0.52",
-    "tslint": "^4.0.2",
-    "typescript": "^2.1.4",
+    "@types/node": "^7.0.12",
+    "tslint": "^5.0.0",
+    "typescript": "^2.2.2",
     "vscode": "^1.0.3"
   },
   "dependencies": {
-    "axios": "^0.15.3",
+    "axios": "^0.16.0",
     "lodash.escape": "^4.0.1",
-    "vscode-languageclient": "^2.6.3"
+    "vscode-languageclient": "^3.2.0"
   }
 }
