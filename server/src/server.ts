@@ -127,7 +127,7 @@ connection.onDocumentSymbol((symbolParam) => {
     const documentObject = documents.get(symbolParam.textDocument.uri);
     let textDocument = documentObject.getText();
 
-    if (documentObject.languageId === 'API Blueprint') {
+    if (documentObject.languageId === 'apiblueprint') {
       textDocument = utf16to8(textDocument);
 
       /*
