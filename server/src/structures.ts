@@ -24,4 +24,5 @@ export interface SymbolsSettings {
   resourceGroup: boolean;
   resource: boolean;
   transition: boolean;
+  dataStructure: boolean;
 }

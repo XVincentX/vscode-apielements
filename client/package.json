@@ -85,6 +85,11 @@
           "type": "boolean",
           "description": "Determines if look for transition when symbols are requested",
           "default": true
+        },
+        "apiElements.symbols.dataStructure": {
+          "type": "boolean",
+          "description": "Determines if look for data structures when symbols are requested",
+          "default": true
         }
       }
     },
