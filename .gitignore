@@ -1,2 +1,3 @@
 *.DS_Store
 .apiaryToken
+node_modules
