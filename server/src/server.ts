@@ -17,7 +17,7 @@ const apiDescriptionMixins = require('lodash-api-description');
 const refractDocuments = new Map();
 apiDescriptionMixins(lodash);
 
-let debouncedValidateTextDocument: Function = validateTextDocument;
+let debouncedValidateTextDocument = validateTextDocument;
 
 const getHelpUrl = (section: string): string => {
   return `https://github.com/XVincentX/vscode-apielements/blob/master/TROUBLESHOT.md${section}`;
