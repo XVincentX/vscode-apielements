@@ -4,7 +4,7 @@
   "description": "VSCode client for API Elements",
   "author": "Vincenzo Chianese",
   "license": "MIT",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "preview": false,
   "icon": "logo.png",
   "bugs": {
