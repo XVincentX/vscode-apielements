@@ -1,0 +1,8 @@
+{
+  "lerna": "2.0.0-rc.4",
+  "packages": [
+    "client",
+    "server"
+  ],
+  "version": "0.6.5"
+}
