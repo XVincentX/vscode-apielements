@@ -4,6 +4,11 @@ This changelog tracks changes starting from first public release.
 
 ## master
 
+## v0.6.6
+
+- Fixed a bug where saved documents not edited would give an error while
+retrieving its symbols.
+
 ## v0.6.5
 
 - Updated all the dependencies as well make sure they're locked down so I do not
