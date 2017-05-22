@@ -5,11 +5,11 @@ import {
   Range, RequestType, ServerCapabilities, TextDocument, TextDocuments, createConnection,
 } from 'vscode-languageserver';
 
-import {parse} from './parser';
-import {defaultRefractSymbolsTree} from './refractSymbolMap';
+import { parse } from './parser';
+import { defaultRefractSymbolsTree } from './refractSymbolMap';
 import * as refractUtils from './refractUtils';
-import {ApiElementsSettings} from './structures';
-import {utf16to8} from './utfUtils';
+import { ApiElementsSettings } from './structures';
+import { utf16to8 } from './utfUtils';
 
 const lodash = require('lodash');
 const apiDescriptionMixins = require('lodash-api-description');
@@ -141,6 +141,14 @@ connection.onDocumentSymbol((symbolParam) => {
 
     const documentLines = textDocument.split(/\r?\n/g);
     const refractOutput = refractDocuments.get(symbolParam.textDocument.uri.toString());
+
+    if (typeof (refractOutput) === 'undefined') {
+      return parse(textDocument, currentSettings.parser)
+        .then((output) => {
+          refractDocuments.set(symbolParam.textDocument.uri.toString(), output);
+          return refractUtils.extractSymbols(output, textDocument, documentLines, desideredSymbols);
+        });
+    }
 
     const symbolArray = refractUtils.extractSymbols(refractOutput, textDocument, documentLines, desideredSymbols);
     return Promise.resolve(symbolArray);
