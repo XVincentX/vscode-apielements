@@ -1,12 +1,14 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {killCurrentApiaryClient, requestApiaryClient} from './requestApiaryClient';
-import {showMessage} from './showMessage';
-import {showUntitledWindow} from './showUntitledWindow';
-import {ExtensionContext, Position, QuickPickItem, Range, TextEditor, Uri,
-  ViewColumn, commands, window, workspace} from 'vscode';
-import {LanguageClient} from 'vscode-languageclient';
+import {
+  commands, ExtensionContext, Position, QuickPickItem, Range, TextEditor,
+  Uri, ViewColumn, window, workspace,
+} from 'vscode';
+import { LanguageClient } from 'vscode-languageclient';
+import { killCurrentApiaryClient, requestApiaryClient } from './requestApiaryClient';
+import { showMessage } from './showMessage';
+import { showUntitledWindow } from './showUntitledWindow';
 
 import axios from 'axios';
 
@@ -14,14 +16,14 @@ const escape = require('lodash.escape');
 
 function selectApi(context: ExtensionContext) {
   return requestApiaryClient(context)
-    .then(client => Promise.all([client.getApiList(), client]))
+    .then((client) => Promise.all([client.getApiList(), client]))
     .then(([res, client]) => {
-      const elements = (<any>res).apis.map(element =>
-        <QuickPickItem>{
+      const elements = (res as any).apis.map((element) =>
+        ({
           description: element.apiName,
           detail: element.apiDocumentationUrl,
           label: element.apiSubdomain,
-        });
+        } as QuickPickItem));
       return Promise.all([window.showQuickPick(elements, {
         matchOnDescription: true,
         matchOnDetail: false,
@@ -30,19 +32,23 @@ function selectApi(context: ExtensionContext) {
     });
 }
 
-export function parseOutput(context: ExtensionContext, client: LanguageClient, editor: TextEditor) {
+export function parseOutput(
+  context: ExtensionContext,
+  client: LanguageClient,
+  viewColumn: ViewColumn,
+  editor: TextEditor) {
   window.setStatusBarMessage(
     'Parsing current document...',
     client.sendRequest('parserOutput', editor.document.getText())
-      .then(result => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath),
+      .then((result) => showUntitledWindow('parseResult.json', JSON.stringify(result, null, 2), context.extensionPath, viewColumn),
       (err) => {
         if (err.result !== undefined) {
-          return showUntitledWindow('parseResult.json', JSON.stringify(err.result, null, 2), context.extensionPath);
+          return showUntitledWindow('parseResult.json', JSON.stringify(err.result, null, 2), context.extensionPath, viewColumn);
         }
 
         throw err;
       })
-      .then(undefined, showMessage)
+      .then(undefined, showMessage),
   );
 }
 
@@ -54,22 +60,22 @@ export function fetchApi(context: ExtensionContext) {
           throw 0;
         }
 
-        return Promise.all([(<any>client).getApiCode((<any>selectedApi).label), (<any>selectedApi).label]);
+        return Promise.all([(client as any).getApiCode((selectedApi as any).label), (selectedApi as any).label]);
       })
       .then(([res, apiName]): Thenable<any> => {
 
         if (window.activeTextEditor === undefined) {
-          return showUntitledWindow(`${apiName}`, (<any>res).code, context.extensionPath);
+          return showUntitledWindow(`${apiName}`, (res as any).code, context.extensionPath, ViewColumn.One);
         }
 
         return window.activeTextEditor.edit((builder) => {
           const lastLine = window.activeTextEditor.document.lineCount;
           const lastChar = window.activeTextEditor.document.lineAt(lastLine - 1).range.end.character;
           builder.delete(new Range(0, 0, lastLine, lastChar));
-          builder.replace(new Position(0, 0), (<any>res).code);
+          builder.replace(new Position(0, 0), (res as any).code);
         });
       })
-      .then(undefined, showMessage)
+      .then(undefined, showMessage),
   );
 
 }
@@ -78,10 +84,10 @@ export function publishApi(context: ExtensionContext, textEditor: TextEditor) {
   window.setStatusBarMessage('Publishing API on Apiary...',
     selectApi(context)
       .then(([selectedApi, client]) => {
-        return (<any>client).publishApi((<any>selectedApi).label, textEditor.document.getText(), '');
+        return (client as any).publishApi((selectedApi as any).label, textEditor.document.getText(), '');
       })
       .then(() => window.showInformationMessage('API successuflly published on Apiary!'))
-      .then(undefined, showMessage)
+      .then(undefined, showMessage),
   );
 }
 
@@ -131,10 +137,10 @@ export function browse(context: ExtensionContext, textEditor: TextEditor) {
             throw 0;
           }
 
-          return <any>Uri.parse((<any>selectedApi).detail);
+          return Uri.parse((selectedApi as any).detail) as any;
         });
     })
-    .then(uri => commands.executeCommand('vscode.open', uri), <any>showMessage);
+    .then((uri) => commands.executeCommand('vscode.open', uri), showMessage as any);
 }
 
 function getViewColumn(sideBySide = true): ViewColumn {

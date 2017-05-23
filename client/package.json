@@ -34,6 +34,7 @@
     "onLanguage:apiblueprint",
     "onLanguage:swagger",
     "onCommand:apiElements.parserOutput",
+    "onCommand:apiElements.parserOutputSide",
     "onCommand:apiElements.apiary.fetchApi",
     "onCommand:apiElements.apiary.publishApi",
     "onCommand:apiElements.apiary.logout",
@@ -158,6 +159,11 @@
       {
         "command": "apiElements.parserOutput",
         "title": "Show parser output",
+        "category": "API Elements"
+      },
+      {
+        "command": "apiElements.parserOutputSide",
+        "title": "Show parser output to the side",
         "category": "API Elements"
       },
       {

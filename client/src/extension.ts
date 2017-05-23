@@ -6,28 +6,29 @@
 
 import * as Commands from './commands';
 import * as path from 'path';
-import { EndOfLine, ExtensionContext, Uri, commands, window, workspace } from 'vscode';
+import { EndOfLine, ExtensionContext, Uri, commands, window, workspace, ViewColumn } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
 
 function registerCommands(client: LanguageClient, context: ExtensionContext) {
   context.subscriptions.push(
-    commands.registerTextEditorCommand('apiElements.parserOutput', Commands.parseOutput.bind(this, context, client)),
+    commands.registerTextEditorCommand('apiElements.parserOutput', Commands.parseOutput.bind(this, context, client, ViewColumn.One)),
+    commands.registerTextEditorCommand('apiElements.parserOutputSide', Commands.parseOutput.bind(this, context, client, ViewColumn.Two)),
     commands.registerCommand('apiElements.apiary.fetchApi', Commands.fetchApi.bind(this, context)),
     commands.registerCommand('apiElements.apiary.logout', Commands.logout.bind(this, context)),
     commands.registerTextEditorCommand('apiElements.apiary.publishApi', Commands.publishApi.bind(this, context)),
     commands.registerTextEditorCommand('apiElements.apiary.browse', Commands.browse.bind(this, context)),
-    commands.registerTextEditorCommand('apiElements.apiary.preview', Commands.previewApi.bind(this, context))
+    commands.registerTextEditorCommand('apiElements.apiary.preview', Commands.previewApi.bind(this, context)),
   );
 }
 
 function registerNotifications(client: LanguageClient) {
-  client.onNotification("openUrl", url =>
-    commands.executeCommand("vscode.open", Uri.parse(<string>url))
+  client.onNotification("openUrl", (url) =>
+    commands.executeCommand("vscode.open", Uri.parse(url as string)),
   );
 }
 
 function registerWindowEvents() {
-  window.onDidChangeActiveTextEditor(textEditor => {
+  window.onDidChangeActiveTextEditor((textEditor) => {
 
     if (textEditor.document.languageId === 'apiblueprint') {
 
@@ -39,8 +40,8 @@ function registerWindowEvents() {
           tabSize: 4,
         };
 
-        textEditor.edit(editBuilder =>
-          editBuilder.setEndOfLine(EndOfLine.LF)
+        textEditor.edit((editBuilder) =>
+          editBuilder.setEndOfLine(EndOfLine.LF),
         );
       }
     }
