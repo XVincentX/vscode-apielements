@@ -12,7 +12,6 @@
     "fury": "^2.3.0",
     "fury-adapter-swagger": "^0.11.1",
     "lodash": "^4.17.2",
-    "lodash-api-description": "0.0.2",
     "minim": "^0.16.0",
     "minim-api-description": "^0.3.1",
     "minim-parse-result": "^0.5.0",
@@ -24,7 +23,7 @@
     "typescript": "^2.3.4"
   },
   "scripts": {
-    "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p ,",
+    "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
     "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch -p ."
   }
 }
