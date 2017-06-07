@@ -1,14 +1,17 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   // List of configurations. Add new configurations or edit existing ones.
   "configurations": [
+
     {
       "name": "Attach",
       "type": "node",
       "request": "attach",
-      "port": 6004,
       "sourceMaps": true,
-      "outDir": "${workspaceRoot}/../client/server"
+      "port": 6004,
+      "outFiles": ["${workspaceRoot}/../client/server/**/*.js"],
+      "protocol": "legacy",
+      "trace": true
     }
   ]
 }
