@@ -11,7 +11,7 @@ export function parse(source: string, options: any): Thenable<any> {
       // Yet callbacks in 2016? Yes.
 
       if (result !== undefined) {
-        return resolve(result.toRefract());
+        return resolve(result);
       }
 
       return reject(err);

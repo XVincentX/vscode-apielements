@@ -12,10 +12,8 @@ import { ApiElementsSettings } from './structures';
 import { utf16to8 } from './utfUtils';
 
 const lodash = require('lodash');
-const apiDescriptionMixins = require('lodash-api-description');
 
 const refractDocuments = new Map();
-apiDescriptionMixins(lodash);
 
 let debouncedValidateTextDocument = validateTextDocument;
 
@@ -77,34 +75,33 @@ function validateTextDocument(textDocument: TextDocument): void {
     .then((refractOutput) => {
 
       refractDocuments.set(textDocument.uri.toString(), refractOutput);
-      const annotations = lodash.filterContent(refractOutput, { element: 'annotation' });
 
       const utf8Text = utf16to8(text);
       const documentLines = utf8Text.split(/\r?\n/g);
 
-      lodash.forEach(annotations, (annotation) => {
+      for (let annotation of refractOutput.annotations) {
 
         const lineReference = refractUtils.createLineReferenceFromSourceMap(
-          annotation.attributes.sourceMap,
+          annotation.sourceMapValue,
           text,
           documentLines,
         );
 
         diagnostics.push({
-          code: annotation.attributes.code,
-          message: annotation.content,
+          code: annotation.code,
+          message: annotation.toValue(),
           range: Range.create(
             lineReference.startRow,
             lineReference.startIndex,
             lineReference.endRow,
             lineReference.endIndex,
           ),
-          severity: ((lodash.head(annotation.meta.classes) === 'warning')
+          severity: (annotation.classes.contains('warning')
             ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error),
           source: 'fury',
         } as Diagnostic);
 
-      });
+      }
 
       connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
     });
