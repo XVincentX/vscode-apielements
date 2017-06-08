@@ -82,7 +82,7 @@ function validateTextDocument(textDocument: TextDocument): void {
       for (let annotation of refractOutput.annotations) {
 
         const lineReference = refractUtils.createLineReferenceFromSourceMap(
-          (annotation.attributes.get('sourceMap') ? annotation.attributes.get('sourceMap').first().toValue() : undefined),
+          (annotation.sourceMapValue),
           text,
           documentLines,
         );
