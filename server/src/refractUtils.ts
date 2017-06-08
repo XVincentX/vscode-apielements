@@ -1,7 +1,7 @@
 const lodash = require("lodash");
 
-import {RefractSymbolMap} from './refractSymbolMap';
-import {Range, SymbolInformation} from 'vscode-languageserver';
+import { RefractSymbolMap } from './refractSymbolMap';
+import { Range, SymbolInformation } from 'vscode-languageserver';
 
 export function createLineReferenceFromSourceMap(refractSourceMap, document: string, documentLines: string[]): any {
 
@@ -16,15 +16,10 @@ export function createLineReferenceFromSourceMap(refractSourceMap, document: str
     };
   }
 
-  const sourceMapArray = lodash.map(firstSourceMap.content, (sm) => {
-    return {
-      charCount: lodash.last(sm),
-      charIndex: lodash.head(sm),
-    };
-  });
-
-  // I didn't find any useful example of multiple sourcemap elements.
-  const sourceMap = lodash.head(sourceMapArray);
+  const sourceMap = {
+    charCount: firstSourceMap[1],
+    charIndex: firstSourceMap[0],
+  };
 
   const sourceSubstring = document.substring(sourceMap.charIndex, sourceMap.charIndex + sourceMap.charCount);
   const sourceLines = sourceSubstring.split(/\r?\n/g);
