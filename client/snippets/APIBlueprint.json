@@ -9,5 +9,56 @@
       "        Hello World!"
     ],
     "description": "A minimal API Blueprint"
-  }
+  },
+  "meta": {
+    "prefix": "meta",
+    "body": [
+      "FORMAT: 1A",
+      "HOST: $1",
+      "$0"
+    ],
+    "description": "Metadata for API Blueprint document"
+  },
+  "data-structure": {
+    "prefix": "data",
+    "body": [
+      "# Data Structures",
+      "",
+      "## $1 (object)",
+      "+ `${2:name}`: `${3:example value}` (${4:type}) - ${5:description}",
+      "$0"
+    ],
+    "description": "Data Structure snippet"
+  },
+  "resource": {
+    "prefix": "res",
+    "body": [
+      "## ${11:resource name} [/${12:url}]",
+      "",
+      "### ${13:action name} [${14:http-method}]",
+      "",
+      "+ Request (${15:media-type-request})",
+      "",
+      "    + Headers",
+      "",
+      "        ${16:headers-request}",
+      "",
+      "    + Body",
+      "",		
+      "        ${17:body-request}",		
+      "",		
+      "+ Response ${18:status-code} (${19:media-type-response})",
+      "",
+      "    + Headers",
+      "",
+      "        ${20:headers-response}",
+      "",
+      "    + Body",
+      "",
+      "        ${21:body-response}",		
+      "",
+      "$0"		
+    ],
+    "description": "Resource snippet"
+  }  
 }
