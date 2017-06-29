@@ -4,6 +4,10 @@ This changelog tracks changes starting from first public release.
 
 ## master
 
+## v0.6.7
+
+- Thanks to @abtris, we now have some more useful snippets
+
 ## v0.6.6
 
 - Fixed a bug where saved documents not edited would give an error while
