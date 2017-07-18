@@ -31,8 +31,8 @@ Please file an issue at https://github.com/XVincentX/vscode-apielements.
 ### Development
 
 First install:
-* Node.js (newer than 4.3.1)
-* Npm (newer 2.14.12) - probably 3.x would be even better
+* Node.js (whatever version is fancy today should be ok)
+* Npm (whatever version is fancy today should be ok)
 
 This extension is built on top of Visual Studio template; so:
 
@@ -92,7 +92,7 @@ can do, simply type `Apiary` in the command box to see what's going on.
 
 
 #### Acknowledges
-Even if I currently work for Apiary, this extension is my personal work and **it's not backed by Apiary.**
+Even if I used to work for Apiary, this extension is my personal work and **it's not backed by Apiary.**
 If you're enjoying the extension and would like to help, consider [a donation](https://paypal.me/vncz)
 
 #### Dependencies status:

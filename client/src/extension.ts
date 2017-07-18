@@ -45,7 +45,6 @@ function registerWindowEvents() {
       }
     }
   });
-
 }
 
 export function activate(context: ExtensionContext) {
