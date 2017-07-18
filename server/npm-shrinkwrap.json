@@ -184,41 +184,13 @@
       "dev": true
     },
     "fury": {
-      "version": "3.0.0-beta.1",
-      "resolved": "https://registry.npmjs.org/fury/-/fury-3.0.0-beta.1.tgz",
-      "integrity": "sha1-4BtmAKAoZd3S5JziMzl3Zm5smXc=",
+      "version": "3.0.0-beta.3",
+      "resolved": "https://registry.npmjs.org/fury/-/fury-3.0.0-beta.3.tgz",
+      "integrity": "sha512-0hQi1LmOZ212AqRO5m8tOzKT1MhC0F8KBN5Z4YubuswyOmnkhlX90jdaIUGWPJNckxwlNdkn3XcXTz8qMRrOjw==",
       "requires": {
         "babel-runtime": "6.23.0",
-        "minim": "0.16.0",
-        "minim-parse-result": "0.5.0"
-      },
-      "dependencies": {
-        "minim": {
-          "version": "0.16.0",
-          "resolved": "https://registry.npmjs.org/minim/-/minim-0.16.0.tgz",
-          "integrity": "sha1-fLAbgapGtmdfB7cOUmY/lr1snAc=",
-          "requires": {
-            "lodash": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
-            "uptown": "https://registry.npmjs.org/uptown/-/uptown-0.4.1.tgz"
-          }
-        },
-        "minim-api-description": {
-          "version": "0.3.1",
-          "resolved": "https://registry.npmjs.org/minim-api-description/-/minim-api-description-0.3.1.tgz",
-          "integrity": "sha1-OK7ypoCCKHcXnarxGGI3WqQ9N7M=",
-          "requires": {
-            "babel-runtime": "6.23.0"
-          }
-        },
-        "minim-parse-result": {
-          "version": "0.5.0",
-          "resolved": "https://registry.npmjs.org/minim-parse-result/-/minim-parse-result-0.5.0.tgz",
-          "integrity": "sha1-PFuxHTooVziJs4fZd8m6yAw9YYw=",
-          "requires": {
-            "babel-runtime": "6.23.0",
-            "minim-api-description": "0.3.1"
-          }
-        }
+        "minim": "0.18.1",
+        "minim-parse-result": "0.7.0"
       }
     },
     "fury-adapter-swagger": {

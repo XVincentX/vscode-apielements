@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "drafter.js": "^2.6.7",
-    "fury": "^3.0.0-beta.1",
+    "fury": "^3.0.0-beta.3",
     "fury-adapter-swagger": "^0.12.0",
     "lodash": "^4.17.2",
     "minim": "^0.18.1",
