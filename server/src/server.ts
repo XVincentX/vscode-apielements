@@ -73,6 +73,9 @@ function validateTextDocument(textDocument: TextDocument): void {
   parse(text, currentSettings.parser)
     .then((output) => output, (error) => error.result)
     .then((refractOutput) => {
+      if (!refractOutput) {
+        return connection.window.showErrorMessage("An unexpected error occurred during the parsing");
+      }
 
       refractDocuments.set(textDocument.uri.toString(), refractOutput);
 
