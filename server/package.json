@@ -10,17 +10,17 @@
   "dependencies": {
     "drafter.js": "^2.6.7",
     "fury": "^3.0.0-beta.1",
-    "fury-adapter-swagger": "^0.11.1",
+    "fury-adapter-swagger": "^0.12.0",
     "lodash": "^4.17.2",
-    "minim": "^0.16.0",
-    "minim-api-description": "^0.3.1",
-    "minim-parse-result": "^0.5.0",
-    "vscode-languageserver": "^3.2.2"
+    "minim": "^0.18.1",
+    "minim-api-description": "^0.5.0",
+    "minim-parse-result": "^0.7.0",
+    "vscode-languageserver": "^3.3.0"
   },
   "devDependencies": {
-    "@types/node": "^7.0.29",
-    "tslint": "^5.4.3",
-    "typescript": "^2.3.4"
+    "@types/node": "^8.0.14",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.1"
   },
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
